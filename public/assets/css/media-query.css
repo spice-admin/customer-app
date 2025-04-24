@@ -1,0 +1,150 @@
+@media(min-width:600px) {
+
+    .container,
+    .container-fluid,
+    .container-lg,
+    .container-md,
+    .container-sm,
+    .container-xl,
+    .container-xxl {
+        max-width: 600px !important;
+    }
+}
+
+@media(max-height:780px) {
+    .bottom-btns2 {
+        position: unset;
+    }
+
+    .customize-btn-group {
+        flex-direction: column;
+        margin-bottom: 30px;
+    }
+
+    .veg-screen-btn {
+        position: unset;
+        margin: 20px 0 30px 0;
+    }
+}
+
+@media(max-height:670px) {
+    .choose_interests {
+        position: unset;
+        margin: 20px 0 40px 0;
+    }
+
+    .have-an-account {
+        position: unset;
+        margin: 20px 0;
+    }
+
+    .skip-btn-fix {
+        width: 180px;
+    }
+
+    .Set_Your_Location {
+        position: unset;
+        margin: 20px 0 30px 0;
+    }
+
+    .track-order-btn {
+        position: unset;
+    }
+
+    .review-btns {
+        position: unset;
+        margin: 20px 0 50px 0;
+    }
+
+    .confirmation-order-btns {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        margin-bottom: 20px;
+    }
+
+    .review-btns2 {
+        position: unset;
+        margin: 20px 0 50px 0;
+    }
+
+    .custom-slider-btn {
+        bottom: 90px;
+    }
+}
+
+@media(max-height:710px) {
+    .promocodes-btn {
+        position: unset;
+        margin: 10px 0 50px 0;
+    }
+}
+
+@media (max-width: 540px) {
+    .gol3 {
+        width: 70px;
+        height: 70px;
+        bottom: 100px;
+    }
+}
+
+@media (max-width: 470px) {
+    .gol3 {
+        width: 60px;
+        height: 60px;
+        bottom: 94px;
+    }
+}
+
+@media (max-width: 400px) {
+    .gol3 {
+        width: 55px;
+        height: 55px;
+        bottom: 90px;
+    }
+}
+
+@media (max-width: 380px) {
+    .navigation {
+        padding: 0 20px;
+        max-width: 600px;
+    }
+}
+
+@media(max-width:375px) {
+    .mind-items {
+        display: grid;
+        justify-items: center;
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media(max-width:369px) {
+    .all-food-imgs {
+        width: 90px;
+        height: 90px;
+    }
+}
+
+@media(max-width:350px) {
+    .driver-details {
+        width: 65px;
+        height: 65px;
+    }
+
+    .driver-details-main {
+        gap: 11px;
+    }
+
+    img.media-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .gol3 {
+        width: 50px;
+        height: 50px;
+        bottom: 90px;
+    }
+}
