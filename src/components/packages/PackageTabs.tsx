@@ -147,8 +147,7 @@ const PackageTabs: React.FC = () => {
         >
           💥 All
         </button>
-        console.log('[PackageTabs] Render: Mapping categories for tabs...',
-        categories)
+
         {categories.map((category) => {
           console.log(
             "[PackageTabs] Render: Rendering tab for category:",
@@ -170,8 +169,6 @@ const PackageTabs: React.FC = () => {
       {/* Tab Content Area */}
       <div className="tabContainer">
         <div className="Tabcondent active">
-          console.log(`[PackageTabs] Render: Mapping ${filteredPackages.length}{" "}
-          filtered packages for active tab "${activeTabId}"...`)
           {filteredPackages.length > 0 ? (
             <div className="packages-grid">
               {filteredPackages.map((pkg) => {
