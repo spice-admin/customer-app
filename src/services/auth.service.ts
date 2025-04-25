@@ -9,7 +9,8 @@ import type {
 
 // Make sure API_BASE_URL is configured correctly in your .env file
 const API_BASE_URL =
-  import.meta.env.PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
+  import.meta.env.PUBLIC_API_BASE_URL ||
+  "https://spice-tiffin-backend-production.up.railway.app/api/v1";
 const AUTH_ENDPOINT = `${API_BASE_URL}/auth`;
 
 async function handleResponse<T>(response: Response): Promise<ApiResponse<T>> {
