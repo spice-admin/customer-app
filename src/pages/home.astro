@@ -1,0 +1,177 @@
+---
+// src/pages/home.astro
+import Layout from "../layouts/Layout.astro"; // Assuming this is your base HTML/Head layout
+import Header from "../components/home/Header.astro"; // Your home page header
+import OfferSlider from "../components/home/OfferSlider.astro"; // Offer slider component
+import PackageTabs from "../components/packages/PackageTabs.tsx"; // The tabbed package component
+import BottomNavbar from "../components/home/BottomNavbar.tsx"; // Corrected import path (assuming it's in layout)
+import Settings from "../components/home/Settings.astro";
+import BottomMenu from "../components/home/BottomMenu.astro";
+
+// Note: Removed BottomMenu import as BottomNavbar seems to cover it based on previous code. Adjust if needed.
+---
+
+<Layout title="Home">
+  {/* Use the base Layout */}
+  <div class="site_content">
+    {
+      /* Loader can be removed if splash screen handles it, or kept if desired */
+    }
+    <div class="loader-wrapper loader">
+      <div class="icon-loader">
+        <img src="/assets/images/pan.gif" alt="Loading..." />
+        {/* Ensure path is relative to public */}
+      </div>
+    </div>
+
+    <section class="container">
+      {/* Page Header */}
+      <Header />
+
+      {/* --- CHANGE: Add padding-bottom to this main content wrapper --- */}
+      {
+        /* Adjust pb-24 (96px) or pb-28 (112px) as needed based on navbar height */
+      }
+      <div class="section-main pb-24 md:pb-28">
+        {/* Added padding bottom */}
+
+        {/* Search Bar */}
+        <div class="new_password_input">
+          <div class="form-item search-food">
+            {/* Search SVG */}
+            <svg
+              class="input-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <g
+                ><path
+                  d="M10 17C13.866 17 17 13.866 17 10C17 6.13401 13.866 3 10 3C6.13401 3 3 6.13401 3 10C3 13.866 6.13401 17 10 17Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"></path><path
+                  d="M21 21L15 15"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"></path></g
+              >
+            </svg>
+            <input
+              type="text"
+              placeholder="Search Food Packages..."
+              name="search"
+              autocomplete="off"
+              onClick="console.log('Search clicked - implement search UI')"
+              *
+              Placeholder
+              action
+              *
+            />
+          </div>
+        </div>
+
+        {/* Offers Section */}
+        <div class="Foodist-home-body">
+          {/* Consider renaming this class if needed */}
+          <div
+            class="d-flex align-item-center justify-content-between offers-main"
+          >
+            <h2>Special Offers 💰</h2>
+          </div>
+          <OfferSlider />
+          {/* Render slider component */}
+        </div>
+
+        {
+          /* "What's on your mind" / Quick Categories - Keep original template structure */
+        }
+        <div>
+          <h2 class="mind">What’s on your mind 😋</h2>
+          {/* Use template class */}
+          <div class="mind-items">
+            {/* Use template class */}
+            {/* Example Item - Repeat or make dynamic later */}
+            <div class="item-name-box" onclick="location.href='/categories'">
+              {/* Use template class */}
+              <div class="item-name-box-sub">
+                {/* Use template class */}
+                <img
+                  class="pizza"
+                  src="/assets/images/home_screen1/pizza.svg"
+                  alt="pizza"
+                />
+                {/* Check path */}
+              </div>
+              <p class="item-name-box-name">Pizza</p>
+              {/* Use template class */}
+            </div>
+            <div class="item-name-box" onclick="location.href='/categories'">
+              <div class="item-name-box-sub">
+                <img
+                  class="pizza"
+                  src="/assets/images/home_screen1/burger.svg"
+                  alt="burger"
+                />
+              </div>
+              <p class="item-name-box-name">Burger</p>
+            </div>
+            {/* Add other "mind-items" here */}
+            <div class="item-name-box" onClick="location.href='/categories'">
+              <div class="item-name-box-sub">
+                <img
+                  class="pizza"
+                  src="/assets/images/home_screen1/sushi.svg"
+                  alt="sushi"
+                />
+              </div>
+              <p class="item-name-box-name">Sushi</p>
+            </div>
+            <div class="item-name-box" onClick="location.href='/categories'">
+              <div class="item-name-box-sub">
+                <img
+                  class="pizza"
+                  src="/assets/images/home_screen1/chinese.svg"
+                  alt="chinese"
+                />
+              </div>
+              <p class="item-name-box-name">Chinese</p>
+            </div>
+            {/* ... more items ... */}
+          </div>
+        </div>
+
+        {/* Popular Packages Section */}
+        <div class="trending-meals-main">
+          {/* Use template class */}
+          <div
+            class="d-flex align-item-center justify-content-between offers-main"
+          >
+            <h2>Our Popular Packages</h2>
+          </div>
+        </div>
+
+        {/* Render the Package Tabs component */}
+        <PackageTabs client:load />
+      </div>
+      {/* End of section-main (with padding-bottom) */}
+
+      {/* Bottom Navigation Bar */}
+      <BottomMenu />
+    </section>
+
+    {/* Settings Component (if it's a modal or off-canvas menu) */}
+    {/* <Settings /> */}
+  </div>
+</Layout>
+
+{/* Ensure CSS for template classes is loaded, likely via Layout.astro */}
+<style is:global>
+  .section-main {
+    padding-bottom: 130px;
+  }
+</style>

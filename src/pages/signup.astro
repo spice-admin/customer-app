@@ -1,5 +1,5 @@
 ---
-import LoginForm from "../components/auth/LoginForm";
+import SignupForm from "../components/auth/SignUpForm";
 import Layout from "../layouts/Layout.astro";
 ---
 
@@ -20,13 +20,13 @@ import Layout from "../layouts/Layout.astro";
           src="assets/images/logo/logo-new.png"
           alt="Logo"
         />
-        <h1 class="lets-you-text">Sign In</h1>
-        <LoginForm client:load />
+        <h1 class="lets-you-text">Sign Up</h1>
+        <SignupForm client:load />
 
         <div class="d-flex align-items-center justify-content-center">
           <p class="have-an-account">
-            Don’t have an account?
-            <span onclick="location.href='/signup'"> Sign up </span>
+            Already have an account?
+            <span onclick="location.href='/'"> Sign in</span>
           </p>
         </div>
       </div>
