@@ -3,11 +3,11 @@ import React, { useState, useEffect, useMemo } from "react";
 import {
   getAllCategories,
   getAllPackages,
-} from "../../services/package.service";
+} from "../../services/package.service"; // Corrected import path
 import type { ICategoryFE, IPackageFE } from "../../types";
 import PackageCard from "./PackageCard";
 
-const ALL_CATEGORY_ID = "all";
+const ALL_CATEGORY_ID = "all"; // Special ID for the "All" tab
 
 const PackageTabs: React.FC = () => {
   const [categories, setCategories] = useState<ICategoryFE[]>([]);
@@ -17,137 +17,185 @@ const PackageTabs: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // console.log('[PackageTabs] Mounting and fetching data...'); // Keep logs if needed
+    console.log(
+      "[PackageTabs] useEffect: Component Mounting. Starting data fetch..."
+    );
     const fetchData = async () => {
       setIsLoading(true);
       setError(null);
       try {
+        console.log(
+          "[PackageTabs] useEffect: Calling Promise.all for categories and packages..."
+        );
         const [fetchedCategories, fetchedPackages] = await Promise.all([
           getAllCategories(),
           getAllPackages(),
         ]);
-        // console.log('[PackageTabs] Data fetched:', { fetchedCategories, fetchedPackages });
+
+        // --- DETAILED LOGGING OF FETCHED DATA ---
+        console.log(
+          "[PackageTabs] useEffect: Categories fetched:",
+          JSON.stringify(fetchedCategories, null, 2)
+        ); // Log fetched categories
+        console.log(
+          "[PackageTabs] useEffect: Packages fetched:",
+          JSON.stringify(fetchedPackages, null, 2)
+        ); // Log fetched packages
+
+        // Check if data looks valid before setting state
+        if (!Array.isArray(fetchedCategories)) {
+          throw new Error("Fetched categories is not an array.");
+        }
+        if (!Array.isArray(fetchedPackages)) {
+          throw new Error("Fetched packages is not an array.");
+        }
+        // -----------------------------------------
+
         setCategories(fetchedCategories);
         setPackages(fetchedPackages);
+        console.log(
+          "[PackageTabs] useEffect: State updated with fetched data."
+        );
       } catch (err) {
-        console.error("[PackageTabs] Failed to fetch data:", err);
+        console.error("[PackageTabs] useEffect: Error during data fetch:", err);
         setError(
           (err as Error).message ||
             "Could not load packages. Please try again later."
         );
+        // Ensure state is empty on error
+        setCategories([]);
+        setPackages([]);
       } finally {
-        // console.log('[PackageTabs] Setting isLoading to false.');
+        console.log("[PackageTabs] useEffect: Setting isLoading to false.");
         setIsLoading(false);
       }
     };
+
     fetchData();
-  }, []);
+  }, []); // Empty dependency array means run once on mount
 
+  // Filter packages based on the active tab
   const filteredPackages = useMemo(() => {
-    if (activeTabId === ALL_CATEGORY_ID) return packages;
-    const filtered = packages.filter(
-      (pkg) => pkg.category?._id === activeTabId
+    // Log *before* filtering
+    console.log(
+      `[PackageTabs] useMemo: Filtering packages. Active Tab: ${activeTabId}. Total packages: ${packages.length}`
     );
-    // console.log(`[PackageTabs] Filtering for tab ${activeTabId}, found ${filtered.length} packages.`);
-    return filtered;
-  }, [activeTabId, packages]);
 
+    if (activeTabId === ALL_CATEGORY_ID) {
+      console.log("[PackageTabs] useMemo: Showing ALL packages.");
+      return packages; // Show all packages
+    }
+    const filtered = packages.filter((pkg) => {
+      // Add log inside filter for detailed check
+      // console.log(`[PackageTabs] useMemo: Checking package "${pkg.name}" with category ID "${pkg.category?._id}" against active tab "${activeTabId}"`);
+      return pkg.category?._id === activeTabId;
+    });
+    console.log(
+      `[PackageTabs] useMemo: Filtered packages count for tab ${activeTabId}: ${filtered.length}`
+    );
+    return filtered;
+  }, [activeTabId, packages]); // Recalculate when tab or packages change
+
+  // Handler for changing tabs
   const handleTabClick = (categoryId: string) => {
-    // console.log('[PackageTabs] Tab clicked:', categoryId);
+    console.log(
+      "[PackageTabs] handleTabClick: Setting active tab to:",
+      categoryId
+    );
     setActiveTabId(categoryId);
   };
 
   // --- Render Logic ---
-  // console.log('[PackageTabs] Rendering component. State:', { isLoading, error, activeTabId, categoriesCount: categories.length, packagesCount: packages.length, filteredPackagesCount: filteredPackages.length });
+  console.log("[PackageTabs] Render: Component rendering. Current State:", {
+    isLoading,
+    error,
+    activeTabId,
+    categoriesCount: categories.length,
+    packagesCount: packages.length,
+    filteredPackagesCount: filteredPackages.length,
+  });
 
   if (isLoading) {
-    // console.log('[PackageTabs] Rendering Loader.');
-    // --- Use a simple loader to avoid hydration issues for now ---
+    console.log("[PackageTabs] Render: Showing Loading state.");
     return (
       <div className="loading-placeholder text-center p-10 text-gray-500">
         Loading Packages...
-        {/* You can add a simple CSS spinner here later if needed, defined in global CSS */}
       </div>
     );
-    // --- Original template loader (commented out due to hydration issue) ---
-    /*
-         return (
-             <div className="loader-wrapper loader">
-                 <div className="icon-loader">
-                     <img src="/assets/images/pan.gif" alt="Loading..." />
-                 </div>
-             </div>
-         );
-        */
   }
 
   if (error) {
-    // console.log('[PackageTabs] Rendering Error:', error);
-    // Use a consistent error message style (ensure .form-message.error is defined globally)
+    console.log("[PackageTabs] Render: Showing Error state:", error);
     return <div className="form-message error text-center p-10">{error}</div>;
   }
 
-  // Handle case where data is loaded but empty
-  if (categories.length === 0 && packages.length === 0) {
-    // console.log('[PackageTabs] Rendering No Data message.');
-    return (
-      <div className="text-center p-10 text-gray-500">
-        No categories or packages available at the moment.
-      </div>
-    );
-  }
+  // Handle case where data is loaded but potentially empty
+  // Note: We might have categories but no packages, or vice-versa
+  // if (categories.length === 0 && packages.length === 0) {
+  //     console.log('[PackageTabs] Render: Showing No Data message (both empty).');
+  //     return <div className="text-center p-10 text-gray-500">No categories or packages available.</div>;
+  // }
 
   return (
-    // Use the main container class from the template
     <div className="tabs-section1" id="suggest-food-items">
       {/* Tab Navigation */}
       <nav>
         <button
           type="button"
           onClick={() => handleTabClick(ALL_CATEGORY_ID)}
-          className={activeTabId === ALL_CATEGORY_ID ? "active" : ""} // Apply 'active' class conditionally
+          className={activeTabId === ALL_CATEGORY_ID ? "active" : ""}
         >
           💥 All
         </button>
-        {categories.map((category) => (
-          <button
-            key={category._id}
-            type="button"
-            onClick={() => handleTabClick(category._id)}
-            className={activeTabId === category._id ? "active" : ""}
-          >
-            {category.name}
-          </button>
-        ))}
-        {/* <div className="clear"></div> */} {/* Include if needed by CSS */}
+        console.log('[PackageTabs] Render: Mapping categories for tabs...',
+        categories)
+        {categories.map((category) => {
+          console.log(
+            "[PackageTabs] Render: Rendering tab for category:",
+            category.name
+          );
+          return (
+            <button
+              key={category._id}
+              type="button"
+              onClick={() => handleTabClick(category._id)}
+              className={activeTabId === category._id ? "active" : ""}
+            >
+              {category.name}
+            </button>
+          );
+        })}
       </nav>
 
       {/* Tab Content Area */}
       <div className="tabContainer">
-        {/* Ensure .Tabcondent CSS doesn't hide this by default */}
         <div className="Tabcondent active">
+          console.log(`[PackageTabs] Render: Mapping ${filteredPackages.length}{" "}
+          filtered packages for active tab "${activeTabId}"...`)
           {filteredPackages.length > 0 ? (
             <div className="packages-grid">
-              {" "}
-              {/* Ensure this class provides layout */}
-              {filteredPackages.map((pkg) => (
-                <PackageCard key={pkg._id} pkg={pkg} />
-              ))}
+              {filteredPackages.map((pkg) => {
+                console.log(
+                  "[PackageTabs] Render: Rendering PackageCard for package:",
+                  pkg.name
+                );
+                return <PackageCard key={pkg._id} pkg={pkg} />;
+              })}
             </div>
           ) : (
             <p className="no-packages-message">
-              {" "}
-              {/* Ensure this class provides styling */}
-              No packages found in the "
-              {categories.find((c) => c._id === activeTabId)?.name ||
-                "selected"}
-              " category yet.
+              {/* Check if original packages array had items */}
+              {packages.length > 0
+                ? `No packages found in the "${
+                    categories.find((c) => c._id === activeTabId)?.name ||
+                    "selected"
+                  }" category.`
+                : "No packages available at the moment."}
             </p>
           )}
         </div>
       </div>
-
-      {/* --- REMOVED <style jsx global> block --- */}
+      {/* Styles should be in global CSS */}
     </div>
   );
 };
