@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import {
   getAllCategories,
   getAllPackages,
-} from "../../services/packageService";
+} from "../../services/package.service";
 import type { ICategoryFE, IPackageFE } from "../../types";
 import PackageCard from "./PackageCard";
 
