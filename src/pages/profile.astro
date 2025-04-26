@@ -1,0 +1,93 @@
+---
+// src/pages/profile.astro
+import CustomerLayout from "../layouts/Layout.astro"; // Use the main protected layout
+import ProfileManager from "../components/profile/ProfileManager.tsx"; // Import the React component
+// Import BottomNav if used on this page
+import BottomMenu from "../components/home/BottomMenu.astro"; // Assuming BottomMenu is used here
+---
+
+<CustomerLayout title="My Profile">
+  <div class="site_content">
+    <section class="container">
+      {/* Optional: Add a specific header for the profile page if needed */}
+      <header id="top-navbar" class="top-navbar top-navbar2">
+        <div class="top-header-full">
+          <div class="back-btn">
+            <a
+              href="#"
+              onClick="event.preventDefault(); window.history.go(-1);"
+            >
+              {/* Back Arrow SVG */}
+              <svg
+                class="svg-media"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                ><g
+                  ><path
+                    d="M5 12H19"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"></path><path
+                    d="M5 12C5 12 9 15 9 17"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"></path><path
+                    d="M5 12C5 12 9 9 9 7"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"></path></g
+                ></svg
+              >
+            </a>
+          </div>
+          <div class="header-title">
+            <h1>My Profile</h1>
+          </div>
+          {/* Add empty div if needed for spacing/alignment */}
+          <div class="back-btn" style="visibility: hidden;"></div>
+        </div>
+      </header>
+
+      {/* Main content area with padding for bottom nav */}
+      <div class="section-main pb-24 md:pb-28">
+        {/* Added padding bottom */}
+        <h1 class="text-xl font-semibold mb-4 visually-hidden">
+          Profile Details
+        </h1>
+        {/* Screen-reader friendly title */}
+
+        {/* Render the React Profile Manager Component */}
+        <ProfileManager client:load />
+      </div>
+
+      {/* Render Bottom Menu */}
+      <BottomMenu />
+    </section>
+  </div>
+</CustomerLayout>
+
+<style is:global>
+  /* Ensure template CSS is loaded */
+  /* Add styles for profile page specific elements if needed */
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .section-main {
+    padding-bottom: 96px;
+  }
+</style>

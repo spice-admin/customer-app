@@ -4,6 +4,9 @@ import { verifyOtpApi } from "../../services/auth.service";
 // Import the specific input type if needed for validation within component
 // import type { OtpVerifyInput } from '../../validators/authSchema';
 
+const AUTH_TOKEN_KEY =
+  "7f57e24a0181b526fb106b2bad45d9f6c0717b88ea01d2dd0afae3594a69b8c0";
+
 // Define props - currently empty as mobileNumber is read from URL
 interface OtpVerificationFormProps {}
 
@@ -175,11 +178,7 @@ const OtpVerificationForm: React.FC<OtpVerificationFormProps> = () => {
             result.token
           );
 
-          // TODO: Implement secure token storage mechanism here
-          // Example: authStore.setToken(result.token);
-          // Example: await saveTokenSecurely(result.token);
-          // Avoid localStorage for JWTs if possible due to security risks (XSS).
-          // Consider HttpOnly cookies (set by backend) or secure in-memory storage.
+          localStorage.setItem(AUTH_TOKEN_KEY, result.token);
           alert("OTP verification successful!"); // Show success message
 
           // Redirect to the main application page (e.g., homepage)

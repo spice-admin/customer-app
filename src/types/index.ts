@@ -51,3 +51,34 @@ export interface IPackageFE {
   createdAt: string; // ISO Date string
   updatedAt: string; // ISO Date string
 }
+
+/**
+ * Represents the customer profile data fetched from the backend.
+ * Excludes sensitive fields like password, OTP details.
+ */
+export interface ICustomerProfile {
+  _id: string;
+  fullName: string;
+  email: string;
+  mobile: string;
+  // These fields might be null/undefined initially if not set
+  address?: string | null;
+  city?: string | null;
+  postalCode?: string | null;
+  currentLocation?: string | null; // Or define a specific type if it's coordinates
+  // Include other relevant non-sensitive fields if needed
+  // stripeCustomerId?: string; // Maybe useful later?
+  // verification?: boolean; // Might be useful
+}
+
+// --- NEW: Type for the Profile Update Form ---
+/**
+ * Represents the data structure for the profile update form.
+ * Matches the backend's updateProfileSchema (all optional).
+ */
+export interface IProfileUpdateData {
+  address?: string;
+  city?: string;
+  postalCode?: string;
+  currentLocation?: string;
+}

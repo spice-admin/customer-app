@@ -1,3 +1,10 @@
+---
+const AUTH_TOKEN_KEY =
+  "7f57e24a0181b526fb106b2bad45d9f6c0717b88ea01d2dd0afae3594a69b8c0"; // Key used to store JWT in localStorage
+const LOGIN_PATH = "/"; // The path to redirect unauthenticated users to
+const PUBLIC_PATHS = [LOGIN_PATH, "/signup", "/otp-verification"]; // Paths accessible without login
+---
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -13,6 +20,102 @@
     <link rel="stylesheet" href="/assets/css/slick.css" />
     <link rel="stylesheet" href="/assets/css/style.css" />
     <link rel="stylesheet" href="/assets/css/media-query.css" />
+    <script is:inline define:vars={{ AUTH_TOKEN_KEY, LOGIN_PATH, PUBLIC_PATHS }}
+    >
+      (function () {
+        const currentPath = window.location.pathname;
+        console.log("[Auth Guard] Running on path:", currentPath); // Log current path
+
+        // Skip check on public pages
+        if (PUBLIC_PATHS.includes(currentPath)) {
+          console.log("[Auth Guard] Skipping check on public path.");
+          return;
+        }
+
+        // --- Enhanced Token Check ---
+        let token = null;
+        let isTokenValid = false;
+        let decodedPayload = null;
+        let expirationTime = null;
+        let currentTime = null;
+        let errorMsg = null;
+
+        try {
+          token = localStorage.getItem(AUTH_TOKEN_KEY);
+          console.log(
+            "[Auth Guard] Token retrieved from localStorage:",
+            token ? `Found (${token.substring(0, 10)}...)` : "Not Found"
+          );
+
+          if (token) {
+            const payloadBase64 = token.split(".")[1];
+            if (!payloadBase64)
+              throw new Error("Invalid token format (missing payload)");
+
+            const base64 = payloadBase64.replace(/-/g, "+").replace(/_/g, "/");
+            // Add padding if needed for correct base64 decoding
+            const base64Padded =
+              base64 + "===".slice(0, (4 - (base64.length % 4)) % 4);
+            const decodedJson = decodeURIComponent(
+              atob(base64Padded)
+                .split("")
+                .map(function (c) {
+                  return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+                })
+                .join("")
+            );
+            decodedPayload = JSON.parse(decodedJson);
+            console.log("[Auth Guard] Decoded Payload:", decodedPayload);
+
+            expirationTime = decodedPayload.exp; // Expiration time in seconds since epoch
+            console.log("[Auth Guard] Token Expiration (exp):", expirationTime);
+
+            if (expirationTime) {
+              currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+              console.log("[Auth Guard] Current Time:", currentTime);
+              if (expirationTime > currentTime) {
+                console.log("[Auth Guard] Token is VALID (Not Expired).");
+                isTokenValid = true;
+              } else {
+                errorMsg = "Token found but expired.";
+                console.log(
+                  `[Auth Guard] ${errorMsg} (exp: ${expirationTime}, now: ${currentTime})`
+                );
+                localStorage.removeItem(AUTH_TOKEN_KEY); // Clean up expired token
+              }
+            } else {
+              errorMsg = "Token found but has no expiration (exp claim).";
+              console.warn(`[Auth Guard] ${errorMsg}`);
+              localStorage.removeItem(AUTH_TOKEN_KEY); // Remove token without expiration
+            }
+          } else {
+            errorMsg = "No token found in localStorage.";
+            console.log(`[Auth Guard] ${errorMsg}`);
+          }
+        } catch (error) {
+          errorMsg = "Error decoding token or invalid token format.";
+          console.error(`[Auth Guard] ${errorMsg}`, error);
+          if (token) {
+            // Only remove if a token was actually retrieved but failed decoding
+            localStorage.removeItem(AUTH_TOKEN_KEY);
+          }
+        }
+        // --- End Enhanced Token Check ---
+
+        // Redirect if token is not valid
+        if (!isTokenValid) {
+          console.log(
+            `[Auth Guard] Final check: Token is NOT valid. Redirecting to ${LOGIN_PATH}...`
+          );
+          // Use replace to avoid adding the guarded page to browser history
+          window.location.replace(LOGIN_PATH);
+        } else {
+          console.log(
+            "[Auth Guard] Final check: Token is VALID. Allowing access."
+          );
+        }
+      })();
+    </script>
   </head>
   <body>
     <slot />

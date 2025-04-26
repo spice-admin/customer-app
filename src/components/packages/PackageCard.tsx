@@ -17,7 +17,7 @@ interface PackageCardProps {
 const formatCurrency = (amount: number): string => {
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
-    currency: "INR",
+    currency: "CAD",
     minimumFractionDigits: 0, // Adjust if you need decimals
     maximumFractionDigits: 0,
   }).format(amount);

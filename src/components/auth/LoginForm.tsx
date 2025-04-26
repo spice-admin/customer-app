@@ -12,6 +12,9 @@ import {
   HiOutlineEyeSlash,
 } from "react-icons/hi2";
 
+const AUTH_TOKEN_KEY =
+  "7f57e24a0181b526fb106b2bad45d9f6c0717b88ea01d2dd0afae3594a69b8c0";
+
 const LoginForm: React.FC = () => {
   const [formData, setFormData] = useState({
     mobile: "",
@@ -59,7 +62,7 @@ const LoginForm: React.FC = () => {
         // **Login Success (Verified User)**
         console.log("Login successful, token:", result.token);
         // TODO: Implement proper token storage (e.g., secure cookie, state management)
-        // localStorage.setItem('authToken', result.token); // Example (consider security)
+        localStorage.setItem(AUTH_TOKEN_KEY, result.token);
         // Redirect to home/dashboard
         window.location.href = "/home"; // Or '/' or '/dashboard'
       } else if (result.verificationRequired) {
