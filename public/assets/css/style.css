@@ -5753,7 +5753,6 @@ label.info-person {
   padding-bottom: 8px;
 }
 
-/* Ensure text in <p> aligns well with input */
 .profile-field-content-flex .profile-value {
   line-height: 1.5; /* Match input line-height */
   min-height: 38px; /* Match input approx height */

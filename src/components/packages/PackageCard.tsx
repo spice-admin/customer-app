@@ -1,6 +1,8 @@
 // src/components/packages/PackageCard.tsx
 import React, { useState } from "react";
 import type { IPackageFE } from "../../types";
+import { loadStripe, type Stripe } from "@stripe/stripe-js"; // Import Stripe types and loader
+import { createCheckoutSessionApi } from "../../services/payment.service";
 
 interface PackageCardProps {
   pkg: IPackageFE;
@@ -40,6 +42,8 @@ const ImageFallback = ({ className }: { className?: string }) => (
 
 const PackageCard: React.FC<PackageCardProps> = ({ pkg }) => {
   const [imageError, setImageError] = useState(false);
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  const [subscribeError, setSubscribeError] = useState<string | null>(null);
 
   const handleImageError = () => {
     setImageError(true);
@@ -52,10 +56,66 @@ const PackageCard: React.FC<PackageCardProps> = ({ pkg }) => {
   };
 
   // Subscribe Button Handler
-  const handleSubscribeClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card click when button is clicked
-    console.log("Subscribe clicked for package:", pkg.name);
-    alert(`Subscription started for ${pkg.name}!`); // Placeholder
+  const handleSubscribeClick = async (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click
+    setSubscribeError(null); // Clear previous errors
+    setIsSubscribing(true); // Set loading state
+    console.log(
+      `[PackageCard] Attempting subscription for package: ${pkg.name} (ID: ${pkg._id})`
+    );
+
+    // 1. Check if Stripe key is loaded
+    if (!import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY) {
+      setSubscribeError("Payment configuration error. Please contact support.");
+      setIsSubscribing(false);
+      return;
+    }
+
+    try {
+      // 2. Call backend to create checkout session
+      console.log("[PackageCard] Calling createCheckoutSessionApi...");
+      const result = await createCheckoutSessionApi(pkg._id);
+
+      if (result.success && result.data?.sessionId) {
+        console.log(
+          "[PackageCard] Checkout session created:",
+          result.data.sessionId
+        );
+        // 3. Get Stripe instance
+        const stripe = await stripePromise;
+        if (!stripe) {
+          console.error("[PackageCard] Stripe.js failed to load.");
+          throw new Error("Payment system failed to load. Please try again.");
+        }
+
+        // 4. Redirect to Stripe Checkout
+        console.log("[PackageCard] Redirecting to Stripe Checkout...");
+        const { error: stripeError } = await stripe.redirectToCheckout({
+          sessionId: result.data.sessionId,
+        });
+
+        // 5. Handle errors from Stripe redirect (usually network issues)
+        if (stripeError) {
+          console.error("[PackageCard] Stripe redirect error:", stripeError);
+          throw new Error(
+            stripeError.message || "Failed to redirect to payment page."
+          );
+        }
+        // If redirect succeeds, the user leaves this page. If it fails, error is thrown.
+        // No need to reset loading state here if redirect is successful.
+      } else {
+        // Handle API error from our backend
+        console.error("[PackageCard] Backend API error:", result.message);
+        throw new Error(result.message || "Could not initiate subscription.");
+      }
+    } catch (error) {
+      console.error("[PackageCard] Subscription process error:", error);
+      setSubscribeError(
+        (error as Error).message || "An unexpected error occurred."
+      );
+      setIsSubscribing(false); // Reset loading state only on error
+    }
+    // No finally block needed here as successful redirect navigates away
   };
 
   return (
@@ -101,13 +161,23 @@ const PackageCard: React.FC<PackageCardProps> = ({ pkg }) => {
           <p className="rupess-ten package-card-price">
             {formatCurrency(pkg.price)}
           </p>
-          <button
-            type="button"
-            className="subscribe-button" // Specific class for styling
-            onClick={handleSubscribeClick}
-          >
-            Subscribe
-          </button>
+          <div className="subscribe-action">
+            {" "}
+            {/* Wrapper for button and error */}
+            <button
+              type="button"
+              className="subscribe-button"
+              onClick={handleSubscribeClick}
+              disabled={isSubscribing} // Disable button while processing
+            >
+              {isSubscribing ? "Processing..." : "Subscribe"}
+              {/* Optional: Add spinner icon during loading */}
+            </button>
+            {/* Display Subscribe Error */}
+            {subscribeError && (
+              <p className="error-text subscribe-error">{subscribeError}</p>
+            )}
+          </div>
         </div>
       </div>
 
