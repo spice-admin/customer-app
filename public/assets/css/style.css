@@ -2454,6 +2454,105 @@ nav::-webkit-scrollbar {
   color: #fff;
 }
 
+/************************ Subscribe Button CSS ***************************/
+
+.subscribe-button {
+  background-color: #ffc107; /* Target color */
+  color: #111827; /* Dark text for contrast */
+  border: 1px solid #eab308; /* Slightly darker border */
+  padding: 4px 12px; /* Adjust padding */
+  border-radius: 6px; /* Rounded corners */
+  font-size: 12px; /* Smaller font size */
+  font-weight: 600; /* Medium-bold */
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* Subtle shadow */
+  white-space: nowrap; /* Prevent wrapping */
+}
+.subscribe-button:hover {
+  background-color: #f59e0b; /* Slightly darker on hover */
+  border-color: #d97706;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1); /* Slightly larger shadow */
+}
+.subscribe-button:active {
+  background-color: #d97706; /* Darker when pressed */
+}
+
+/* --- Profile Field Styling (Alignment Fix) --- */
+
+.form-item.profile-field {
+  margin-bottom: 1rem; /* Spacing between fields */
+}
+
+.form-item.profile-field label {
+  display: block;
+  font-weight: 500;
+  font-size: 0.9em; /* Or use template's label style */
+  color: #555; /* Or use template's label color */
+  margin-bottom: 0.3rem;
+  /* No padding needed here */
+}
+
+.profile-field-content {
+  display: flex;
+  /* --- CHANGE: Use align-items center for vertical alignment --- */
+  align-items: center; /* Vertically center icon and input/value */
+  /* --- REMOVE: align-items: flex-start; --- */
+  gap: 8px; /* Space between icon and input/value */
+  position: relative;
+}
+
+.input-icon-wrapper {
+  flex-shrink: 0; /* Prevent icon from shrinking */
+  /* --- REMOVE: padding-top: 8px; --- */ /* Let align-items handle vertical centering */
+  color: #888; /* Default icon color */
+  /* Add line-height if needed for precise alignment with text line */
+  /* line-height: 1.5; */
+  display: inline-flex; /* Helps with alignment */
+  align-items: center; /* Center icon within its wrapper */
+}
+
+.input-icon {
+  width: 18px; /* Icon size */
+  height: 18px;
+}
+
+.profile-field-value-input {
+  flex-grow: 1; /* Allow input/value to take remaining space */
+}
+
+/* Ensure input/value elements have consistent vertical rhythm */
+.profile-value {
+  font-size: 1rem;
+  color: #333;
+  padding: 8px 0; /* Only vertical padding needed now */
+  min-height: 38px; /* Approximate input height */
+  line-height: 1.5; /* Match input line-height */
+  word-break: break-word;
+  margin: 0; /* Reset default paragraph margin */
+}
+
+.profile-value .text-muted {
+  color: #888;
+  font-style: italic;
+}
+
+.profile-input {
+  width: 100%;
+  padding: 8px 12px; /* Adjust padding as needed */
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  line-height: 1.5; /* Match display value line-height */
+  box-sizing: border-box;
+}
+
+.profile-input.textarea {
+  resize: vertical;
+  min-height: 70px;
+  padding: 8px 12px; /* Ensure consistent padding */
+}
+
 /************************ 22.Search Screen CSS ***************************/
 .suggest_item {
   display: flex;
@@ -5611,6 +5710,166 @@ label.info-person {
 
 #Description {
   height: 130px;
+}
+.profile-divider {
+  height: 1px;
+  background-color: #e5e7eb; /* Example: light gray */
+  margin-top: 1.5rem; /* Adjust spacing */
+  margin-bottom: 1.5rem; /* Adjust spacing */
+}
+
+/* Spacing for sections/buttons (replaces mt-3, mt-1) */
+.profile-section-spacing {
+  margin-top: 1rem; /* Adjust spacing */
+}
+
+.location-error-spacing {
+  margin-top: 0.25rem; /* Adjust spacing */
+}
+
+.profile-field-content-flex {
+  display: flex;
+  align-items: center; /* Vertically center icon and input/text */
+  gap: 10px; /* Adjust gap between icon and content */
+}
+
+/* Icon styling */
+.profile-field-icon {
+  flex-shrink: 0; /* Prevent icon from shrinking */
+  width: 20px; /* Set desired icon width */
+  height: 20px; /* Set desired icon height */
+  color: #888; /* Example icon color */
+  /* Remove margin/padding if handled by gap */
+}
+
+/* Ensure input/text elements take up remaining space */
+.profile-field-content-flex .profile-input,
+.profile-field-content-flex .profile-value {
+  flex-grow: 1; /* Take available horizontal space */
+  width: auto; /* Override potential fixed widths */
+  margin: 0; /* Reset margins if necessary */
+  /* Ensure vertical padding is consistent */
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+/* Ensure text in <p> aligns well with input */
+.profile-field-content-flex .profile-value {
+  line-height: 1.5; /* Match input line-height */
+  min-height: 38px; /* Match input approx height */
+  padding-left: 0; /* Remove padding if icon is handled by flex gap */
+  padding-right: 0;
+}
+
+/* Ensure inputs don't have extra padding conflicting with flex gap */
+.profile-field-content-flex .profile-input {
+  padding-left: 12px; /* Adjust standard input padding */
+  padding-right: 12px;
+}
+.profile-field-content-flex .profile-input.textarea {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.profile-actions {
+  margin-top: 1.5rem; /* Keep existing margin */
+  display: flex;
+  flex-wrap: wrap; /* Allow buttons to wrap on small screens */
+  gap: 0.75rem; /* Adjust this value for desired space (e.g., 0.5rem, 1rem, 12px) */
+}
+
+/* Base styles for all profile action buttons */
+.profile-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-size: 0.9em;
+  font-weight: 500;
+  line-height: 1.5;
+  cursor: pointer;
+  text-align: center;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Style for the icon inside the button */
+.profile-button .icon {
+  width: 18px; /* Adjust icon size */
+  height: 18px;
+  /* No extra margin needed if using gap */
+}
+
+/* Edit Button Specific Styles */
+.profile-button.edit {
+  background-color: #ffc107; /* Example: Yellow */
+  color: #1f2937; /* Dark text */
+  border-color: #eab308; /* Darker yellow border */
+}
+.profile-button.edit:hover {
+  background-color: #f59e0b;
+  border-color: #d97706;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Save Button Specific Styles */
+.profile-button.save {
+  background-color: #198754; /* Example: Green */
+  color: white;
+  border-color: #157347;
+}
+.profile-button.save:hover {
+  background-color: #146c43;
+  border-color: #13653f;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Cancel Button Specific Styles */
+.profile-button.cancel {
+  background-color: #6c757d; /* Example: Gray */
+  color: white;
+  border-color: #5c636a;
+}
+.profile-button.cancel:hover {
+  background-color: #565e64;
+  border-color: #51585e;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Location Button Specific Styles */
+.profile-button.location {
+  background-color: #0dcaf0; /* Example: Info Blue */
+  color: white;
+  border-color: #0baccc;
+}
+.profile-button.location:hover {
+  background-color: #0ea0bf;
+  border-color: #0d94b1;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Retry Button Specific Styles (if used in error state) */
+.profile-button.retry {
+  background-color: #0d6efd; /* Example: Primary Blue */
+  color: white;
+  border-color: #0b5ed7;
+}
+.profile-button.retry:hover {
+  background-color: #0a58ca;
+  border-color: #0a53be;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Disabled State */
+.profile-button:disabled {
+  opacity: 0.65; /* Standard disabled opacity */
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 /************************ 59.Feedback Screen CSS ***************************/

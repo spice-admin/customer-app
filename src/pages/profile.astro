@@ -2,20 +2,19 @@
 // src/pages/profile.astro
 import CustomerLayout from "../layouts/Layout.astro"; // Use the main protected layout
 import ProfileManager from "../components/profile/ProfileManager.tsx"; // Import the React component
-// Import BottomNav if used on this page
 import BottomMenu from "../components/home/BottomMenu.astro"; // Assuming BottomMenu is used here
 ---
 
 <CustomerLayout title="My Profile">
   <div class="site_content">
     <section class="container">
-      {/* Optional: Add a specific header for the profile page if needed */}
+      {/* Profile Page Header */}
       <header id="top-navbar" class="top-navbar top-navbar2">
         <div class="top-header-full">
           <div class="back-btn">
             <a
               href="#"
-              onClick="event.preventDefault(); window.history.go(-1);"
+              onclick="event.preventDefault(); window.history.go(-1);"
             >
               {/* Back Arrow SVG */}
               <svg
@@ -49,22 +48,23 @@ import BottomMenu from "../components/home/BottomMenu.astro"; // Assuming Bottom
           <div class="header-title">
             <h1>My Profile</h1>
           </div>
-          {/* Add empty div if needed for spacing/alignment */}
           <div class="back-btn" style="visibility: hidden;"></div>
+          {/* Spacer */}
         </div>
       </header>
 
-      {/* Main content area with padding for bottom nav */}
-      <div class="section-main pb-24 md:pb-28">
-        {/* Added padding bottom */}
+      {/* --- REMOVED Tailwind padding classes --- */}
+      <div class="section-main profile-page-content">
+        {/* Added specific class 'profile-page-content' */}
+
         <h1 class="text-xl font-semibold mb-4 visually-hidden">
           Profile Details
         </h1>
-        {/* Screen-reader friendly title */}
 
         {/* Render the React Profile Manager Component */}
         <ProfileManager client:load />
       </div>
+      {/* End of section-main */}
 
       {/* Render Bottom Menu */}
       <BottomMenu />
@@ -72,9 +72,15 @@ import BottomMenu from "../components/home/BottomMenu.astro"; // Assuming Bottom
   </div>
 </CustomerLayout>
 
+{/* Add specific CSS rule for padding here or in global CSS */}
 <style is:global>
-  /* Ensure template CSS is loaded */
-  /* Add styles for profile page specific elements if needed */
+  /* Target the specific content area on this page */
+  .profile-page-content {
+    /* Adjust this value based on the actual height of your BottomMenu */
+    padding-bottom: 150px; /* Example value */
+  }
+
+  /* Ensure other necessary global styles are loaded */
   .visually-hidden {
     position: absolute;
     width: 1px;
@@ -85,9 +91,5 @@ import BottomMenu from "../components/home/BottomMenu.astro"; // Assuming Bottom
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
-  }
-
-  .section-main {
-    padding-bottom: 96px;
   }
 </style>

@@ -1,13 +1,6 @@
 // src/components/packages/PackageCard.tsx
 import React, { useState } from "react";
-import type { IPackageFE } from "../../types"; // Import package type
-// Optional: Import react-icons if needed for star/clock/heart
-import {
-  HiStar,
-  HiOutlineClock,
-  HiOutlineHeart,
-  HiHeart,
-} from "react-icons/hi2";
+import type { IPackageFE } from "../../types";
 
 interface PackageCardProps {
   pkg: IPackageFE;
@@ -17,8 +10,8 @@ interface PackageCardProps {
 const formatCurrency = (amount: number): string => {
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
-    currency: "CAD",
-    minimumFractionDigits: 0, // Adjust if you need decimals
+    currency: "INR",
+    minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(amount);
 };
@@ -26,22 +19,20 @@ const formatCurrency = (amount: number): string => {
 // Simple image fallback placeholder
 const ImageFallback = ({ className }: { className?: string }) => (
   <div className={`fallback-image ${className || ""}`}>
-    {" "}
-    {/* Add a specific class */}
-    {/* Placeholder content, e.g., an icon or text */}
     <span>Image N/A</span>
+    {/* Basic styles for fallback - can be moved to global CSS */}
     <style>{`
             .fallback-image {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                background-color: #f0f0f0; /* Light gray */
-                color: #999;
+                background-color: #f3f4f6; /* Tailwind gray-100 */
+                color: #9ca3af; /* Tailwind gray-400 */
                 font-size: 0.8em;
-                /* Ensure it takes up image space */
                 width: 100%;
-                aspect-ratio: 4 / 3; /* Example aspect ratio */
-                object-fit: cover; /* Maintain layout */
+                aspect-ratio: 16 / 10; /* Adjust aspect ratio as needed */
+                object-fit: cover;
+                border-bottom: 1px solid #e5e7eb; /* Optional border */
             }
         `}</style>
   </div>
@@ -49,120 +40,187 @@ const ImageFallback = ({ className }: { className?: string }) => (
 
 const PackageCard: React.FC<PackageCardProps> = ({ pkg }) => {
   const [imageError, setImageError] = useState(false);
-  const [isLiked, setIsLiked] = useState(false); // Placeholder like state
 
   const handleImageError = () => {
     setImageError(true);
   };
 
-  const handleLikeToggle = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent triggering card click if heart is clicked
-    setIsLiked(!isLiked);
-    // TODO: Add API call to save like status later
-    console.log("Toggled like for package:", pkg._id);
-  };
-
+  // Navigate to package detail page (placeholder)
   const handleCardClick = () => {
-    // Navigate to package detail page
-    // Replace with Astro navigation or React Router later
     console.log("Navigate to package detail:", pkg._id);
-    // window.location.href = `/package/${pkg._id}`; // Simple redirect for now
-    alert(`Navigate to package detail: ${pkg.name} (ID: ${pkg._id})`); // Placeholder alert
+    alert(`Navigate to package detail: ${pkg.name} (ID: ${pkg._id})`);
   };
 
-  // Placeholder data - replace with actual data if available
-  const rating = 4.8;
-  const ratingCount = "(1.7k)";
-  const deliveryTime = "15 Min";
-  const deliveryDistance = "(1 km)";
-  const restaurantName = "SpiceBar Kitchen"; // Or derive from package if available
+  // Subscribe Button Handler
+  const handleSubscribeClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click when button is clicked
+    console.log("Subscribe clicked for package:", pkg.name);
+    alert(`Subscription started for ${pkg.name}!`); // Placeholder
+  };
 
   return (
-    // Use the main container class from the template
-    // Added cursor-pointer and group for potential hover effects
-    <div
-      className="all-food-main cursor-pointer group"
-      onClick={handleCardClick}
-    >
+    // Use the main container class from the template, add layout styles
+    <div className="all-food-main package-card" onClick={handleCardClick}>
       {/* Image */}
-      <div className="image-container">
-        {" "}
-        {/* Optional: wrapper for aspect ratio */}
+      <div className="package-card-image-container">
         {!imageError && pkg.image ? (
           <img
-            className="all-food-imgs" // Use template class
+            className="all-food-imgs package-card-image" // Use template class + specific class
             src={pkg.image}
             alt={pkg.name}
             onError={handleImageError}
             loading="lazy"
           />
         ) : (
-          <ImageFallback className="all-food-imgs" /> // Apply same class for layout consistency
+          <ImageFallback className="all-food-imgs package-card-image" />
         )}
       </div>
 
       {/* Details Section */}
-      <div className="all-food-sub">
-        {" "}
-        {/* Use template class */}
-        <div className="all-food-text-main">
+      {/* Use template class + specific class for easier styling */}
+      <div className="all-food-sub package-card-details">
+        {/* Package Name */}
+        <h3 className="cheez-hotdog package-card-title">
           {" "}
-          {/* Use template class */}
-          <h3 className="cheez-hotdog">
-            {" "}
-            {/* Use template class */}
-            {pkg.name}
-          </h3>
-          {/* Like Button - Using react-icons */}
+          {/* Use template class + specific class */}
+          {pkg.name}
+        </h3>
+
+        {/* Package Description (Optional) */}
+        {pkg.description && (
+          <p className="package-card-description">
+            {/* Truncate long descriptions if necessary */}
+            {pkg.description.length > 80
+              ? `${pkg.description.substring(0, 80)}...`
+              : pkg.description}
+          </p>
+        )}
+
+        {/* Price and Subscribe Button Row */}
+        <div className="package-card-footer">
+          <p className="rupess-ten package-card-price">
+            {formatCurrency(pkg.price)}
+          </p>
           <button
             type="button"
-            onClick={handleLikeToggle}
-            className={`like-button ${isLiked ? "liked" : ""}`} // Add classes for styling
-            aria-label={isLiked ? "Unlike" : "Like"}
+            className="subscribe-button" // Specific class for styling
+            onClick={handleSubscribeClick}
           >
-            {
-              isLiked ? (
-                <HiHeart className="icon liked-icon" /> // Filled heart
-              ) : (
-                <HiOutlineHeart className="icon" />
-              ) // Outline heart
-            }
+            Subscribe
           </button>
-          {/* Placeholder for template's like-heart class styling */}
-          {/* <i className={`like-heart like-heart2 ${isLiked ? 'press' : ''}`} onClick={handleLikeToggle}></i> */}
         </div>
-        {/* Rating & Time Info */}
-        <div className="app">
-          {" "}
-          {/* Use template class */}
-          <p className="rating">
-            {" "}
-            {/* Added specific class */}
-            <HiStar className="star-icon" /> {/* react-icon */}
-            {/* <img src="/assets/images/star.svg" alt="star" /> */}{" "}
-            {/* Template's way */}
-            {rating}
-            {ratingCount}
-          </p>
-          <p className="delivery-info">
-            {" "}
-            {/* Added specific class */}
-            <HiOutlineClock className="clock-icon" /> {/* react-icon */}
-            {/* <img className="view-all-arrow" src="/assets/images/clock.svg" alt="clock" /> */}{" "}
-            {/* Template's way */}
-            {deliveryTime}
-            {deliveryDistance}
-          </p>
-        </div>
-        {/* Price */}
-        <p className="rupess-ten">{formatCurrency(pkg.price)}</p>{" "}
-        {/* Use template class */}
-        {/* Optional: Restaurant/Source Name */}
-        <p className="rupess-ten wel-fast-food">{restaurantName}</p>{" "}
-        {/* Use template class */}
       </div>
 
-      {/* Add minimal styles if needed, or rely on global CSS */}
+      {/* Scoped styles - MOVE THESE TO YOUR GLOBAL CSS FILE */}
+      <style>{`
+                /* --- Card Container --- */
+                .package-card {
+                    /* Use template's .all-food-main styles + overrides */
+                    display: flex;
+                    flex-direction: column; /* Stack image and details vertically */
+                    background-color: white; /* Example background */
+                    border-radius: 8px; /* Match image radius */
+                    border: 1px solid var(--btn-border-colors, #e5e7eb); /* Use variable or fallback */
+                    overflow: hidden; /* Ensure content stays within rounded corners */
+                    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1); /* Example shadow */
+                    transition: box-shadow 0.2s ease-in-out;
+                    cursor: pointer;
+                }
+                .package-card:hover {
+                     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); /* Example hover shadow */
+                }
+
+                /* --- Image --- */
+                 .package-card-image-container {
+                    width: 100%;
+                    aspect-ratio: 16 / 10; /* Adjust aspect ratio */
+                    overflow: hidden;
+                 }
+                 .package-card-image {
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                 }
+
+                /* --- Details Section --- */
+                .package-card-details {
+                    padding: 12px; /* Consistent padding */
+                    display: flex;
+                    flex-direction: column;
+                    flex-grow: 1; /* Allow details to fill remaining space */
+                }
+
+                /* --- Title --- */
+                .package-card-title {
+                    /* Use template's .cheez-hotdog styles + overrides */
+                    font-size: 1rem; /* Adjust size */
+                    font-weight: 600; /* Adjust weight */
+                    color: var(--text-color, #1f2937); /* Use variable or fallback */
+                    margin-bottom: 4px;
+                    line-height: 1.4;
+                     /* Prevent multiple lines if needed */
+                     /* overflow: hidden; */
+                     /* text-overflow: ellipsis; */
+                     /* white-space: nowrap; */
+                }
+
+                /* --- Description --- */
+                .package-card-description {
+                    font-size: 0.8rem;
+                    color: var(--sub-text-color, #6b7280); /* Use variable or fallback */
+                    line-height: 1.5;
+                    margin-bottom: 12px; /* Space before price/button */
+                    flex-grow: 1; /* Allow description to push footer down */
+                    /* Limit lines if needed */
+                     /* display: -webkit-box; */
+                     /* -webkit-line-clamp: 2; */ /* Show 2 lines */
+                     /* -webkit-box-orient: vertical; */
+                     /* overflow: hidden; */
+                }
+
+                /* --- Footer (Price & Button) --- */
+                .package-card-footer {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center; /* Vertically align price and button */
+                    margin-top: auto; /* Pushes footer to bottom */
+                    padding-top: 8px; /* Space above footer */
+                }
+
+                /* --- Price --- */
+                .package-card-price {
+                    /* Use template's .rupess-ten styles + overrides */
+                    font-size: 1rem; /* Adjust size */
+                    font-weight: 700; /* Bolder price */
+                    color: var(--text-color, #111827);
+                    margin: 0; /* Reset margin */
+                }
+
+                /* --- Subscribe Button (Height Adjusted) --- */
+                .subscribe-button {
+                    background-color: #FFC107;
+                    color: #1f2937; /* Darker text for yellow */
+                    border: 1px solid #eab308;
+                    padding: 6px 14px; /* Increased vertical padding for height */
+                    border-radius: 6px;
+                    font-size: 0.8rem; /* Adjust font size */
+                    font-weight: 600;
+                    line-height: 1.2; /* Adjust line height */
+                    cursor: pointer;
+                    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+                    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+                    white-space: nowrap;
+                }
+                .subscribe-button:hover {
+                    background-color: #f59e0b;
+                    border-color: #d97706;
+                    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+                }
+                .subscribe-button:active {
+                     background-color: #d97706;
+                }
+            `}</style>
     </div>
   );
 };
