@@ -147,9 +147,7 @@ const BottomNavbar: React.FC = () => {
             href="/profile"
             icon={HiOutlineUserCircle}
             iconFilled={HiUserCircle}
-            isActive={
-              isNavItemActive("/profile") || isNavItemActive("/account")
-            }
+            isActive={isNavItemActive("/profile")}
             label="Profile"
           />
         </ul>
