@@ -40,6 +40,18 @@ const ImageFallback = ({ className }: { className?: string }) => (
   </div>
 );
 
+const stripePublishableKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY;
+let stripePromise: Promise<Stripe | null> | null = null; // Initialize as null
+
+if (!stripePublishableKey) {
+  console.error(
+    "Stripe Publishable Key (PUBLIC_STRIPE_PUBLISHABLE_KEY) is missing. Set it in your .env file and Vercel/deployment environment."
+  );
+} else {
+  stripePromise = loadStripe(stripePublishableKey); // Assign the promise
+  console.log("Stripe.js promise initialized."); // Log initialization
+}
+
 const PackageCard: React.FC<PackageCardProps> = ({ pkg }) => {
   const [imageError, setImageError] = useState(false);
   const [isSubscribing, setIsSubscribing] = useState(false);
