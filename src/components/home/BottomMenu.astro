@@ -1,6 +1,7 @@
 ---
 import { FaRegUserCircle } from "react-icons/fa";
 import { FaHome } from "react-icons/fa";
+import { FaFileInvoiceDollar } from "react-icons/fa6";
 ---
 
 <div class="bottom-menu-svg-main">
@@ -23,13 +24,13 @@ import { FaHome } from "react-icons/fa";
       <path
         class="bottom-menu-color"
         d="M300.8 65.2006C329.077 65.2006 352 44.3699 352 18.674V18.674C352 9.74988 358.681 -0.0889598 367.578 0.602816L585.24 17.5264C593.571 18.1741 600 25.1227 600 33.4782V149.53H0V33.4844C0 25.1263 6.43312 18.1764 14.7663 17.532L234.009 0.576187C242.916 -0.11265 249.6 9.74056 249.6 18.674V18.674C249.6 44.3699 272.523 65.2006 300.8 65.2006Z"
-        fill="#38220f"></path>
+        fill="#F59E0B"></path>
     </svg>
   </div>
 </div>
 <div class="navigation">
   <ul class="listWrap">
-    <li class="list active">
+    <li class="list">
       <a href="/home">
         <i class="icon">
           <FaHome size={30} />
@@ -37,7 +38,7 @@ import { FaHome } from "react-icons/fa";
         <span class="text"></span>
       </a>
     </li>
-    <li class="list">
+    <!-- <li class="list">
       <a href="wishlist.html">
         <i class="icon">
           <svg
@@ -59,8 +60,8 @@ import { FaHome } from "react-icons/fa";
         </i>
         <span class="text"></span>
       </a>
-    </li>
-    <li class="list">
+    </li> -->
+    <!-- <li class="list">
       <a href="notification.html">
         <i class="icon">
           <svg
@@ -93,26 +94,11 @@ import { FaHome } from "react-icons/fa";
         </i>
         <span class="text"></span>
       </a>
-    </li>
+    </li> -->
     <li class="list">
-      <a href="/profile">
+      <a href="/orders">
         <i class="icon">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="25"
-            height="25"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <g>
-              <path
-                d="M20 21C20 19.6044 20 18.9067 19.8278 18.3389C19.44 17.0605 18.4395 16.06 17.1611 15.6722C16.5933 15.5 15.8956 15.5 14.5 15.5H9.5C8.10444 15.5 7.40665 15.5 6.83886 15.6722C5.56045 16.06 4.56004 17.0605 4.17224 18.3389C4 18.9067 4 19.6044 4 21M16.5 7.5C16.5 9.98528 14.4853 12 12 12C9.51472 12 7.5 9.98528 7.5 7.5C7.5 5.01472 9.51472 3 12 3C14.4853 3 16.5 5.01472 16.5 7.5Z"
-                stroke="white"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"></path>
-            </g>
-          </svg>
+          <FaFileInvoiceDollar size={30} />
         </i>
         <span class="text"></span>
       </a>

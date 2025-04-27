@@ -1,0 +1,82 @@
+---
+// src/pages/orders.astro
+import CustomerLayout from "../layouts/Layout.astro"; // Use the main protected layout
+import OrderList from "../components/orders/OrderList.tsx"; // Import the React component
+import BottomMenu from "../components/home/BottomMenu.astro"; // Assuming BottomMenu is used here
+// Import a specific header if needed
+// import StaticPageHeader from '../components/layout/StaticPageHeader.astro';
+---
+
+<CustomerLayout title="My Orders">
+  <div class="site_content">
+    <section class="container">
+      {/* Page Header */}
+      <header id="top-navbar" class="top-navbar top-navbar2">
+        <div class="top-header-full">
+          <div class="back-btn">
+            <a
+              href="#"
+              onclick="event.preventDefault(); window.history.go(-1);"
+            >
+              {/* Back Arrow SVG */}
+              <svg
+                class="svg-media"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                ><g
+                  ><path
+                    d="M5 12H19"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"></path><path
+                    d="M5 12C5 12 9 15 9 17"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"></path><path
+                    d="M5 12C5 12 9 9 9 7"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"></path></g
+                ></svg
+              >
+            </a>
+          </div>
+          <div class="header-title">
+            <h1>My Orders</h1>
+          </div>
+          <div class="back-btn" style="visibility: hidden;"></div>
+          {/* Spacer */}
+        </div>
+      </header>
+
+      {/* Main content area with padding for bottom nav */}
+      <div class="section-main orders-page-content pb-24 md:pb-28">
+        {/* Added padding class */}
+
+        {/* Render the React Order List Component */}
+        {/* client:load needed to fetch data */}
+        <OrderList client:load />
+      </div>
+      {/* End section-main */}
+
+      {/* Render Bottom Menu */}
+      <BottomMenu />
+    </section>
+  </div>
+</CustomerLayout>
+
+<style is:global>
+  /* Add padding for bottom nav */
+  .orders-page-content {
+    padding-top: 1rem; /* Space below header */
+    /* Ensure padding-bottom is applied for bottom nav */
+    padding-bottom: 100px; /* Adjust as needed */
+  }
+  /* Ensure all necessary template styles and component styles (OrderItem, OrderList) are loaded */
+</style>

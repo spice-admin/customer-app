@@ -1,0 +1,200 @@
+---
+// src/pages/faq.astro
+import CustomerLayout from "../layouts/Layout.astro";
+import BottomMenu from "../components/home/BottomMenu.astro";
+// import StaticPageHeader from '../components/layout/StaticPageHeader.astro';
+
+// Placeholder FAQ Data - In a real app, this might come from a CMS or backend
+const faqs = [
+  {
+    q: "How does the Spice Tiffin subscription work?",
+    a: "Choose a plan (Weekly or Monthly) and your meal preference (e.g., Gujarati/Punjabi). We deliver fresh tiffin meals to your specified address in Scarborough on your scheduled days. Payments are prepaid for the duration of your subscription.",
+  },
+  {
+    q: "What areas in Toronto do you deliver to?",
+    a: "We currently deliver to most areas within Toronto, ON. Please enter your postal code during signup or contact us to confirm delivery availability for your specific address.",
+  },
+  {
+    q: "What are the delivery days and times?",
+    a: "Delivery schedules depend on your chosen plan and location. Typical delivery windows are provided during the subscription process. We aim for consistency and will notify you of any changes.",
+  },
+  {
+    q: "Can I pause or cancel my subscription?",
+    a: "Yes, you can manage your subscription through your profile page. Please refer to our terms for details on pause/cancellation notice periods.",
+  },
+  {
+    q: "How is the payment handled?",
+    a: "We use Stripe for secure online payments. Your subscription is prepaid for the selected duration (weekly or monthly) when you sign up or renew.",
+  },
+  {
+    q: "What kind of meals can I expect?",
+    a: "We offer authentic, home-style Indian meals with variety. Menus change regularly to keep things exciting! Check our sample menus or package descriptions for examples.",
+  },
+  {
+    q: "Do you cater to dietary restrictions or allergies?",
+    a: "Please contact us directly *before* subscribing to discuss any specific dietary restrictions or allergies. While we take precautions, our kitchen handles various ingredients.",
+  },
+];
+---
+
+<CustomerLayout title="FAQs">
+  <div class="site_content">
+    <section class="container">
+      {/* Optional: Add a specific header */}
+      {/* <StaticPageHeader title="Frequently Asked Questions" /> */}
+      <header id="top-navbar" class="top-navbar top-navbar2">
+        <div class="top-header-full">
+          <div class="back-btn">
+            <a
+              href="#"
+              onclick="event.preventDefault(); window.history.go(-1);"
+            >
+              {/* Back Arrow SVG */}
+              <svg
+                class="svg-media"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                ><g
+                  ><path
+                    d="M5 12H19"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"></path><path
+                    d="M5 12C5 12 9 15 9 17"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"></path><path
+                    d="M5 12C5 12 9 9 9 7"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"></path></g
+                ></svg
+              >
+            </a>
+          </div>
+          <div class="header-title">
+            <h1>FAQs</h1>
+          </div>
+          <div class="back-btn" style="visibility: hidden;"></div>
+          {/* Spacer */}
+        </div>
+      </header>
+
+      {/* Add padding for bottom nav */}
+      <div class="section-main static-page-content pb-24 md:pb-28">
+        {/* Added padding class */}
+
+        <h2 class="faq-heading">Frequently Asked Questions</h2>
+
+        {/* --- FAQ List --- */}
+        <div class="faq-list">
+          {
+            faqs.map((faq, index) => (
+              <details class="faq-item" name="faq-group">
+                {" "}
+                {/* Use details for basic accordion */}
+                <summary class="faq-question">
+                  {faq.q}
+                  <span class="faq-icon">+</span> {/* Basic icon */}
+                </summary>
+                <div class="faq-answer">
+                  <p>{faq.a}</p>
+                </div>
+              </details>
+            ))
+          }
+        </div>
+        {/* --- End FAQ List --- */}
+
+        <p class="faq-contact">
+          Have more questions? <a href="/contact-us" class="link">Contact Us</a>
+        </p>
+      </div>
+      {/* End section-main */}
+
+      {/* Render Bottom Menu */}
+      <BottomMenu />
+    </section>
+  </div>
+</CustomerLayout>
+
+<style is:global>
+  /* Add styles for the FAQ page content or use template classes */
+  .static-page-content {
+    padding-top: 1rem;
+    /* Ensure padding-bottom is applied for bottom nav */
+    padding-bottom: 100px; /* Adjust as needed */
+  }
+  .faq-heading {
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--text-color, #1f2937);
+  }
+  .faq-list {
+    max-width: 700px; /* Limit width for readability */
+    margin: 0 auto;
+  }
+  .faq-item {
+    background-color: white;
+    border: 1px solid var(--btn-border-colors, #e5e7eb);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    overflow: hidden; /* Contain content */
+  }
+  .faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text-color, #1f2937);
+    list-style: none; /* Remove default marker */
+  }
+  /* Hide default details marker */
+  .faq-question::-webkit-details-marker {
+    display: none;
+  }
+  .faq-question::marker {
+    display: none;
+  }
+
+  .faq-icon {
+    font-size: 1.2em;
+    font-weight: bold;
+    transition: transform 0.2s ease-in-out;
+    color: orangered; /* Example color */
+  }
+  /* Rotate icon when details element is open */
+  details[open] > summary .faq-icon {
+    transform: rotate(45deg);
+  }
+
+  .faq-answer {
+    padding: 0 1rem 1rem 1rem; /* Padding for answer */
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--sub-text-color, #4b5563);
+    border-top: 1px solid var(--btn-border-colors, #e5e7eb);
+    margin-top: 0.5rem; /* Space between summary and answer */
+  }
+  .faq-contact {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.95rem;
+    color: var(--sub-text-color, #6b7280);
+  }
+  .faq-contact .link {
+    color: orangered; /* Example link color */
+    font-weight: 500;
+    text-decoration: underline;
+  }
+</style>

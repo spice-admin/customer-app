@@ -82,3 +82,59 @@ export interface IProfileUpdateData {
   postalCode?: string;
   currentLocation?: string;
 }
+
+// --- Order Status Enum / Type (Ensure this exists) ---
+export type OrderStatus = "Active" | "Expired" | "Cancelled";
+
+// --- Type for the nested package info populated within an Order ---
+// Based on .populate('package', 'name type image price days') in backend controller
+export interface IOrderPackageInfo {
+  _id: string; // Populated ID
+  name: string;
+  type: PackageType;
+  image?: string | null;
+  price: number; // Price at time of order might differ, use order's packagePrice
+  days: number; // Duration at time of order might differ, use order's deliveryDays
+}
+
+// --- Type for the nested delivery address within an Order ---
+export interface IDeliveryAddressFE {
+  address?: string | null;
+  city?: string | null;
+  postalCode?: string | null;
+  currentLocation?: string | null;
+}
+
+// --- Type for the nested payment details within an Order ---
+export interface IPaymentDetailsFE {
+  stripePaymentIntentId: string;
+  stripeCustomerId: string;
+  amountPaid: number; // In cents
+  currency: string;
+  paymentMethodType?: string | null;
+  cardBrand?: string | null;
+  cardLast4?: string | null;
+  paymentDate: string; // ISO Date string
+}
+
+// --- Order Type (Frontend View) ---
+/**
+ * Represents an Order as fetched for the customer's history.
+ * Includes populated package details.
+ */
+export interface IOrderFE {
+  _id: string;
+  orderNumber: string;
+  customer: string; // Customer ID as string (usually not needed if fetching 'my' orders)
+  package: IOrderPackageInfo; // Populated package info
+  packageName: string; // Denormalized name
+  packagePrice: number; // Denormalized price (e.g., 19.99 CAD)
+  deliveryDays: number; // Denormalized duration
+  startDate: string; // ISO Date string
+  endDate: string; // ISO Date string
+  status: OrderStatus;
+  deliveryAddress: IDeliveryAddressFE; // Address snapshot
+  paymentDetails: IPaymentDetailsFE; // Payment details
+  createdAt: string; // ISO Date string
+  updatedAt: string; // ISO Date string
+}

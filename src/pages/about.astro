@@ -1,0 +1,170 @@
+---
+// src/pages/about.astro
+import CustomerLayout from "../layouts/Layout.astro"; // Use the main layout
+import BottomMenu from "../components/home/BottomMenu.astro"; // Include bottom nav if needed on this page
+// You might want a different header for static pages
+// import StaticPageHeader from '../components/layout/StaticPageHeader.astro';
+---
+
+<CustomerLayout title="About Spice Tiffin">
+  <div class="site_content">
+    <section class="container">
+      {/* Optional: Add a specific header for static pages */}
+      {/* <StaticPageHeader title="About Us" /> */}
+      <header id="top-navbar" class="top-navbar top-navbar2">
+        <div class="top-header-full">
+          <div class="back-btn">
+            <a
+              href="#"
+              onclick="event.preventDefault(); window.history.go(-1);"
+            >
+              {/* Back Arrow SVG */}
+              <svg
+                class="svg-media"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                ><g
+                  ><path
+                    d="M5 12H19"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"></path><path
+                    d="M5 12C5 12 9 15 9 17"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"></path><path
+                    d="M5 12C5 12 9 9 9 7"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"></path></g
+                ></svg
+              >
+            </a>
+          </div>
+          <div class="header-title">
+            <h1>About Us</h1>
+          </div>
+          <div class="back-btn" style="visibility: hidden;"></div>
+          {/* Spacer */}
+        </div>
+      </header>
+
+      {/* Add padding for bottom nav */}
+      <div class="section-main static-page-content pb-24 md:pb-28">
+        {/* Added padding class */}
+
+        {/* --- About Us Content --- */}
+        <div class="about-content">
+          {/* Add styling for this container */}
+          <img
+            src="/assets/images/logo/logo-new.png"
+            alt="Spice Tiffin Logo"
+            class="about-logo"
+          />
+
+          <h2 class="about-heading">Welcome to Spice Tiffin!</h2>
+
+          <p class="about-text">
+            Spice Tiffin brings the authentic taste of home-style Indian meals
+            right to your doorstep in Toronto and surrounding. We understand the
+            hustle of daily life and the craving for nutritious, delicious food
+            without the stress of cooking.
+          </p>
+
+          <p class="about-text">
+            Our subscription-based service offers a convenient, prepaid solution
+            for enjoying fresh, flavourful tiffin meals delivered regularly.
+            Choose from our flexible weekly or monthly plans featuring a variety
+            of vegetarian and non-vegetarian options prepared with care and
+            quality ingredients.
+          </p>
+
+          <h3 class="about-subheading">Our Mission</h3>
+          <p class="about-text">
+            Our mission is simple: to provide busy individuals and families in
+            Toronto and surrounding with healthy, affordable, and authentic
+            Indian tiffin meals, making mealtime easier and more enjoyable.
+          </p>
+
+          <h3 class="about-subheading">Why Choose Us?</h3>
+          <ul class="about-list">
+            <li>Authentic home-style cooking</li>
+            <li>Fresh, high-quality ingredients</li>
+            <li>Convenient subscription plans (Weekly & Monthly)</li>
+            <li>Prepaid for easy budgeting</li>
+            <li>Reliable delivery in Scarborough, ON</li>
+            <li>Variety in menu options</li>
+          </ul>
+
+          <p class="about-text">
+            Join the Spice Tiffin family today and rediscover the joy of
+            delicious, hassle-free meals!
+          </p>
+        </div>
+        {/* --- End About Us Content --- */}
+      </div>
+      {/* End section-main */}
+
+      {/* Render Bottom Menu */}
+      <BottomMenu />
+    </section>
+  </div>
+</CustomerLayout>
+
+<style is:global>
+  /* Add styles for the about page content or use template classes */
+  .static-page-content {
+    padding-top: 1rem; /* Add space below header */
+    /* Ensure padding-bottom is applied for bottom nav */
+    padding-bottom: 100px; /* Adjust as needed */
+  }
+  .about-content {
+    /* Example styles */
+    background-color: white;
+    padding: 1.5rem 1rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  .about-logo {
+    display: block;
+    margin: 0 auto 1.5rem;
+    height: 50px; /* Adjust size */
+    width: auto;
+  }
+  .about-heading {
+    font-size: 1.5rem; /* Adjust size */
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--text-color, #1f2937);
+  }
+  .about-subheading {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-color, #1f2937);
+  }
+  .about-text {
+    font-size: 0.95rem; /* Adjust size */
+    line-height: 1.6;
+    color: var(--sub-text-color, #4b5563);
+    margin-bottom: 1rem;
+  }
+  .about-list {
+    list-style: disc;
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    color: var(--sub-text-color, #4b5563);
+  }
+  .about-list li {
+    margin-bottom: 0.5rem;
+  }
+</style>
