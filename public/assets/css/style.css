@@ -2390,7 +2390,7 @@ nav::-webkit-scrollbar {
   margin: 0 auto; /* Center if max-width is used */
   right: 0;
   z-index: 50;
-  pointer-events: none;
+  /* pointer-events: none; */
 }
 
 .bottom-menu-svg-design {

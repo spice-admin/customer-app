@@ -1,40 +1,30 @@
 ---
-
+// src/components/home/Header.astro
+// No props needed for this simple version
 ---
 
 <header id="top-navbar" class="top-navbar top-navbar2">
   <div class="top-header-full2">
-    <div class="dropdown_c dropdown_click">
-      <div class="selected">
-        Deliver to:<span>Please select</span>
-        <svg
-          class="svg-media drop-down-icon"
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-        >
-          <g>
-            <path
-              d="M5 7.5L10 12.5L15 7.5"
-              stroke="black"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"></path>
-          </g>
-        </svg>
-      </div>
-      <div class="drop-content">
-        <ul>
-          <li><span>Home</span></li>
-          <li><span>Office</span></li>
-          <li><span>Location</span></li>
-        </ul>
-      </div>
+    <div class="header-logo-container">
+      <a href="/" aria-label="Go to Home Page">
+        <img
+          class="header-logo-img"
+          src="/assets/images/logo/logo-new.png"
+          alt="Spice Tiffin Logo"
+        />
+      </a>
     </div>
+
+    {/* Keep the Settings/Offcanvas Trigger Button */}
     <div class="skip-header-btn">
-      <a data-bs-toggle="offcanvas" href="#offcanvasExample" role="button">
+      {/* Use template class */}
+      <a
+        data-bs-toggle="offcanvas"
+        href="#offcanvasExample"
+        role="button"
+        aria-label="Open Settings Menu"
+      >
+        {/* Settings Icon SVG (from template) */}
         <svg
           class="svg-media"
           xmlns="http://www.w3.org/2000/svg"
@@ -46,13 +36,13 @@
           <g>
             <path
               d="M19 6.87301C19.3062 7.04981 19.5601 7.30464 19.7358 7.61153C19.9115 7.91843 20.0026 8.26641 20 8.62001V15.156C19.9999 15.5127 19.9045 15.8628 19.7235 16.1701C19.5426 16.4775 19.2828 16.7309 18.971 16.904L12.971 20.737C12.674 20.902 12.3398 20.9885 12 20.9885C11.6602 20.9885 11.326 20.902 11.029 20.737L5.029 16.904C4.71736 16.7309 4.45763 16.4777 4.27671 16.1706C4.0958 15.8634 4.00026 15.5135 4 15.157V8.62001C4.00008 8.26337 4.09553 7.91323 4.27646 7.60589C4.45739 7.29854 4.71721 7.04516 5.029 6.87201L11.029 3.30001C11.3348 3.12978 11.679 3.04044 12.029 3.04044C12.379 3.04044 12.7232 3.12978 13.029 3.30001L19.029 6.87301H19V6.87301Z"
-              stroke="black"
+              stroke="currentColor"
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"></path>
             <path
               d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z"
-              stroke="black"
+              stroke="currentColor"
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"></path>
@@ -62,3 +52,44 @@
     </div>
   </div>
 </header>
+
+{/* Add CSS to your global stylesheet */}
+<style is:global>
+  /* Ensure the header container uses flexbox to position items */
+  .top-header-full2 {
+    display: flex;
+    justify-content: space-between; /* Pushes logo left, button right */
+    align-items: center;
+    width: 100%;
+    /* Add padding from your original template if needed */
+    padding: 0.75rem 1rem; /* Example padding */
+  }
+
+  /* Logo Styling */
+  .header-logo-container {
+    /* Takes up available space if needed, but usually not required with justify-content: space-between */
+    /* flex-grow: 1; */
+  }
+  .header-logo-img {
+    height: 73px; /* Adjust height as needed */
+    width: auto; /* Maintain aspect ratio */
+    display: block; /* Prevent extra space below image */
+  }
+
+  /* Settings Button Styling */
+  .skip-header-btn a {
+    display: inline-block; /* Make it behave like a block for padding */
+    padding: 5px; /* Add padding for easier clicking */
+    color: #333; /* Example color, adjust to match template */
+  }
+  .skip-header-btn a:hover {
+    color: orangered; /* Example hover color */
+  }
+  .skip-header-btn .svg-media {
+    width: 24px; /* Ensure icon size */
+    height: 24px;
+    display: block; /* Prevent extra space */
+  }
+
+  /* Ensure base styles for top-navbar, top-navbar2 are loaded */
+</style>
