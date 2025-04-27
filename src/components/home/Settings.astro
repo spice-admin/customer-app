@@ -1,7 +1,5 @@
 ---
-// src/components/home/Settings.astro
-import SettingsMenu from "./SettingsMenu"; // Import the React component
-// Using Font Awesome class for close button, ensure FA CSS is loaded in Layout.astro
+import SettingsMenu from "./SettingsMenu";
 ---
 
 <div
@@ -12,15 +10,15 @@ import SettingsMenu from "./SettingsMenu"; // Import the React component
 >
   <div class="offcanvas-header offcanvas-header-border">
     <h5 class="offcanvas-title" id="offcanvasExampleLabel">Settings</h5>
-    
+
     <button
       type="button"
-      class="btn-close text-reset" 
+      class="btn-close text-reset"
       data-bs-dismiss="offcanvas"
       aria-label="Close"
-      title="Close" 
+      title="Close"
     >
-    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      <i class="fa-solid fa-xmark" aria-hidden="true"></i>
     </button>
   </div>
   <div class="offcanvas-body">
@@ -29,14 +27,3 @@ import SettingsMenu from "./SettingsMenu"; // Import the React component
     <SettingsMenu client:visible />
   </div>
 </div>
-
-{/* Add necessary CSS for offcanvas if not globally loaded */}
-<style is:global>
-<!-- Add necessary CSS for offcanvas if not globally loaded -->
-<style is:global>
-  /* Ensure Bootstrap's offcanvas CSS is loaded */
-  /* Ensure template styles for .sidecanvas, .offcanvas-header-border etc. are loaded */
-
-  /* Example: Adjust icon color if needed */
-  /* .side-menu-icons svg { color: #your-color; } */
-</style>

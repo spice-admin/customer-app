@@ -4,11 +4,8 @@ import Layout from "../layouts/Layout.astro"; // Assuming this is your base HTML
 import Header from "../components/home/Header.astro"; // Your home page header
 import OfferSlider from "../components/home/OfferSlider.astro"; // Offer slider component
 import PackageTabs from "../components/packages/PackageTabs.tsx"; // The tabbed package component
-import BottomNavbar from "../components/home/BottomNavbar.tsx"; // Corrected import path (assuming it's in layout)
 import Settings from "../components/home/Settings.astro";
 import BottomMenu from "../components/home/BottomMenu.astro";
-
-// Note: Removed BottomMenu import as BottomNavbar seems to cover it based on previous code. Adjust if needed.
 ---
 
 <Layout title="Home">
@@ -171,6 +168,6 @@ import BottomMenu from "../components/home/BottomMenu.astro";
 {/* Ensure CSS for template classes is loaded, likely via Layout.astro */}
 <style is:global>
   .section-main {
-    padding-bottom: 137px;
+    padding-bottom: 128px;
   }
 </style>
