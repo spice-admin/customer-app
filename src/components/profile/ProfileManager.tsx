@@ -1,5 +1,5 @@
 // src/components/profile/ProfileManager.tsx
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import type { ICustomerProfile, IProfileUpdateData } from "../../types"; // Ensure these types are defined in src/types/index.ts
 import {
   getMyProfileApi,
@@ -15,7 +15,11 @@ import {
   HiOutlineXMark,
   HiOutlineIdentification,
   HiOutlineBuildingOffice2,
-} from "react-icons/hi2"; // Using Heroicons v2
+} from "react-icons/hi2";
+import { useLoadScript, Autocomplete } from "@react-google-maps/api";
+
+// Define the libraries needed for Google Maps API (only 'places' for autocomplete)
+const libraries: "places"[] = ["places"];
 
 /**
  * ProfileManager Component
@@ -34,6 +38,36 @@ const ProfileManager: React.FC = () => {
   const [locationError, setLocationError] = useState<string | null>(null); // Stores geolocation errors
 
   // --- API Calls and Data Handling ---
+  // --- Google Maps Autocomplete State & Refs ---
+  const [autocompleteInstance, setAutocompleteInstance] =
+    useState<google.maps.places.Autocomplete | null>(null);
+  const addressInputRef = useRef<HTMLInputElement>(null); // Ref for the address input
+
+  // --- Load Google Maps Script ---
+  const googleMapsApiKey =
+    import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY ||
+    "AIzaSyButiQW-YEd9X8LkkF1ILGzENQ3I5PHNZ4";
+  const { isLoaded: isGoogleMapsLoaded, loadError: googleMapsLoadError } =
+    useLoadScript({
+      googleMapsApiKey: googleMapsApiKey,
+      libraries: libraries, // Specify the 'places' library
+      // Optional: Restrict autocomplete to Canada
+      // region: 'CA',
+    });
+
+  useEffect(() => {
+    if (googleMapsLoadError) {
+      console.error("Error loading Google Maps script:", googleMapsLoadError);
+      setError(
+        "Could not load address suggestions. Please check your connection or try again later."
+      );
+    }
+    if (!googleMapsApiKey) {
+      console.warn(
+        "Google Maps API Key (PUBLIC_GOOGLE_MAPS_API_KEY) is missing. Address autocomplete will not work."
+      );
+    }
+  }, [googleMapsLoadError, googleMapsApiKey]);
 
   // Function to fetch the user's profile data
   const fetchProfile = useCallback(async () => {
@@ -175,13 +209,66 @@ const ProfileManager: React.FC = () => {
     );
   }, []); // No dependencies needed
 
+  const onAutocompleteLoad = useCallback(
+    (autocomplete: google.maps.places.Autocomplete) => {
+      console.log("Google Autocomplete loaded.");
+      setAutocompleteInstance(autocomplete);
+    },
+    []
+  );
+
+  const onPlaceChanged = useCallback(() => {
+    if (autocompleteInstance !== null) {
+      const place = autocompleteInstance.getPlace();
+      console.log("Place selected:", place);
+
+      // Extract address components
+      let streetNumber = "";
+      let route = "";
+      let city = "";
+      let postalCode = "";
+      // let province = ""; // Example
+      // let country = ""; // Example
+
+      place.address_components?.forEach((component) => {
+        const types = component.types;
+        if (types.includes("street_number")) streetNumber = component.long_name;
+        if (types.includes("route")) route = component.long_name; // Street name
+        if (types.includes("locality") || types.includes("postal_town"))
+          city = component.long_name; // City
+        // Use administrative_area_level_1 for province/state if needed
+        // if (types.includes("administrative_area_level_1")) province = component.short_name;
+        if (types.includes("postal_code")) postalCode = component.long_name;
+        // if (types.includes("country")) country = component.short_name;
+      });
+
+      const formattedAddress =
+        place.formatted_address || `${streetNumber} ${route}`.trim();
+
+      // Update form state - override relevant fields
+      setEditData((prev) => ({
+        ...prev,
+        address: formattedAddress || prev.address, // Use formatted address or keep existing if none
+        city: city || prev.city, // Update city if found
+        postalCode: postalCode || prev.postalCode, // Update postal code if found
+        // Optionally clear currentLocation if address is manually set via autocomplete
+        // currentLocation: '',
+      }));
+      setError(null); // Clear errors after selection
+      setSuccessMessage(null);
+    } else {
+      console.error("Autocomplete instance is not loaded yet.");
+    }
+  }, [autocompleteInstance]);
+
   // --- Render Field Helper ---
   // Renders either a display paragraph or an input/textarea based on edit mode
   const renderField = (
     label: string,
     fieldName: keyof IProfileUpdateData, // Field name matching state keys
     IconComponent: React.ElementType, // Icon component to display
-    isTextarea: boolean = false // Flag for rendering textarea instead of input
+    isTextarea: boolean = false,
+    isAddressAutocomplete: boolean = false
   ) => {
     // Get the current value to display or edit
     const currentValue = isEditMode
@@ -190,41 +277,60 @@ const ProfileManager: React.FC = () => {
 
     return (
       <div className="form-item profile-field">
-        {" "}
-        {/* Base class from template */}
-        <label htmlFor={isEditMode ? fieldName : undefined}>{label}</label>{" "}
-        {/* Only link htmlFor in edit mode */}
+        <label htmlFor={isEditMode ? fieldName : undefined}>{label}</label>
         <div className="profile-field-content-flex">
-          {" "}
-          {/* Flex container for alignment */}
-          <IconComponent className="profile-field-icon" /> {/* Icon */}
-          {isEditMode ? ( // Render input/textarea if in edit mode
-            isTextarea ? (
+          <IconComponent className="profile-field-icon" />
+          {isEditMode ? (
+            // --- Conditionally render Autocomplete or standard input/textarea ---
+            isAddressAutocomplete && isGoogleMapsLoaded ? (
+              <Autocomplete
+                onLoad={onAutocompleteLoad}
+                onPlaceChanged={onPlaceChanged}
+                // Optional: Restrict to Canada and specific types
+                options={{
+                  componentRestrictions: { country: "ca" }, // Restrict to Canada
+                  types: ["address"], // Only suggest addresses
+                }}
+                // Note: Autocomplete wraps an input, not a textarea
+              >
+                <input
+                  type="text"
+                  id={fieldName}
+                  name={fieldName} // Important for state update
+                  value={editData[fieldName] || ""} // Use editData for value
+                  onChange={handleEditChange} // Still needed for manual typing
+                  className="profile-input" // Style appropriately
+                  placeholder="Start typing your address..."
+                  disabled={isSaving}
+                  ref={addressInputRef} // Optional ref if needed
+                />
+              </Autocomplete>
+            ) : isTextarea ? ( // Fallback or non-autocomplete fields
               <textarea
                 id={fieldName}
                 name={fieldName}
-                value={editData[fieldName] || ""} // Controlled component
+                value={editData[fieldName] || ""}
                 onChange={handleEditChange}
-                className="profile-input textarea" // Style appropriately
+                className="profile-input textarea"
                 rows={3}
-                disabled={isSaving} // Disable while saving
+                disabled={isSaving}
               />
             ) : (
+              // Standard input fallback
               <input
-                type="text" // Use appropriate type if needed (e.g., tel for postalCode?)
+                type="text"
                 id={fieldName}
                 name={fieldName}
-                value={editData[fieldName] || ""} // Controlled component
+                value={editData[fieldName] || ""}
                 onChange={handleEditChange}
-                className="profile-input" // Style appropriately
-                disabled={isSaving} // Disable while saving
+                className="profile-input"
+                disabled={isSaving}
               />
             )
           ) : (
-            // Render display paragraph if not in edit mode
+            // Display mode
             <p className="profile-value">
-              {currentValue || <span className="text-muted">Not set</span>}{" "}
-              {/* Show 'Not set' if value is empty/null */}
+              {currentValue || <span className="text-muted">Not set</span>}
             </p>
           )}
         </div>
@@ -302,17 +408,16 @@ const ProfileManager: React.FC = () => {
       {/* Section for editable address information */}
       <div className="profile-address-info">
         <h2 className="profile-section-title">Address Information</h2>
-        {/* Display save/update errors only when in edit mode */}
         {error && isEditMode && (
           <div className="form-message error">{error}</div>
         )}
-        {/* Display success message only after saving (when not in edit mode) */}
         {successMessage && !isEditMode && (
           <div className="form-message success">{successMessage}</div>
         )}
-
-        {/* Render editable/display fields using the helper */}
-        {renderField("Address", "address", HiOutlineMapPin, true)}
+        {/* --- Call renderField with isAddressAutocomplete flag --- */}
+        {renderField("Address", "address", HiOutlineMapPin, false, true)}{" "}
+        {/* Changed isTextarea to false */}
+        {/* -------------------------------------------------------- */}
         {renderField("City", "city", HiOutlineBuildingOffice2)}
         {renderField("Postal Code", "postalCode", HiOutlineIdentification)}
         {renderField("Current Location", "currentLocation", HiOutlineMapPin)}
