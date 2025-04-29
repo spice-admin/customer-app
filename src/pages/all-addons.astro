@@ -1,0 +1,75 @@
+---
+// src/pages/profile.astro
+import CustomerLayout from "../layouts/Layout.astro"; // Use the main protected layout
+import ProfileManager from "../components/profile/ProfileManager.tsx"; // Import the React component
+import BottomMenu from "../components/home/BottomMenu.astro"; // Assuming BottomMenu is used here
+import AddonList from "../components/home/AddonList";
+---
+
+<CustomerLayout title="Addons">
+  <div class="site_content">
+    <section class="container">
+      {/* Profile Page Header */}
+      <header id="top-navbar" class="top-navbar top-navbar2">
+        <div class="top-header-full">
+          <div class="back-btn">
+            <a
+              href="#"
+              onclick="event.preventDefault(); window.history.go(-1);"
+            >
+              {/* Back Arrow SVG */}
+              <svg
+                class="svg-media"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                ><g
+                  ><path
+                    d="M5 12H19"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"></path><path
+                    d="M5 12C5 12 9 15 9 17"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"></path><path
+                    d="M5 12C5 12 9 9 9 7"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"></path></g
+                ></svg
+              >
+            </a>
+          </div>
+          <div class="header-title">
+            <h1>Addons</h1>
+          </div>
+          <div class="back-btn" style="visibility: hidden;"></div>
+          {/* Spacer */}
+        </div>
+      </header>
+
+      <section class="container mx-auto px-4 py-6">
+        {/* Render the same component but tell it to show all items */}
+        <AddonList showAll={true} client:load />
+      </section>
+
+      {/* Render Bottom Menu */}
+      <BottomMenu />
+    </section>
+  </div>
+</CustomerLayout>
+
+{/* Add specific CSS rule for padding here or in global CSS */}
+<style is:global>
+  /* Target the specific content area on this page */
+  .container {
+    /* Adjust this value based on the actual height of your BottomMenu */
+    padding-bottom: 75px; /* Example value */
+  }
+</style>

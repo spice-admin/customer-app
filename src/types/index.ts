@@ -56,6 +56,15 @@ export interface IPackageFE {
  * Represents the customer profile data fetched from the backend.
  * Excludes sensitive fields like password, OTP details.
  */
+export interface Addon {
+  _id: string;
+  name: string;
+  price: number;
+  image: string; // URL to the image
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface ICustomerProfile {
   _id: string;
   fullName: string;

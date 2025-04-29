@@ -124,7 +124,7 @@ const LoginForm: React.FC = () => {
         </span>
         <input
           type="tel"
-          placeholder="Enter Mobile Number"
+          placeholder="Enter Mobile Number (with +1)"
           className={`no-spinners ${errors.mobile ? "input-error" : ""}`}
           name="mobile"
           value={formData.mobile}

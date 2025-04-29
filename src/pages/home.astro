@@ -6,6 +6,7 @@ import OfferSlider from "../components/home/OfferSlider.astro"; // Offer slider 
 import PackageTabs from "../components/packages/PackageTabs.tsx"; // The tabbed package component
 import Settings from "../components/home/Settings.astro";
 import BottomMenu from "../components/home/BottomMenu.astro";
+import Addons from "../components/home/Addons.astro";
 ---
 
 <Layout title="Home">
@@ -84,64 +85,6 @@ import BottomMenu from "../components/home/BottomMenu.astro";
           {/* Render slider component */}
         </div>
 
-        {
-          /* "What's on your mind" / Quick Categories - Keep original template structure */
-        }
-        <div>
-          <h2 class="mind">What’s on your mind 😋</h2>
-          {/* Use template class */}
-          <div class="mind-items">
-            {/* Use template class */}
-            {/* Example Item - Repeat or make dynamic later */}
-            <div class="item-name-box" onclick="location.href='/categories'">
-              {/* Use template class */}
-              <div class="item-name-box-sub">
-                {/* Use template class */}
-                <img
-                  class="pizza"
-                  src="/assets/images/home_screen1/pizza.svg"
-                  alt="pizza"
-                />
-                {/* Check path */}
-              </div>
-              <p class="item-name-box-name">Pizza</p>
-              {/* Use template class */}
-            </div>
-            <div class="item-name-box" onclick="location.href='/categories'">
-              <div class="item-name-box-sub">
-                <img
-                  class="pizza"
-                  src="/assets/images/home_screen1/burger.svg"
-                  alt="burger"
-                />
-              </div>
-              <p class="item-name-box-name">Burger</p>
-            </div>
-            {/* Add other "mind-items" here */}
-            <div class="item-name-box" onClick="location.href='/categories'">
-              <div class="item-name-box-sub">
-                <img
-                  class="pizza"
-                  src="/assets/images/home_screen1/sushi.svg"
-                  alt="sushi"
-                />
-              </div>
-              <p class="item-name-box-name">Sushi</p>
-            </div>
-            <div class="item-name-box" onClick="location.href='/categories'">
-              <div class="item-name-box-sub">
-                <img
-                  class="pizza"
-                  src="/assets/images/home_screen1/chinese.svg"
-                  alt="chinese"
-                />
-              </div>
-              <p class="item-name-box-name">Chinese</p>
-            </div>
-            {/* ... more items ... */}
-          </div>
-        </div>
-
         {/* Popular Packages Section */}
         <div class="trending-meals-main">
           {/* Use template class */}
@@ -154,6 +97,8 @@ import BottomMenu from "../components/home/BottomMenu.astro";
 
         {/* Render the Package Tabs component */}
         <PackageTabs client:load />
+
+        <Addons />
       </div>
       {/* End of section-main (with padding-bottom) */}
 
