@@ -1,8 +1,11 @@
 // src/components/home/AddonList.tsx
 import React, { useState, useEffect } from "react";
 import type { Addon } from "../../types";
+import Swal from "sweetalert2";
 import { getAllAddons } from "../../services/addon.service";
-import { formatCurrencyCAD } from "../../utils/currency"; // Use the util
+import { formatCurrencyCAD } from "../../utils/currency";
+// --- MODIFIED: Import the correct cart function ---
+import { addOrIncrementAddon } from "../../utils/cart";
 
 interface AddonListProps {
   showAll?: boolean;
@@ -32,9 +35,29 @@ const AddonList: React.FC<AddonListProps> = ({ showAll = false }) => {
   }, []);
 
   const handleOrderClick = (addon: Addon) => {
-    // ... remains the same ...
     console.log("Order clicked for:", addon.name, addon._id);
-    alert(`Ordering ${addon.name} - (Implement actual order logic)`);
+    // --- MODIFIED: Call utility function directly ---
+    addOrIncrementAddon(addon);
+
+    // Show SweetAlert confirmation if item was newly added
+    Swal.fire({
+      title: "Added to Cart!",
+      text: `${addon.name} has been added to your cart.`,
+      icon: "success",
+      showCancelButton: true,
+      confirmButtonText: "Checkout",
+      cancelButtonText: "Add More",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#6c757d",
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log("Redirecting to checkout...");
+        window.location.href = "/checkout";
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        console.log("User wants to add more.");
+      }
+    });
   };
 
   const handleImageError = (

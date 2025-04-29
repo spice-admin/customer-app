@@ -2,7 +2,7 @@
 const AUTH_TOKEN_KEY =
   "7f57e24a0181b526fb106b2bad45d9f6c0717b88ea01d2dd0afae3594a69b8c0"; // Key used to store JWT in localStorage
 const LOGIN_PATH = "/"; // The path to redirect unauthenticated users to
-const PUBLIC_PATHS = [LOGIN_PATH, "/signup", "/otp-verification"]; // Paths accessible without login
+const PUBLIC_PATHS = [LOGIN_PATH, "/signup", "/otp-verification"];
 ---
 
 <!doctype html>
@@ -120,6 +120,7 @@ const PUBLIC_PATHS = [LOGIN_PATH, "/signup", "/otp-verification"]; // Paths acce
   </head>
   <body>
     <slot />
+
     <script is:inline src="/assets/javascript/jquery.min.js"></script>
     <script is:inline src="/assets/javascript/bootstrap.bundle.min.js"></script>
     <script is:inline src="/assets/javascript/slick.min.js"></script>

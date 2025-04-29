@@ -147,3 +147,11 @@ export interface IOrderFE {
   createdAt: string; // ISO Date string
   updatedAt: string; // ISO Date string
 }
+
+export interface CartItem {
+  addonId: string; // Reference to the original Addon._id
+  name: string;
+  price: number;
+  image: string;
+  quantity: number;
+}
