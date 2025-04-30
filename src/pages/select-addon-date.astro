@@ -1,0 +1,132 @@
+---
+// src/pages/select-addon-date.astro
+import CustomerLayout from "../layouts/Layout.astro"; // Adjust path
+import SelectAddonDateDisplay from "../components/orders/SelectAddonDateDisplay"; // Adjust path
+// Import ProtectRoute if needed
+// import ProtectRoute from '../components/auth/ProtectRoute.tsx';
+---
+
+<CustomerLayout title="Select Addon Date">
+  {/* <ProtectRoute client:load> */}
+  <section class="select-date-page-container">
+    {/* Render the React component */}
+    <SelectAddonDateDisplay client:load />
+  </section>
+  {/* </ProtectRoute> */}
+</CustomerLayout>
+
+<style is:global>
+  /* Import datepicker styles globally or scope them */
+  @import "react-datepicker/dist/react-datepicker.css";
+
+  /* Basic styling for the page container */
+  .select-date-page-container {
+    max-width: 600px; /* Adjust as needed */
+    margin: 1.5rem auto;
+    padding: 0 1rem;
+  }
+
+  /* Basic styling for the React component's elements */
+  .select-date-container {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border-radius: 0.375rem;
+    box-shadow:
+      0 1px 3px 0 rgb(0 0 0 / 0.1),
+      0 1px 2px -1px rgb(0 0 0 / 0.1);
+  }
+
+  .select-date-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #1f2937;
+    text-align: center;
+  }
+  .select-date-order-info {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.25rem;
+    padding: 0.75rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: #374151;
+  }
+  .select-date-order-info p {
+    margin-bottom: 0.25rem;
+  }
+  .select-date-order-info p:last-child {
+    margin-bottom: 0;
+  }
+
+  .select-date-instructions {
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  /* Container to center the calendar */
+  .calendar-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+  /* Add custom styling to react-datepicker if needed */
+  .date-picker-calendar-class {
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+  }
+  /* Example: Style selected date */
+  .react-datepicker__day--selected {
+    background-color: #f97316 !important; /* Orange */
+    color: white !important;
+  }
+  .react-datepicker__day--keyboard-selected {
+    /* Also style keyboard focus */
+    background-color: #fb923c !important; /* Lighter orange */
+    color: white !important;
+  }
+
+  .select-date-actions {
+    margin-top: 1.5rem;
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.5rem;
+  }
+
+  .payment-button {
+    padding: 0.6rem 1.5rem;
+    background-color: #16a34a; /* Green */
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
+    font-size: 1rem;
+  }
+  .payment-button:hover:not(:disabled) {
+    background-color: #15803d;
+  }
+  .payment-button:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+  }
+  .payment-prompt {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin-top: 0.5rem;
+  }
+
+  /* Reuse loading/error message styles if defined globally */
+  .loading-message,
+  .error-message {
+    text-align: center;
+    padding: 2rem;
+    /* Add other styles */
+  }
+  .error-message {
+    color: #dc2626;
+  }
+</style>

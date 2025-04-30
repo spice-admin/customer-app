@@ -421,3 +421,241 @@
 .remove-button:hover {
   color: #dc2626; /* text-red-600 */
 }
+
+.checkout-summary-section {
+  margin-top: 2rem; /* mt-8 */
+  padding-top: 1.5rem; /* pt-6 */
+  border-top: 1px solid #e5e7eb; /* border-t border-gray-200 */
+}
+
+.summary-title {
+  font-size: 1.125rem; /* text-lg */
+  font-weight: 600; /* font-semibold */
+  margin-bottom: 1rem; /* mb-4 */
+  color: #1f2937; /* text-gray-800 */
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Align top for lists */
+  margin-bottom: 0.5rem; /* mb-2 */
+  font-size: 0.875rem; /* text-sm */
+}
+
+.summary-label {
+  color: #4b5563; /* text-gray-600 */
+  margin-right: 0.5rem;
+  flex-shrink: 0; /* Prevent label from shrinking */
+}
+
+.summary-value {
+  color: #111827; /* text-gray-900 */
+  font-weight: 500; /* font-medium */
+  text-align: right;
+}
+
+.summary-addons-section .summary-value {
+  width: 100%; /* Allow list to take space */
+}
+
+.summary-addon-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%; /* Take full width */
+}
+
+.summary-addon-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem; /* Slightly smaller */
+  color: #374151; /* text-gray-700 */
+  margin-bottom: 0.25rem;
+  padding-left: 1rem; /* Indent addon items */
+}
+.summary-addon-item span:first-child {
+  margin-right: 0.5rem;
+}
+
+.summary-total {
+  margin-top: 0.75rem; /* mt-3 */
+  padding-top: 0.75rem; /* pt-3 */
+  border-top: 1px dashed #d1d5db; /* dashed border */
+  font-weight: 600; /* font-semibold */
+}
+.summary-total .summary-label {
+  font-weight: 600;
+}
+.summary-total .summary-value {
+  font-weight: 700; /* font-bold */
+  color: #1f2937;
+}
+
+.order-selection-container {
+  background-color: #ffffff;
+  padding: 1rem 1.5rem 1.5rem 1.5rem; /* p-6ish */
+  border-radius: 8px; /* softer rounding */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05), 0 4px 8px rgba(0, 0, 0, 0.05); /* subtle shadow */
+  max-width: 700px;
+  margin: 1.5rem auto;
+}
+
+.selection-title {
+  font-size: 1.375rem; /* slightly larger */
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+  text-align: center; /* Center title */
+}
+.selection-instructions {
+  font-size: 0.9rem;
+  color: #4b5563;
+  margin-bottom: 1.75rem; /* More space below */
+  text-align: center; /* Center instructions */
+}
+
+.order-list {
+  margin-bottom: 2rem;
+  /* Remove default list styling if it's a ul/ol */
+  list-style: none;
+  padding: 0;
+}
+
+/* Card styling for each order item */
+.order-item {
+  display: flex;
+  align-items: flex-start; /* Align items to top */
+  background-color: #ffffff; /* Keep white or use subtle off-white */
+  padding: 1rem 1.25rem; /* More padding */
+  border: 1px solid #e5e7eb;
+  border-radius: 6px; /* Slightly less rounded */
+  margin-bottom: 1rem; /* More space between cards */
+  cursor: pointer;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+.order-item:hover {
+  border-color: #9ca3af; /* Darker border on hover */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Styling when selected */
+.order-item:has(input[type="radio"]:checked) {
+  border-color: #f97316; /* Keep orange border */
+  box-shadow: 0 0 0 1px #f97316; /* Use subtle ring instead of thicker shadow */
+  background-color: #fff7ed;
+}
+
+.order-radio {
+  margin-right: 1rem; /* More space next to radio */
+  margin-top: 0.25rem; /* Align better with first line of text */
+  width: 1.1rem; /* Slightly larger radio */
+  height: 1.1rem;
+  accent-color: #f97316;
+  flex-shrink: 0; /* Prevent radio from shrinking */
+}
+
+.order-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem; /* Slightly more space between text lines */
+  flex-grow: 1; /* Allow details to take available space */
+}
+
+.order-identifier {
+  font-weight: 600; /* Bolder */
+  color: #111827;
+  font-size: 1rem; /* Slightly larger */
+  line-height: 1.4;
+}
+.order-package {
+  font-size: 0.9rem;
+  color: #374151;
+  line-height: 1.4;
+}
+.order-delivery-date {
+  /* Renamed for clarity from previous CSS */
+  font-size: 0.85rem;
+  color: #6b7280;
+  line-height: 1.4;
+}
+.order-status {
+  font-size: 0.8rem;
+  color: #059669; /* Green for active */
+  font-style: italic;
+  margin-top: 0.1rem;
+  line-height: 1.4;
+  /* Add specific styles for other statuses if needed */
+}
+.order-status.status-cancelled,
+.order-status.status-expired {
+  color: #dc2626; /* Red */
+}
+
+/* Button section - center the button */
+.date-selection-section {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+  text-align: center; /* Center button and prompt */
+}
+
+.date-title {
+  /* If you keep this title */
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* Button Styling (reuse from previous step or refine) */
+.date-selection-button {
+  padding: 0.7rem 1.75rem; /* Larger padding */
+  background-color: #16a34a; /* Green */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+  font-size: 1rem; /* Larger text */
+}
+.date-selection-button:hover:not(:disabled) {
+  background-color: #15803d;
+}
+.date-selection-button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.date-selection-prompt {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-top: 0.75rem; /* More space */
+}
+
+/* Loading / Error / No Items messages */
+.loading-message,
+.error-message,
+.no-subscription-message {
+  /* Update class if you renamed it */
+  text-align: center;
+  padding: 2.5rem 1rem;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  color: #4b5563;
+  margin: 2rem 0;
+}
+.error-message {
+  color: #dc2626;
+  background-color: #fee2e2;
+  border-color: #fecaca;
+}
+.no-subscription-message h2 {
+  /* Update class if you renamed it */
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}

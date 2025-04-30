@@ -1,11 +1,9 @@
 ---
-// src/pages/orders.astro
-import CustomerLayout from "../layouts/Layout.astro"; // Use the main protected layout
-import OrderList from "../components/orders/OrderList.tsx"; // Import the React component
-import BottomMenu from "../components/home/BottomMenu.astro"; // Assuming BottomMenu is used here
-import HeaderwithoutLogo from "../components/home/HeaderwithoutLogo.astro";
-// Import a specific header if needed
-// import StaticPageHeader from '../components/layout/StaticPageHeader.astro';
+// src/pages/order-selection.astro
+import CustomerLayout from "../layouts/Layout.astro"; // Adjust path
+import OrderSelector from "../components/orders/OrderSelector";
+import BottomMenu from "../components/home/BottomMenu.astro";
+import HeaderwithoutLogo from "../components/home/HeaderwithoutLogo.astro"; // Adjust path
 ---
 
 <CustomerLayout title="My Orders">
@@ -20,7 +18,7 @@ import HeaderwithoutLogo from "../components/home/HeaderwithoutLogo.astro";
 
         {/* Render the React Order List Component */}
         {/* client:load needed to fetch data */}
-        <OrderList client:load />
+        <OrderSelector client:load />
       </div>
       {/* End section-main */}
 

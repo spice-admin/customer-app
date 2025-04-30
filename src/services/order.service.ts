@@ -1,13 +1,12 @@
 // src/services/order.service.ts
-import type { ApiResponse, IOrderFE } from "../types"; // Import relevant types
+import type { ApiResponse, IOrderFE } from "../types";
 
 // Constants
-const API_BASE_URL =
-  import.meta.env.PUBLIC_API_BASE_URL ||
-  "https://spice-tiffin-backend-production.up.railway.app/api/v1";
+const API_BASE_URL = import.meta.env.PUBLIC_API_BASE_URL;
 const ORDER_ENDPOINT = `${API_BASE_URL}/orders`;
 const AUTH_TOKEN_KEY =
-  "7f57e24a0181b526fb106b2bad45d9f6c0717b88ea01d2dd0afae3594a69b8c0"; // Use the same key as auth components
+  import.meta.env.AUTH_TOKEN_KEY ||
+  "7f57e24a0181b526fb106b2bad45d9f6c0717b88ea01d2dd0afae3594a69b8c0"; // Key for localStorage
 
 // Reusable response handler (Copy or import from shared utils)
 async function handleResponse<T>(response: Response): Promise<ApiResponse<T>> {
@@ -70,4 +69,40 @@ export const getMyOrdersApi = async (): Promise<ApiResponse<IOrderFE[]>> => {
   }
 };
 
-// Add other order service functions later if needed (e.g., getOrderById)
+/**
+ * Fetches a single order by its ID for the authenticated customer.
+ * @param orderId The ID of the order to fetch.
+ * @returns Promise<ApiResponse<IOrderFE>>
+ */
+export const getOrderByIdApi = async (
+  orderId: string
+): Promise<ApiResponse<IOrderFE>> => {
+  const token = getAuthToken();
+  if (!token) {
+    console.warn("getOrderByIdApi: No auth token found.");
+    return { success: false, message: "Please log in." };
+  }
+  if (!orderId) {
+    console.warn("getOrderByIdApi: No orderId provided.");
+    return { success: false, message: "Order ID is missing." };
+  }
+
+  try {
+    // --- NEW: Call GET /api/v1/orders/:orderId ---
+    const response = await fetch(`${ORDER_ENDPOINT}/${orderId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    // Expects { success: true, data: order } on success
+    return await handleResponse<IOrderFE>(response);
+  } catch (error) {
+    console.error(`Get Order By ID (${orderId}) API failed:`, error);
+    return {
+      success: false,
+      message: (error as Error).message || `Failed to fetch order ${orderId}.`,
+    };
+  }
+};

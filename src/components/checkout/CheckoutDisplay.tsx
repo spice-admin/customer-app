@@ -1,6 +1,5 @@
 // src/components/checkout/CheckoutDisplay.tsx
-import React, { useState, useEffect, useCallback } from "react"; // Added useCallback
-// --- MODIFIED: Import updated/new cart functions ---
+import React, { useState, useEffect, useCallback } from "react";
 import {
   getCartItems,
   getCartTotal,
@@ -57,11 +56,18 @@ const CheckoutDisplay: React.FC = () => {
   };
 
   const handleProceed = () => {
-    alert(
-      `Proceeding with Total: ${formatCurrencyCAD(total)} - Implement Payment!`
+    // Ensure cart isn't empty before proceeding (though button might be disabled)
+    if (cartItems.length === 0) {
+      alert("Your cart is empty."); // Or handle more gracefully
+      return;
+    }
+    console.log(
+      `Proceeding to order selection with ${
+        cartItems.length
+      } items, Total: ${formatCurrencyCAD(total)}`
     );
-    // clearCart(); // Optionally clear cart
-    // refreshCartState(); // Update UI if cart is cleared
+    // Redirect to the next step in the flow
+    window.location.href = "/order-selection";
   };
 
   // --- Render Logic ---
@@ -126,8 +132,6 @@ const CheckoutDisplay: React.FC = () => {
                 </button>
               </div>
               <span className="checkout-item-price-total">
-                {" "}
-                {/* Total for this line item */}
                 {formatCurrencyCAD(item.price * item.quantity)}
               </span>
               <button
@@ -153,7 +157,7 @@ const CheckoutDisplay: React.FC = () => {
 
       <div className="checkout-actions">
         <button className="checkout-proceed-button" onClick={handleProceed}>
-          Proceed to Payment (Placeholder)
+          Proceed to Order Selection
         </button>
       </div>
     </div>

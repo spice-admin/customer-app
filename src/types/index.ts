@@ -93,7 +93,11 @@ export interface IProfileUpdateData {
 }
 
 // --- Order Status Enum / Type (Ensure this exists) ---
-export type OrderStatus = "Active" | "Expired" | "Cancelled";
+export enum OrderStatus {
+  ACTIVE = "Active",
+  EXPIRED = "Expired",
+  CANCELLED = "Cancelled",
+}
 
 // --- Type for the nested package info populated within an Order ---
 // Based on .populate('package', 'name type image price days') in backend controller
