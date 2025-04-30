@@ -39,7 +39,7 @@ const SettingsMenu: React.FC = () => {
 
   // Define the menu items
   const menuItems: MenuItem[] = [
-    { href: "/", label: "Home", icon: HiOutlineHome },
+    { href: "/home", label: "Home", icon: HiOutlineHome },
     { href: "/profile", label: "Profile", icon: HiOutlineUserCircle }, // Link to profile page
     { href: "/about", label: "About", icon: HiOutlineInformationCircle }, // Create /about page later
     { href: "/faq", label: "FAQs", icon: HiOutlineQuestionMarkCircle }, // Create /faq page later
