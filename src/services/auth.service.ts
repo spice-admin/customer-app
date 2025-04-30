@@ -6,6 +6,7 @@ import type {
   LoginInput,
   OtpVerifyInput,
 } from "../validators/authSchema";
+import { getAuthToken } from "../utils/api";
 
 // Make sure API_BASE_URL is configured correctly in your .env file
 const API_BASE_URL =
@@ -130,6 +131,112 @@ export const verifyOtpApi = async (
       message:
         (error as Error).message ||
         "OTP Verification failed. Please try again.",
+    };
+  }
+};
+
+/**
+ * Step 1 (Forgot Password): Request password reset OTP to be sent via SMS.
+ * Calls the backend endpoint POST /auth/request-password-reset
+ * @param phoneNumber The user's registered phone number.
+ * @returns Promise<ApiResponse<{ message: string }>> - Backend should return generic success message.
+ */
+export const requestPasswordResetOtpApi = async (
+  phoneNumber: string
+): Promise<ApiResponse<{ message: string }>> => {
+  console.log(
+    `[AuthServiceFE] Requesting password reset OTP for: ${phoneNumber}`
+  );
+  try {
+    const response = await fetch(`${AUTH_ENDPOINT}/request-password-reset`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        // No Authorization header needed for this public endpoint
+      },
+      body: JSON.stringify({ phoneNumber }), // Send phoneNumber in body
+    });
+    // handleResponse expects JSON, backend returns {success, message}
+    return await handleResponse<{ message: string }>(response);
+  } catch (error) {
+    console.error("Request Password Reset OTP API failed:", error);
+    return {
+      success: false,
+      message:
+        (error as Error).message || "Failed to request password reset OTP.",
+    };
+  }
+};
+
+/**
+ * Step 2 (Forgot Password): Verify the password reset OTP.
+ * Calls the backend endpoint POST /auth/verify-reset-otp
+ * @param phoneNumber The user's registered phone number.
+ * @param otp The 4-digit OTP code entered by the user.
+ * @returns Promise<ApiResponse<{ resetToken?: string }>> - Expects reset token in data on success.
+ */
+export const verifyPasswordResetOtpApi = async (
+  phoneNumber: string,
+  otp: string
+): Promise<ApiResponse<{ resetToken?: string }>> => {
+  console.log(`[AuthServiceFE] Verifying reset OTP ${otp} for: ${phoneNumber}`);
+  try {
+    const response = await fetch(`${AUTH_ENDPOINT}/verify-reset-otp`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ phoneNumber, otp }), // Send phone and OTP
+    });
+    // Expects { success: true, data: { resetToken: "..." } } on success
+    return await handleResponse<{ resetToken?: string }>(response);
+  } catch (error) {
+    console.error("Verify Password Reset OTP API failed:", error);
+    return {
+      success: false,
+      message:
+        (error as Error).message || "Failed to verify password reset OTP.",
+    };
+  }
+};
+
+/**
+ * Step 3 (Forgot Password): Resets the user's password using the reset token.
+ * Calls the backend endpoint POST /auth/reset-password
+ * @param phoneNumber The user's phone number (may be needed by backend for lookup)
+ * @param resetToken The plain reset token received after OTP verification.
+ * @param newPassword The new plain text password.
+ * @param confirmPassword The confirmation of the new plain text password.
+ * @returns Promise<ApiResponse<{ message: string }>> - Expects success/failure message.
+ */
+export const resetPasswordApi = async (
+  phoneNumber: string, // Sending identifier just in case backend logic needs it alongside token
+  resetToken: string,
+  newPassword: string,
+  confirmPassword: string
+): Promise<ApiResponse<{ message: string }>> => {
+  console.log(`[AuthServiceFE] Resetting password for: ${phoneNumber}`);
+  try {
+    const response = await fetch(`${AUTH_ENDPOINT}/reset-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // Backend controller expects these fields
+      body: JSON.stringify({
+        phoneNumber,
+        resetToken,
+        newPassword,
+        confirmPassword,
+      }),
+    });
+    // Expects { success: true, message: "..." }
+    return await handleResponse<{ message: string }>(response);
+  } catch (error) {
+    console.error("Reset Password API failed:", error);
+    return {
+      success: false,
+      message: (error as Error).message || "Failed to reset password.",
     };
   }
 };

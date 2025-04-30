@@ -44,7 +44,7 @@ const SettingsMenu: React.FC = () => {
     { href: "/about", label: "About", icon: HiOutlineInformationCircle }, // Create /about page later
     { href: "/faq", label: "FAQs", icon: HiOutlineQuestionMarkCircle }, // Create /faq page later
     {
-      href: "/privacy-policy",
+      href: "/privacyp",
       label: "Privacy Policy",
       icon: HiOutlineShieldCheck,
     }, // Create /privacy-policy page later

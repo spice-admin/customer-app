@@ -346,12 +346,9 @@ const OtpVerificationForm: React.FC<OtpVerificationFormProps> = () => {
                     animation: spinner-border .75s linear infinite;
                  }
                 @keyframes spinner-border { to { transform: rotate(360deg); } }
-                .me-2 { margin-right: 0.5rem; } /* Basic margin helper */
+                .me-2 { margin-right: 0.5rem; } 
 
-               /* Ensure template CSS defines styles for:
-                  .instructions, .otp-field, .otp-field input, .no-spinners,
-                  .resend-otp, .resend-link, .get-start-btn, .form-message.error
-               */
+               
                 `}
       </style>
     </div>

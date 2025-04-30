@@ -170,25 +170,10 @@ const LoginForm: React.FC = () => {
 
       {/* Remember Me & Forgot Password Row */}
       <div className="d-flex align-items-center justify-content-between remember-main">
-        {" "}
         {/* Template class */}
-        <div className="remember">
-          {" "}
-          {/* Template class */}
-          {/* Basic checkbox, add state handling if implementing "Remember Me" */}
-          {/* <input type="checkbox" name="check" id="rememberMe" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} /> */}
-          {/* <label htmlFor="rememberMe" className="ms-1">Remember Me</label> */}{" "}
-          {/* Add margin if needed */}
-          {/* Placeholder for now */}
-          &nbsp;
-        </div>
+        <div className="remember">&nbsp;</div>
         <div className="remember password">
-          {" "}
-          {/* Template class */}
-          {/* Link to future forgot password page */}
           <a href="/forgot-password" className="forgot-password-link">
-            {" "}
-            {/* Add specific class if needed */}
             Forgot Password?
           </a>
         </div>

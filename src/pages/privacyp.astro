@@ -1,0 +1,336 @@
+---
+// src/pages/privacyp.astro
+import CustomerLayout from "../layouts/Layout.astro"; // Adjust path as needed
+
+const pageTitle = "Privacy Policy";
+const companyName = "Spice Bar Indian Steet Food Inc"; // Replace with your actual company/app name
+const effectiveDate = "April 30, 2025"; // TODO: Update with the actual effective date
+const privacyContactEmail = "spicebar143@gmail.com"; // TODO: Update with your actual privacy contact email
+const websiteUrl = "https://spicebarfoods.com/"; // TODO: Update with your actual website URL
+---
+
+<CustomerLayout title={pageTitle}>
+  {/* Use a container similar to other static/auth pages */}
+  <section class="policy-page-container">
+    <div class="policy-content-card">
+      {/* Use a specific class or reuse auth-form-card */}
+      <h1 class="policy-title">{pageTitle}</h1>
+      <p class="policy-effective-date">Last Updated: {effectiveDate}</p>
+
+      {/* Introduction */}
+      <p>
+        Welcome to {companyName}! This Privacy Policy explains how {companyName}
+        ("we," "us," or "our") collects, uses, discloses, and protects your personal
+        information when you use our website ({websiteUrl}), mobile application,
+        and subscription-based food delivery services (collectively, the
+        "Services"). We are committed to protecting your privacy in accordance
+        with Canadian privacy laws, including the Personal Information
+        Protection and Electronic Documents Act (PIPEDA).
+      </p>
+
+      {/* Consent */}
+      <h2 class="policy-heading">Your Consent</h2>
+      <p>
+        By accessing or using our Services, you signify that you have read,
+        understood, and agree to our collection, storage, use, and disclosure of
+        your personal information as described in this Privacy Policy and our
+        Terms of Service. If you do not agree, please do not use our Services.
+        In specific situations, we may seek your express consent for certain
+        uses or disclosures.
+      </p>
+      <p>
+        You may withdraw your consent at any time, subject to legal or
+        contractual restrictions and reasonable notice, by contacting us at {
+          privacyContactEmail
+        }. Withdrawal of consent may affect your ability to use certain features
+        of our Services.
+      </p>
+
+      {/* Information We Collect */}
+      <h2 class="policy-heading">Information We Collect</h2>
+      <p>
+        We collect information you provide directly to us and information
+        collected automatically when you use our Services:
+      </p>
+      <ul>
+        <li>
+          <strong>Account Information:</strong> When you register, subscribe, or
+          update your profile, we collect information such as your full name, email
+          address, phone number, delivery address (including street, city, postal
+          code, potentially coordinates), billing address, and securely hashed password.
+        </li>
+        <li>
+          <strong>Subscription & Order Information:</strong> Details about your chosen
+          subscription package, order history, addon selections, delivery dates,
+          dietary preferences, and delivery instructions.
+        </li>
+        <li>
+          <strong>Payment Information:</strong> We use a third-party payment processor
+          (Stripe) to handle payments. We do not store your full credit card number.
+          We may store partial payment information provided by Stripe for reference,
+          such as the last four digits of your card, card brand, Stripe Customer
+          ID, and payment status.
+        </li>
+        <li>
+          <strong>Communications:</strong> Records of your communications with us
+          (e.g., customer support inquiries).
+        </li>
+        <li>
+          <strong>Location Information:</strong> If you enable location services,
+          we may collect your precise location data to assist with delivery accuracy.
+          You can disable this in your device settings.
+        </li>
+        <li>
+          <strong
+            >Usage and Device Information (Automatically Collected):</strong
+          > When you use our Services, we may collect information like your IP address,
+          device type, operating system, browser type, pages viewed, interactions
+          with features, dates and times of access, and cookies or similar technologies
+          data.
+        </li>
+      </ul>
+
+      {/* How We Use Information */}
+      <h2 class="policy-heading">How We Use Your Information</h2>
+      <p>We use the information we collect for purposes including:</p>
+      <ul>
+        <li>
+          Providing, maintaining, and improving our Services (processing
+          subscriptions, fulfilling orders, managing deliveries).
+        </li>
+        <li>Processing payments through our third-party processor (Stripe).</li>
+        <li>
+          Communicating with you (sending OTPs for verification/password reset,
+          order confirmations, delivery updates, customer support responses,
+          and, with your consent, marketing materials).
+        </li>
+        <li>
+          Personalizing your experience based on preferences and order history.
+        </li>
+        <li>
+          Analyzing usage trends to improve our app design, features, and
+          offerings.
+        </li>
+        <li>
+          Detecting and preventing fraud, security breaches, and ensuring
+          compliance with our terms.
+        </li>
+        <li>Complying with legal and regulatory requirements in Canada.</li>
+      </ul>
+
+      {/* Information Sharing */}
+      <h2 class="policy-heading">How We Share Your Information</h2>
+      <p>
+        We do not sell your personal information. We may share your information
+        only in the following circumstances:
+      </p>
+      <ul>
+        <li>
+          <strong>Service Providers:</strong> With third-party vendors and service
+          providers who perform services on our behalf, such as payment processing
+          (Stripe), SMS delivery (e.g., Twilio), cloud hosting (e.g., Railway), data
+          analytics, and customer support tools. These providers only have access
+          to the information necessary to perform their functions and are obligated
+          to protect your information.
+        </li>
+        <li>
+          <strong>Delivery Partners:</strong> With independent delivery drivers or
+          partners to facilitate the delivery of your orders. We share necessary
+          information like your name, delivery address, phone number (optional, for
+          delivery coordination), and delivery instructions.
+        </li>
+        <li>
+          <strong>Legal Requirements:</strong> If required by law, regulation, legal
+          process (like a subpoena or court order), or governmental request.
+        </li>
+        <li>
+          <strong>To Protect Rights and Safety:</strong> To enforce our Terms of
+          Service, protect the security or integrity of our Services, or protect
+          the rights, property, or safety of {companyName}, our users, or
+          others.
+        </li>
+        <li>
+          <strong>Business Transfers:</strong> In connection with a merger, sale
+          of company assets, financing, or acquisition of all or a portion of our
+          business by another company.
+        </li>
+      </ul>
+
+      {/* Data Security */}
+      <h2 class="policy-heading">Data Security</h2>
+      <p>
+        We implement reasonable administrative, technical, and physical security
+        measures designed to protect your personal information from unauthorized
+        access, use, alteration, or destruction. This includes using SSL/TLS
+        encryption for data transmission, hashing passwords, and restricting
+        access to personal data. However, no internet transmission or electronic
+        storage method is 100% secure, and we cannot guarantee absolute
+        security.
+      </p>
+
+      {/* Data Retention */}
+      <h2 class="policy-heading">Data Retention</h2>
+      <p>
+        We retain your personal information for as long as necessary to fulfill
+        the purposes outlined in this Privacy Policy, provide our Services,
+        comply with our legal obligations (e.g., tax, accounting), resolve
+        disputes, and enforce our agreements. When your information is no longer
+        needed, we will take reasonable steps to securely destroy it or
+        anonymize it.
+      </p>
+
+      {/* Cookies and Tracking */}
+      <h2 class="policy-heading">Cookies and Tracking Technologies</h2>
+      <p>
+        We may use cookies (small text files stored on your device) and similar
+        technologies to operate our Services, remember your preferences (like
+        login sessions), analyze usage, and potentially for marketing purposes.
+        You can usually manage cookie preferences through your browser settings.
+      </p>
+
+      {/* Your Privacy Rights (PIPEDA) */}
+      <h2 class="policy-heading">Your Privacy Rights</h2>
+      <p>Under Canadian privacy laws, you generally have the right to:</p>
+      <ul>
+        <li>
+          <strong>Access Your Information:</strong> Request access to the personal
+          information we hold about you.
+        </li>
+        <li>
+          <strong>Correct Your Information:</strong> Request correction of inaccurate
+          or incomplete personal information.
+        </li>
+        <li>
+          <strong>Withdraw Consent:</strong> Withdraw your consent to our collection,
+          use, or disclosure of your information (subject to legal/contractual limitations).
+        </li>
+      </ul>
+      <p>
+        To exercise these rights, please contact us at {privacyContactEmail}. We
+        will respond to your request in accordance with applicable laws.
+      </p>
+
+      {/* Children's Privacy */}
+      <h2 class="policy-heading">Children's Privacy</h2>
+      <p>
+        Our Services are not directed to individuals under the age of 16 (or the
+        age of majority in your jurisdiction). We do not knowingly collect
+        personal information from children without parental consent. If we
+        become aware that we have collected such information, we will take steps
+        to delete it.
+      </p>
+
+      {/* International Transfers (Optional - Include if applicable) */}
+      {/* Changes to this Policy */}
+      <h2 class="policy-heading">Changes to This Privacy Policy</h2>
+      <p>
+        We may update this Privacy Policy from time to time. We will notify you
+        of any significant changes by posting the new policy on our Services and
+        updating the "Last Updated" date. We encourage you to review this policy
+        periodically.
+      </p>
+
+      {/* Contact Us */}
+      <h2 class="policy-heading">Contact Us</h2>
+      <p>
+        If you have any questions, concerns, or complaints about this Privacy
+        Policy or our privacy practices, please contact us at:
+      </p>
+      <p>{companyName} Privacy Team</p>
+      <p>
+        Email: <a href={`mailto:${privacyContactEmail}`} class="policy-link"
+          >{privacyContactEmail}</a
+        >
+      </p>
+      {/* Add physical address if applicable/required */}
+      {/* Disclaimer */}
+      <p class="policy-disclaimer">
+        <em
+          >This Privacy Policy provides a general overview. For complete details
+          and legal compliance, consultation with a legal professional is
+          advised.</em
+        >
+      </p>
+    </div>
+  </section>
+</CustomerLayout>
+
+<style is:global>
+  /* Basic styles for the policy page - Add to global.css or scope */
+  .policy-page-container {
+    max-width: 800px; /* Wider container for text */
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  .policy-content-card {
+    /* Or use .auth-form-card if styles match */
+    background-color: #fff;
+    padding: 2rem 2.5rem; /* More padding for text */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    line-height: 1.6; /* Improve readability */
+    color: #374151; /* Default text color */
+  }
+
+  .policy-title {
+    font-size: 1.75rem; /* Larger title */
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1f2937;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 1rem;
+  }
+
+  .policy-effective-date {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin-bottom: 2rem;
+  }
+
+  .policy-heading {
+    font-size: 1.25rem; /* h2 */
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: #111827;
+    border-bottom: 1px solid #f3f4f6; /* Lighter underline */
+    padding-bottom: 0.25rem;
+  }
+
+  .policy-heading:first-of-type {
+    margin-top: 0; /* Remove top margin for first heading */
+  }
+
+  .policy-content-card p {
+    margin-bottom: 1rem;
+  }
+
+  .policy-content-card ul {
+    list-style: disc;
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .policy-content-card ul li {
+    margin-bottom: 0.5rem;
+  }
+
+  .policy-link {
+    color: #f97316; /* Orange link */
+    text-decoration: underline;
+  }
+  .policy-link:hover {
+    color: #ea580c;
+  }
+
+  .policy-disclaimer {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+    font-size: 0.8rem;
+    color: #6b7280;
+    text-align: center;
+  }
+</style>
