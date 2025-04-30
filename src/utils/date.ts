@@ -21,7 +21,6 @@ export const formatDate = (
       year: "numeric",
       month: "short", // e.g., 'Apr'
       day: "numeric",
-      timeZone: "UTC", // Specify UTC if dates from backend are UTC based
     });
   } catch (e) {
     console.error("Error formatting date:", dateInput, e);
