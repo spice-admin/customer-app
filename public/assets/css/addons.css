@@ -659,3 +659,116 @@
   margin-bottom: 0.5rem;
   color: #1f2937;
 }
+
+/* Add to global.css or stripe.css */
+
+/* Basic Styling for Stripe Checkout Form */
+.stripe-checkout-form {
+  width: 100%;
+  min-width: 300px;
+  max-width: 500px; /* Limit form width */
+  margin: 1.5rem auto; /* Center form */
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background-color: #f9fafb;
+}
+
+#payment-element {
+  margin-bottom: 1.5rem; /* Space below payment fields */
+}
+
+.stripe-submit-button {
+  background-color: #16a34a; /* Green */
+  font-family: inherit;
+  color: #ffffff;
+  border-radius: 4px;
+  border: 0;
+  padding: 12px 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: block;
+  transition: background-color 0.2s ease;
+  width: 100%;
+  margin-top: 1rem; /* Space above button */
+}
+.stripe-submit-button:hover:not(:disabled) {
+  background-color: #15803d;
+}
+.stripe-submit-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.stripe-payment-message {
+  color: rgb(105, 115, 134);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  padding-top: 12px;
+  text-align: center;
+}
+.stripe-payment-message a {
+  color: #f97316; /* Orange */
+  text-decoration: underline;
+}
+/* Style error messages specifically */
+.stripe-payment-message:not(:empty)::before {
+  /* Add symbol for errors? */
+  content: "⚠️ ";
+}
+
+.stripe-cancel-button {
+  display: block;
+  margin: 1rem auto 0 auto;
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 0.875rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.stripe-cancel-button:hover {
+  color: #1f2937;
+}
+
+/* Styling for Status Display Page */
+.status-display-container {
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.status-message {
+  font-size: 1.125rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+.status-message.status-success {
+  color: #15803d; /* Dark Green */
+}
+.status-message.status-error {
+  color: #b91c1c; /* Dark Red */
+}
+
+.status-link {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  background-color: #f97316;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: background-color 0.15s ease;
+}
+.status-link:hover {
+  background-color: #ea580c;
+}
+.status-link.status-link-error {
+  background-color: #6b7280; /* Gray */
+}
+.status-link.status-link-error:hover {
+  background-color: #4b5563;
+}

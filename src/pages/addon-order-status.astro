@@ -1,0 +1,19 @@
+---
+// src/pages/addon-order-status.astro
+import CustomerLayout from "../layouts/Layout.astro"; // Adjust path
+import AddonOrderStatusDisplay from "../components/orders/AddonOrderStatusDisplay"; // Adjust path
+---
+
+<CustomerLayout title="Addon Order Status">
+  <section class="status-page-container">
+    <AddonOrderStatusDisplay client:load />
+  </section>
+</CustomerLayout>
+
+<style>
+  .status-page-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+</style>
