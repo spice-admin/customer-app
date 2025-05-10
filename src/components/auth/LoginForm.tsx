@@ -1,27 +1,24 @@
 // src/components/auth/LoginForm.tsx
 import React, { useState } from "react";
-import { loginCustomerApi } from "../../services/auth.service"; // Import API call
-import { loginSchema } from "../../validators/authSchema"; // Import Zod schema
-import type { ZodIssue } from "zod";
+import { supabase } from "../../lib/supabaseClient"; // Adjust path
+// Assuming your loginSchema can be adapted or you create a new one for email/password
+// For now, we'll do basic client-side checks. Use Zod for robust validation.
+// import { loginSchema } from "../../validators/authSchema";
+// import type { ZodIssue } from "zod";
 
-// Import react-icons
 import {
-  HiOutlineDevicePhoneMobile,
+  HiOutlineEnvelope, // Changed from HiOutlineDevicePhoneMobile for email
   HiOutlineLockClosed,
   HiOutlineEye,
   HiOutlineEyeSlash,
 } from "react-icons/hi2";
 
-const AUTH_TOKEN_KEY =
-  "7f57e24a0181b526fb106b2bad45d9f6c0717b88ea01d2dd0afae3594a69b8c0";
-
 const LoginForm: React.FC = () => {
   const [formData, setFormData] = useState({
-    mobile: "",
+    email: "", // Changed from mobile to email
     password: "",
   });
-  // const [rememberMe, setRememberMe] = useState(false); // State for checkbox
-  const [errors, setErrors] = useState<Record<string, string | undefined>>({});
+  const [errors, setErrors] = useState<Record<string, string | undefined>>({}); // For Zod errors primarily
   const [apiError, setApiError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -40,71 +37,96 @@ const LoginForm: React.FC = () => {
     setErrors({});
     setApiError(null);
 
-    // --- Client-side Validation ---
-    const validationResult = loginSchema.safeParse(formData);
-    if (!validationResult.success) {
-      const fieldErrors: Record<string, string | undefined> = {};
-      validationResult.error.issues.forEach((issue: ZodIssue) => {
-        if (issue.path.length > 0) {
-          fieldErrors[issue.path[0]] = issue.message;
-        }
-      });
-      setErrors(fieldErrors);
+    // Basic client-side validation (replace with Zod for production)
+    if (!formData.email) {
+      setErrors((prev) => ({ ...prev, email: "Email is required." }));
       return;
     }
+    if (!formData.password) {
+      setErrors((prev) => ({ ...prev, password: "Password is required." }));
+      return;
+    }
+    // End basic validation
 
-    // --- API Call ---
     setIsLoading(true);
     try {
-      const result = await loginCustomerApi(validationResult.data);
+      const { data: authData, error: signInError } =
+        await supabase.auth.signInWithPassword({
+          email: formData.email,
+          password: formData.password,
+        });
 
-      if (result.success && result.token) {
-        // **Login Success (Verified User)**
-        console.log("Login successful, token:", result.token);
-        // TODO: Implement proper token storage (e.g., secure cookie, state management)
-        localStorage.setItem(AUTH_TOKEN_KEY, result.token);
-        // Redirect to home/dashboard
-        window.location.href = "/home"; // Or '/' or '/dashboard'
-      } else if (result.verificationRequired) {
-        // **Login Success (Unverified User) -> Redirect to OTP**
-
-        // --- DEBUGGING STARTS HERE ---
-        console.log("Verification required flag received from API.");
-        // Capture the mobile number state *right before* using it
-        const mobileToRedirect = formData.mobile;
-        console.log(
-          "Mobile number captured from state for redirect:",
-          mobileToRedirect
+      if (signInError) {
+        console.error("Supabase sign-in error:", signInError);
+        setApiError(
+          signInError.message || "Login failed. Please check your credentials."
         );
+        setIsLoading(false);
+        return;
+      }
 
-        // Check if the mobile number is actually empty or undefined
-        if (!mobileToRedirect) {
-          console.error(
-            "CRITICAL: Mobile number is empty in state right before redirect!"
-          );
+      if (authData.user) {
+        // Successfully authenticated with Supabase Auth
+        // Now check their profile for phone verification status
+        const { data: profile, error: profileError } = await supabase
+          .from("profiles")
+          .select("phone, is_phone_verified")
+          .eq("id", authData.user.id)
+          .single();
+
+        if (profileError) {
+          console.error("Error fetching profile:", profileError);
           setApiError(
-            "Login succeeded, but cannot redirect to OTP verification (missing mobile number). Please try again."
+            "Login successful, but could not retrieve profile information. Please try again."
           );
-          // Don't attempt redirect if number is missing
-        } else {
-          // Construct the URL
-          const redirectUrl = `/otp-verification?mobile=${encodeURIComponent(
-            mobileToRedirect
-          )}`;
-          console.log("Constructed redirect URL:", redirectUrl);
+          await supabase.auth.signOut(); // Sign out if profile can't be fetched
+          setIsLoading(false);
+          return;
+        }
 
-          // Perform the redirect
-          window.location.href = redirectUrl;
+        if (profile) {
+          if (profile.is_phone_verified) {
+            // Phone is verified, redirect to home
+            console.log(
+              "Login successful, phone verified. Redirecting to /home..."
+            );
+            window.location.href = "/home"; // Ensure home.astro exists
+          } else {
+            // Phone not verified, redirect to OTP page
+            // We'll need an Edge Function here to *trigger* sending the OTP
+            // For now, let's assume we just redirect and the OTP page handles sending
+            console.log(
+              "Login successful, phone NOT verified. Redirecting to OTP verification..."
+            );
+            if (!profile.phone) {
+              setApiError(
+                "Phone number not found on profile. Cannot proceed with OTP verification."
+              );
+              await supabase.auth.signOut();
+              setIsLoading(false);
+              return;
+            }
+            // Before redirecting, you'd ideally call an Edge Function to send the OTP.
+            // For now, we'll just redirect. The OTP page will need to handle the OTP sending trigger.
+            // This is a placeholder for the Edge Function call to send OTP:
+            // await supabase.functions.invoke('send-custom-otp', { body: { phoneNumber: profile.phone } });
+            window.location.href = `/otp-verification?phone=${encodeURIComponent(
+              profile.phone
+            )}`;
+          }
+        } else {
+          // Profile not found - this shouldn't happen if handle_new_user trigger is working
+          setApiError(
+            "Login successful, but profile not found. Please contact support."
+          );
+          await supabase.auth.signOut();
         }
       } else {
-        // **API returned error (e.g., wrong password, user not found)**
-        setApiError(
-          result.message || "Login failed. Please check credentials."
-        );
+        // Should be caught by signInError, but as a fallback
+        setApiError("Login failed. Please try again.");
       }
     } catch (error) {
-      // **Unexpected error during API call**
-      console.error("Unexpected login error:", error);
+      console.error("Unexpected login process error:", error);
       setApiError((error as Error).message || "An unexpected error occurred.");
     } finally {
       setIsLoading(false);
@@ -112,30 +134,39 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    // Use the class from your template's form tag
     <form onSubmit={handleSubmit} className="new_password_input">
-      {/* API Error Message */}
-      {apiError && <div className="form-message error">{apiError}</div>}
-
-      {/* Mobile Input */}
-      <div className={`form-item ${errors.mobile ? "has-error" : ""}`}>
+      {apiError && (
+        <div className="alert alert-danger text-center mb-4" role="alert">
+          {apiError}
+        </div>
+      )}
+      {/* Zod validation errors (if you re-integrate Zod) */}
+      {errors.email && (
+        <div className="text-danger mb-2">
+          <small>{errors.email}</small>
+        </div>
+      )}
+      <div className={`form-item ${errors.email ? "has-error" : ""}`}>
         <span className="input-icon-wrapper">
-          <HiOutlineDevicePhoneMobile className="input-icon" />
+          <HiOutlineEnvelope className="input-icon" />{" "}
+          {/* Changed to Email Icon */}
         </span>
         <input
-          type="tel"
-          placeholder="Enter Mobile Number (with +1)"
-          className={`no-spinners ${errors.mobile ? "input-error" : ""}`}
-          name="mobile"
-          value={formData.mobile}
+          type="email" // Changed to email
+          placeholder="Enter Email" // Changed placeholder
+          className={`no-spinners ${errors.email ? "input-error" : ""}`}
+          name="email" // Changed to email
+          value={formData.email}
           onChange={handleChange}
           disabled={isLoading}
-          aria-invalid={!!errors.mobile}
+          aria-invalid={!!errors.email}
         />
-        {errors.mobile && <span className="error-text">{errors.mobile}</span>}
       </div>
-
-      {/* Password Input */}
+      {errors.password && (
+        <div className="text-danger mb-2">
+          <small>{errors.password}</small>
+        </div>
+      )}
       <div className={`form-item ${errors.password ? "has-error" : ""}`}>
         <span className="input-icon-wrapper">
           <HiOutlineLockClosed className="input-icon" />
@@ -146,8 +177,8 @@ const LoginForm: React.FC = () => {
           className={`no-spinners password-input ${
             errors.password ? "input-error" : ""
           }`}
-          id="password" // Use specific ID if needed
-          autoComplete="current-password" // Hint for browser password managers
+          id="password"
+          autoComplete="current-password"
           name="password"
           value={formData.password}
           onChange={handleChange}
@@ -157,20 +188,14 @@ const LoginForm: React.FC = () => {
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}
-          className="password-toggle-icon" // Use template class
+          className="password-toggle-icon"
           aria-label={showPassword ? "Hide password" : "Show password"}
           disabled={isLoading}
         >
           {showPassword ? <HiOutlineEyeSlash /> : <HiOutlineEye />}
         </button>
-        {errors.password && (
-          <span className="error-text">{errors.password}</span>
-        )}
       </div>
-
-      {/* Remember Me & Forgot Password Row */}
       <div className="d-flex align-items-center justify-content-between remember-main">
-        {/* Template class */}
         <div className="remember">&nbsp;</div>
         <div className="remember password">
           <a href="/forgot-password" className="forgot-password-link">
@@ -178,15 +203,12 @@ const LoginForm: React.FC = () => {
           </a>
         </div>
       </div>
-
-      {/* Submit Button */}
       <button
         type="submit"
-        className="get-start-btn sign-in-btn" // Use template classes (might be same as sign-up-btn or different)
+        className="get-start-btn sign-in-btn"
         disabled={isLoading}
       >
         {isLoading ? "Signing In..." : "Sign In"}
-        {/* Add spinner icon or element here if needed */}
       </button>
     </form>
   );

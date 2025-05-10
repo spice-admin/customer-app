@@ -13,6 +13,7 @@
     "@react-google-maps/api": "^2.20.6",
     "@stripe/react-stripe-js": "^3.6.0",
     "@stripe/stripe-js": "^7.2.0",
+    "@supabase/supabase-js": "^2.49.4",
     "@tailwindcss/vite": "^4.1.4",
     "@types/react": "^19.1.2",
     "@types/react-datepicker": "^6.2.0",
@@ -26,5 +27,8 @@
     "sweetalert2": "^11.19.1",
     "tailwindcss": "^4.1.4",
     "zod": "^3.24.3"
+  },
+  "devDependencies": {
+    "supabase": "^2.22.12"
   }
 }

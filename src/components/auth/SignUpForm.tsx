@@ -1,10 +1,11 @@
 // src/components/auth/SignupForm.tsx
 import React, { useState } from "react";
-import { registerCustomerApi } from "../../services/auth.service";
-import { registerSchema } from "../../validators/authSchema";
+// 1. Import Supabase client
+import { supabase } from "../../lib/supabaseClient"; // Adjust path if necessary
+import { registerSchema } from "../../validators/authSchema"; // Keep your Zod schema
 import type { ZodIssue } from "zod";
 
-// Import desired icons from react-icons (Heroicons v2 used here as example)
+// Import desired icons (your existing imports are fine)
 import {
   HiOutlineUser,
   HiOutlineEnvelope,
@@ -18,7 +19,7 @@ const SignupForm: React.FC = () => {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
-    mobile: "",
+    mobile: "", // This will be phone for Supabase
     password: "",
     confirmPassword: "",
   });
@@ -36,7 +37,7 @@ const SignupForm: React.FC = () => {
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
-    setApiError(null);
+    setApiError(null); // Clear API error on input change
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -45,6 +46,7 @@ const SignupForm: React.FC = () => {
     setApiError(null);
     setIsSuccess(false);
 
+    // Client-side validation using Zod
     const validationResult = registerSchema.safeParse(formData);
     if (!validationResult.success) {
       const fieldErrors: Record<string, string | undefined> = {};
@@ -59,11 +61,106 @@ const SignupForm: React.FC = () => {
 
     setIsLoading(true);
     try {
-      const result = await registerCustomerApi(validationResult.data);
-      if (result.success) {
+      // 2. Call Supabase signUp
+      const { data: signUpData, error: signUpError } =
+        await supabase.auth.signUp({
+          email: validationResult.data.email,
+          password: validationResult.data.password,
+          options: {
+            data: {
+              full_name: validationResult.data.fullName,
+              phone: validationResult.data.mobile, // Pass mobile as phone
+              role: "customer", // Set the role for the profiles table trigger
+            },
+          },
+        });
+
+      if (signUpError) {
+        // Handle Supabase specific errors
+        console.error("Supabase signup error:", signUpError);
+        // Supabase might return a specific message for already registered users
+        // depending on your email confirmation settings.
+        if (signUpError.message.includes("User already registered")) {
+          setApiError(
+            "This email is already registered. Please try logging in."
+          );
+        } else {
+          setApiError(
+            signUpError.message || "Registration failed. Please try again."
+          );
+        }
+        setIsLoading(false);
+        return;
+      }
+
+      // Handle case where user exists but may not be confirmed (identities array might be empty)
+      // This behavior can vary based on Supabase version and email confirmation settings.
+      // For "Confirm email" ON (default): data.user will be non-null, data.session will be null.
+      if (signUpData.user) {
+        // Supabase user created successfully.
+        // Now, attempt to create Stripe customer (fire and forget for MVP UX)
+        // For a more robust flow, you might await this and handle its specific errors.
+        console.log(
+          "Supabase user created. Attempting to create Stripe customer..."
+        );
+        supabase.functions
+          .invoke("create-stripe-customer", {
+            body: {
+              userId: signUpData.user.id,
+              email: signUpData.user.email, // email from the user object
+              name: validationResult.data.fullName,
+              phone: validationResult.data.mobile,
+            },
+          })
+          .then(({ data: stripeData, error: stripeError }) => {
+            if (stripeError) {
+              console.error(
+                "Stripe customer creation via Edge Function failed:",
+                stripeError.message
+              );
+              // Non-critical error for user's signup success message, but log it.
+              // You might want to add a flag to the user's profile or a separate logging system.
+              setApiError((prev) =>
+                prev
+                  ? `${prev}\nStripe setup issue: ${stripeError.message}`
+                  : `Stripe setup issue: ${stripeError.message}`
+              );
+            } else if (stripeData?.error) {
+              console.error(
+                "Stripe customer creation Edge Function returned an error:",
+                stripeData.error
+              );
+              setApiError((prev) =>
+                prev
+                  ? `${prev}\nStripe setup issue: ${stripeData.error}`
+                  : `Stripe setup issue: ${stripeData.error}`
+              );
+            } else {
+              console.log(
+                "Stripe customer creation/linking successful:",
+                stripeData
+              );
+            }
+          })
+          .catch((invokeError) => {
+            console.error(
+              "Error invoking create-stripe-customer function:",
+              invokeError
+            );
+            setApiError((prev) =>
+              prev
+                ? `${prev}\nStripe setup function call failed.`
+                : `Stripe setup function call failed.`
+            );
+          });
+
         setIsSuccess(true);
+        setApiError(null); // Clear any previous apiError if Supabase signup was success
+        // Message will prompt for email confirmation IF it's enabled in Supabase.
+        // If disabled, they are fully registered.
+        // As per your request, we disabled email confirmation earlier.
       } else {
-        setApiError(result.message || "Registration failed.");
+        setApiError("Registration failed: No user data received.");
       }
     } catch (error) {
       setApiError((error as Error).message || "An unexpected error occurred.");
@@ -72,46 +169,42 @@ const SignupForm: React.FC = () => {
     }
   };
 
+  // Your JSX for the form structure remains largely the same.
+  // Key changes:
+  // - The success message will now prompt the user to check their email for confirmation.
+  // - Error messages will come from Supabase.
   return (
-    // Use the class from your template's form tag
     <form onSubmit={handleSubmit} className="new_password_input">
-      {/* Render API Error/Success Messages - Style these using your template's alert/message classes if available */}
-      {apiError && (
-        <div className="form-message error">
-          {/* Add alert classes */} {apiError}
-        </div>
-      )}
+      {apiError &&
+        !isSuccess && ( // Don't show API error if success message is shown
+          // Adapt class to your template's error alert style
+          <div className="alert alert-danger text-center mb-4" role="alert">
+            {apiError}
+          </div>
+        )}
       {isSuccess && (
-        <div className="form-message success">
-          {" "}
-          {/* Add alert classes */}
-          Registration successful!{" "}
-          <a href="/login" className="link">
-            Login now
-          </a>
-          .
+        // Adapt class to your template's success alert style
+        <div className="alert alert-success text-center mb-4" role="alert">
+          Registration successful! Please check your email ({formData.email}) to
+          confirm your account.
+          {/* You might not want a direct login link here if email confirmation is pending */}
+          {/* <a href="/login" className="link"> Login after confirmation</a>. */}
         </div>
       )}
 
       {/* Full Name Input */}
       <div className={`form-item ${errors.fullName ? "has-error" : ""}`}>
-        {" "}
-        {/* Use template class */}
-        {/* Wrap react-icon in a span for positioning if needed by your CSS */}
         <span className="input-icon-wrapper">
-          {" "}
-          {/* Adjust class/styling as needed */}
-          <HiOutlineUser className="input-icon" />{" "}
-          {/* Use react-icon, apply template class */}
+          <HiOutlineUser className="input-icon" />
         </span>
         <input
           type="text"
-          placeholder="Your Name"
+          placeholder="Your Full Name" // Changed placeholder for clarity
           className={`no-spinners ${errors.fullName ? "input-error" : ""}`}
           name="fullName"
           value={formData.fullName}
           onChange={handleChange}
-          disabled={isLoading || isSuccess}
+          disabled={isLoading || isSuccess} // Disable form on success too
           aria-invalid={!!errors.fullName}
         />
         {errors.fullName && (
@@ -126,7 +219,7 @@ const SignupForm: React.FC = () => {
         </span>
         <input
           type="email"
-          placeholder="Email"
+          placeholder="Your Email" // Changed placeholder
           className={`no-spinners ${errors.email ? "input-error" : ""}`}
           name="email"
           value={formData.email}
@@ -143,8 +236,8 @@ const SignupForm: React.FC = () => {
           <HiOutlineDevicePhoneMobile className="input-icon" />
         </span>
         <input
-          type="tel" // Changed to tel
-          placeholder="Enter Mobile Number"
+          type="tel"
+          placeholder="Your Mobile Number" // Changed placeholder
           className={`no-spinners ${errors.mobile ? "input-error" : ""}`}
           name="mobile"
           value={formData.mobile}
@@ -165,7 +258,7 @@ const SignupForm: React.FC = () => {
           placeholder="Password (min 6 characters)"
           className={`no-spinners password-input ${
             errors.password ? "input-error" : ""
-          }`} // Added 'password-input' class for potential right padding
+          }`}
           id="password"
           autoComplete="new-password"
           name="password"
@@ -174,11 +267,10 @@ const SignupForm: React.FC = () => {
           disabled={isLoading || isSuccess}
           aria-invalid={!!errors.password}
         />
-        {/* Password Toggle Button using react-icons */}
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}
-          className="password-toggle-icon" // Use template class for positioning/styling
+          className="password-toggle-icon"
           aria-label={showPassword ? "Hide password" : "Show password"}
           disabled={isLoading || isSuccess}
         >
@@ -199,7 +291,7 @@ const SignupForm: React.FC = () => {
           placeholder="Confirm Password"
           className={`no-spinners password-input ${
             errors.confirmPassword ? "input-error" : ""
-          }`} // Added 'password-input' class
+          }`}
           id="confirm-password"
           autoComplete="new-password"
           name="confirmPassword"
@@ -208,11 +300,10 @@ const SignupForm: React.FC = () => {
           disabled={isLoading || isSuccess}
           aria-invalid={!!errors.confirmPassword}
         />
-        {/* Password Toggle Button using react-icons */}
         <button
           type="button"
           onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-          className="password-toggle-icon" // Use template class for positioning/styling
+          className="password-toggle-icon"
           aria-label={
             showConfirmPassword
               ? "Hide confirm password"
@@ -227,14 +318,12 @@ const SignupForm: React.FC = () => {
         )}
       </div>
 
-      {/* Submit Button - Using Button element but styled with template classes */}
       <button
         type="submit"
-        className="get-start-btn sign-up-btn" // Use template classes
+        className="get-start-btn sign-up-btn"
         disabled={isLoading || isSuccess}
       >
-        {isLoading ? "Signing Up..." : "Sign Up"}
-        {/* Add spinner icon or element here if needed */}
+        {isLoading ? "Signing Up..." : isSuccess ? "Registered!" : "Sign Up"}
       </button>
     </form>
   );
