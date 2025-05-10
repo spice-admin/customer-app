@@ -155,10 +155,10 @@ const SignupForm: React.FC = () => {
           });
 
         setIsSuccess(true);
-        setApiError(null); // Clear any previous apiError if Supabase signup was success
-        // Message will prompt for email confirmation IF it's enabled in Supabase.
-        // If disabled, they are fully registered.
-        // As per your request, we disabled email confirmation earlier.
+        setApiError(null);
+        setTimeout(() => {
+          window.location.href = "/"; // Redirect to homepage
+        }, 1500);
       } else {
         setApiError("Registration failed: No user data received.");
       }

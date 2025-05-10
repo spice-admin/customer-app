@@ -1,35 +1,73 @@
 ---
-import SignupForm from "../components/auth/SignUpForm";
+// src/pages/signup.astro
+// Remove direct import of SignupForm here, it's handled by the controller
+// import SignupForm from "../components/auth/SignUpForm";
+import SignupFlowController from "../components/auth/SignupFlowController.tsx"; // Import the new controller
 import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout>
   <div class="site_content">
-    <!-- ======================All Page Loader========================= -->
     <div class="loader-wrapper loader">
       <div class="icon-loader">
-        <img src="assets/images/pan.gif" alt="pan" />
+        <img src="/assets/images/pan.gif" alt="pan" />
       </div>
     </div>
-    <!-- ======================All Page Loader End========================= -->
-    <!-- ====================== Header ========================= -->
     <section class="container">
       <div class="lets-screen-main section-main">
         <img
           class="lets-screen-logo"
-          src="assets/images/logo/logo-new.png"
+          src="/assets/images/logo/logo-new.png"
           alt="Logo"
         />
         <h1 class="lets-you-text">Sign Up</h1>
-        <SignupForm client:load />
 
-        <div class="d-flex align-items-center justify-content-center">
-          <p class="have-an-account">
+        <SignupFlowController client:load />
+
+        <div class="auth-alternative-action text-center">
+          {
+            /* Added text-center if d-flex is removed, or keep d-flex if you prefer */
+          }
+          <p class="have-an-account-prompt">
+            {/* New class for the paragraph */}
             Already have an account?
-            <span onclick="location.href='/'"> Sign in</span>
+            <a
+              href="/"
+              class="signin-link"
+              aria-label="Sign in to your account"
+            >
+              Sign in
+            </a>
           </p>
         </div>
       </div>
     </section>
   </div>
 </Layout>
+
+<style>
+  .auth-alternative-action {
+    margin-top: 2rem; /* THIS IS THE KEY FOR SEPARATION. Adjust value (e.g., 1.5rem, 2.5rem) as needed. */
+    padding-bottom: 1rem; /* Adds some space at the very bottom if needed */
+  }
+
+  .have-an-account-prompt {
+    font-size: 0.95em; /* Slightly smaller than default paragraph text */
+    color: #6c757d; /* A common secondary text color (Bootstrap's $gray-600) */
+    margin-bottom: 0; /* Remove default bottom margin from <p> if any */
+  }
+
+  .signin-link {
+    font-weight: 500; /* Makes the link text a bit more prominent */
+    color: #0d6efd; /* A standard link blue (Bootstrap's $blue) - adjust to your theme */
+    text-decoration: none; /* Modern look, underline on hover */
+    margin-left: 0.3em; /* A small space between the question and the link */
+    transition: color 0.2s ease-in-out; /* Smooth color transition on hover */
+  }
+
+  .signin-link:hover,
+  .signin-link:focus {
+    color: #0a58ca; /* Darker shade of blue on hover/focus (Bootstrap's $blue-700) */
+    text-decoration: underline; /* Add underline on hover/focus for clear affordance */
+  }
+</style>
