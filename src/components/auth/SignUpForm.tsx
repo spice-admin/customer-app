@@ -175,20 +175,23 @@ const SignupForm: React.FC = () => {
   // - Error messages will come from Supabase.
   return (
     <form onSubmit={handleSubmit} className="new_password_input">
-      {apiError &&
-        !isSuccess && ( // Don't show API error if success message is shown
-          // Adapt class to your template's error alert style
-          <div className="alert alert-danger text-center mb-4" role="alert">
-            {apiError}
+      {apiError && !isSuccess && (
+        <div className="alert alert-danger text-center mb-4" role="alert">
+          {apiError}
+        </div>
+      )}
+      {/* Updated Success Message */}
+      {isSuccess &&
+        !apiError && ( // Only show general success if no overriding apiError
+          <div className="alert alert-success text-center mb-4" role="alert">
+            Registration successful! Redirecting...
           </div>
         )}
-      {isSuccess && (
-        // Adapt class to your template's success alert style
-        <div className="alert alert-success text-center mb-4" role="alert">
-          Registration successful! Please check your email ({formData.email}) to
-          confirm your account.
-          {/* You might not want a direct login link here if email confirmation is pending */}
-          {/* <a href="/login" className="link"> Login after confirmation</a>. */}
+      {/* If there was a success but also an apiError (e.g. from Stripe or failed auto-login) */}
+      {isSuccess && apiError && (
+        <div className="alert alert-warning text-center mb-4" role="alert">
+          {apiError}{" "}
+          {/* This will show the specific error, e.g. about email confirmation if session failed */}
         </div>
       )}
 
