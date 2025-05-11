@@ -66,18 +66,17 @@ export interface Addon {
 }
 
 export interface ICustomerProfile {
-  _id: string;
-  fullName: string;
-  email: string;
-  mobile: string;
-  // These fields might be null/undefined initially if not set
+  id: string;                 // User's Supabase Auth ID (from profiles.id)
+  fullName?: string | null;    // From profiles.full_name
+  email?: string | null;       // Directly from Supabase Auth user object
+  phone?: string | null;       // From profiles.phone
+  isPhoneVerified?: boolean; // From profiles.is_phone_verified
+
+  // Editable fields
   address?: string | null;
   city?: string | null;
-  postalCode?: string | null;
-  currentLocation?: string | null; // Or define a specific type if it's coordinates
-  // Include other relevant non-sensitive fields if needed
-  // stripeCustomerId?: string; // Maybe useful later?
-  // verification?: boolean; // Might be useful
+  postal_code?: string | null;
+  current_location?: string | null; // e.g., "latitude,longitude"
 }
 
 // --- NEW: Type for the Profile Update Form ---
@@ -85,11 +84,13 @@ export interface ICustomerProfile {
  * Represents the data structure for the profile update form.
  * Matches the backend's updateProfileSchema (all optional).
  */
-export interface IProfileUpdateData {
+export interface IProfileUpdateData { // Fields that can be updated by the user
   address?: string;
   city?: string;
-  postalCode?: string;
-  currentLocation?: string;
+  postal_code?: string;
+  current_location?: string;
+  // full_name and phone are typically updated via different flows or signup
+  // email is updated via Supabase Auth methods for email change
 }
 
 // --- Order Status Enum / Type (Ensure this exists) ---
