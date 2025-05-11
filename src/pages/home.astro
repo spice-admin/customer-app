@@ -115,4 +115,173 @@ import Addons from "../components/home/Addons.astro";
   .section-main {
     padding-bottom: 128px;
   }
+
+  .package-card {
+    background-color: #ffffff;
+    border-radius: 12px; /* Softer, more modern corners */
+    border: 1px solid #e5e7eb; /* Light border (Tailwind gray-200) */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    overflow: hidden; /* Ensures content respects border-radius */
+    display: flex;
+    flex-direction: column; /* Stack image, details vertically */
+    transition:
+      box-shadow 0.2s ease-in-out,
+      transform 0.2s ease-in-out;
+    height: 100%; /* For consistent height in a grid layout */
+  }
+
+  .package-card:hover {
+    /* transform: translateY(-3px); */ /* Optional: subtle lift effect on hover */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* Slightly more pronounced shadow on hover */
+  }
+
+  .package-card-image-container {
+    width: 100%;
+    aspect-ratio: 16 / 9; /* Or your preferred ratio, e.g., 4/3 */
+    background-color: #f3f4f6; /* Fallback for image area */
+    overflow: hidden; /* Just in case image tries to break out */
+  }
+
+  .package-card-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Crop image to fit, no distortion */
+  }
+
+  .package-card-details {
+    padding: 1rem; /* 16px */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* This makes this section take available space, pushing footer down */
+  }
+
+  .package-card-title {
+    font-size: 1.125rem; /* ~18px */
+    font-weight: 600; /* Semibold */
+    color: #111827; /* Darker text (Tailwind gray-900) */
+    margin-bottom: 0.25rem; /* 4px */
+    line-height: 1.4; /* For readability */
+  }
+
+  .package-meta-info {
+    /* For Type & Days */
+    font-size: 0.8rem; /* ~12.8px */
+    color: #6b7280; /* Medium gray (Tailwind gray-500) */
+    margin-bottom: 0.5rem; /* 8px */
+  }
+
+  .package-meta-info span + span {
+    /* Add separator if both type and days are shown */
+    margin-left: 0.5rem;
+  }
+  .package-meta-info span:not(:last-child):after {
+    /* Visual separator */
+    content: "|";
+    margin-left: 0.5rem;
+    color: #d1d5db; /* Lighter gray */
+  }
+
+  .package-card-description {
+    font-size: 0.875rem; /* ~14px */
+    color: #4b5563; /* Medium-dark gray (Tailwind gray-600) */
+    line-height: 1.6;
+    margin-bottom: 1rem; /* 16px */
+    flex-grow: 1; /* Allows description to expand, pushing footer to bottom */
+    /* For multi-line truncation (optional): */
+    /* display: -webkit-box;
+  -webkit-line-clamp: 3; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: calc(1.6em * 3); /* Fallback min-height for 3 lines */
+  }
+
+  .package-card-footer {
+    margin-top: auto; /* CRITICAL: Pushes footer to the bottom if description doesn't fill space */
+    padding-top: 0.75rem; /* 12px - space above footer content */
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Vertically aligns price and button area */
+    gap: 0.5rem; /* Space between price and subscribe button area */
+    border-top: 1px solid #f3f4f6; /* Subtle separator line */
+  }
+
+  .package-card-price {
+    font-size: 1.25rem; /* ~20px */
+    font-weight: 700; /* Bold */
+    color: #1f2937; /* Dark gray */
+    margin: 0; /* Reset default paragraph margin */
+  }
+
+  .subscribe-action {
+    /* This div is mainly for grouping button and its potential error message */
+    /* No specific flex needed if button is the only visible item usually */
+  }
+
+  .subscribe-button {
+    background-color: #f97316; /* Your orange color - good for CTA */
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem; /* Adjust for good tap area: ~8px 16px */
+    border-radius: 6px;
+    font-size: 0.875rem; /* ~14px */
+    font-weight: 500; /* Medium */
+    cursor: pointer;
+    transition:
+      background-color 0.2s ease-in-out,
+      transform 0.1s ease-in-out;
+    white-space: nowrap; /* Prevent button text from wrapping */
+    line-height: 1.5; /* Better vertical centering of text */
+  }
+
+  .subscribe-button:hover:not(:disabled) {
+    background-color: #ea580c; /* Darker orange */
+    transform: scale(1.02); /* Slight scale effect */
+  }
+
+  .subscribe-button:active:not(:disabled) {
+    transform: scale(0.98); /* Press effect */
+  }
+
+  .subscribe-button:disabled {
+    background-color: #fdba74; /* Lighter orange when disabled */
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .subscribe-error {
+    color: #ef4444; /* Red color for errors */
+    font-size: 0.75rem; /* ~12px */
+    margin-top: 0.25rem; /* 4px, space above error message */
+    text-align: right; /* Align with button if button is right-aligned */
+  }
+
+  /* Fallback Image Styling */
+  .fallback-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f3f4f6; /* Tailwind gray-100 */
+    color: #9ca3af; /* Tailwind gray-400 */
+    font-size: 0.875rem; /* ~14px */
+    width: 100%;
+    height: 100%; /* To fill the image container */
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  /* Ensure your .packages-grid (from PackageTabs.tsx) handles responsiveness */
+  /* Example for .packages-grid: */
+  /*
+.packages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); // Responsive columns
+  gap: 1rem; // Space between cards
+}
+@media (max-width: 600px) {
+  .packages-grid {
+    grid-template-columns: 1fr; // Single column on small screens
+  }
+}
+*/
 </style>

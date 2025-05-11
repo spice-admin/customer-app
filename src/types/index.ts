@@ -30,9 +30,10 @@ export interface ICategoryFE {
  * Should match the enum defined in the backend model.
  */
 export enum PackageType {
-  TRIAL = "trial",
+  DAILY = "daily",
   WEEKLY = "weekly",
   MONTHLY = "monthly",
+  CUSTOM = "custom",
 }
 
 /**
@@ -159,4 +160,27 @@ export interface CartItem {
   price: number;
   image: string;
   quantity: number;
+}
+
+export interface Category { // <--- Make sure 'export' is here
+  id: string;
+  name: string;
+  // description?: string | null; // Add if you have this in your DB for categories
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Package {
+  id: string;
+  name: string;
+  description?: string | null;
+  price: number;
+  type: PackageType;
+  days: number;
+  category_id: string; // This refers to Category.id
+  image_url?: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  categories?: { id: string; name: string; } | null;// This is for the joined category data (name and id)
 }

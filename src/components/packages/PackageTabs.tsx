@@ -1,95 +1,110 @@
 // src/components/packages/PackageTabs.tsx
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import {
-  getAllCategories,
-  getAllPackages,
-} from "../../services/package.service";
-import { getMyProfileApi } from "../../services/customer.service";
-import type { ICategoryFE, IPackageFE, ICustomerProfile } from "../../types";
+import { supabase } from "../../lib/supabaseClient";
+import type {
+  Category,
+  Package,
+  ICustomerProfile,
+  PackageType,
+} from "../../types"; // Ensure these are exported correctly
 import PackageCard from "./PackageCard";
 
 const ALL_CATEGORY_ID = "all";
-//const apiUrlFromEnv = import.meta.env.PUBLIC_API_BASE_URL;
 
 const PackageTabs: React.FC = () => {
-  const [categories, setCategories] = useState<ICategoryFE[]>([]);
-  const [packages, setPackages] = useState<IPackageFE[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [packages, setPackages] = useState<Package[]>([]);
   const [activeTabId, setActiveTabId] = useState<string>(ALL_CATEGORY_ID);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [userProfile, setUserProfile] = useState<ICustomerProfile | null>(null);
+  const [userProfile, setUserProfile] = useState<Pick<
+    ICustomerProfile,
+    "address" | "city"
+  > | null>(null);
 
-  // Fetch all data on component mount
   const fetchData = useCallback(async () => {
-    // Wrap in useCallback
     setIsLoading(true);
     setError(null);
-    setUserProfile(null); // Reset profile on refetch
-    console.log("[PackageTabs] Fetching categories, packages, and profile...");
+    setUserProfile(null);
+
     try {
-      // Fetch all data in parallel
-      const [catResult, pkgResult, profileResult] = await Promise.all([
-        getAllCategories(), // Assuming this returns array directly on success
-        getAllPackages(), // Assuming this returns array directly on success
-        getMyProfileApi(), // This returns ApiResponse<ICustomerProfile>
-      ]);
+      const [categoriesResult, packagesResult, authUserResponse] =
+        await Promise.all([
+          supabase.from("categories").select("*").order("name"),
+          supabase
+            .from("packages")
+            .select(
+              `
+            *, 
+            categories (id, name) 
+          `
+            )
+            .eq("is_active", true)
+            .order("name"),
+          supabase.auth.getUser(),
+        ]);
 
-      // Check profile response first (as it's needed for subscribe check)
-      if (profileResult.success && profileResult.data) {
-        console.log("[PackageTabs] Profile fetched successfully.");
-        setUserProfile(profileResult.data);
-      } else {
-        // Handle profile fetch failure - might prevent subscriptions
-        console.warn(
-          "[PackageTabs] Failed to fetch user profile:",
-          profileResult.message
-        );
-        // Decide if this is a critical error or just prevents subscription
-        // setError(`Could not load user profile: ${profileResult.message}`);
-        // For now, let it proceed but profile will be null
+      if (categoriesResult.error) throw categoriesResult.error;
+      setCategories((categoriesResult.data as Category[]) || []);
+
+      if (packagesResult.error) throw packagesResult.error;
+
+      console.log(
+        "[PackageTabs] Raw Packages Data from Supabase:",
+        packagesResult.data
+      );
+
+      setPackages((packagesResult.data as Package[]) || []);
+
+      const {
+        data: { user },
+      } = authUserResponse;
+      if (user) {
+        const { data: profileData, error: profileError } = await supabase
+          .from("profiles")
+          .select("address, city")
+          .eq("id", user.id)
+          .single();
+
+        if (profileError && profileError.code !== "PGRST116") {
+          console.warn(
+            "[PackageTabs] Error fetching user profile for address check:",
+            profileError.message
+          );
+        }
+        if (profileData) {
+          setUserProfile(profileData);
+        }
       }
-
-      // Set categories and packages (assuming they throw on error)
-      setCategories(catResult);
-      setPackages(pkgResult);
-      console.log("[PackageTabs] Categories and Packages state updated.");
     } catch (err) {
       console.error("[PackageTabs] Error during data fetch:", err);
       setError(
         (err as Error).message || "Could not load data. Please try again later."
       );
-      setCategories([]); // Ensure empty state on error
+      setCategories([]);
       setPackages([]);
-      setUserProfile(null);
     } finally {
-      console.log("[PackageTabs] Setting isLoading to false.");
       setIsLoading(false);
     }
-  }, []); // Empty dependency array
+  }, []);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
-  // Filter packages based on the active tab
+
   const filteredPackages = useMemo(() => {
-    // Log *before* filtering
-
     if (activeTabId === ALL_CATEGORY_ID) {
-      return packages; // Show all packages
+      return packages;
     }
-    const filtered = packages.filter((pkg) => {
-      return pkg.category?._id === activeTabId;
-    });
+    // MODIFIED: Access the first element of the 'categories' array
+    return packages.filter((pkg) => pkg.categories?.id === activeTabId);
+  }, [activeTabId, packages]);
 
-    return filtered;
-  }, [activeTabId, packages]); // Recalculate when tab or packages change
-
-  // Handler for changing tabs
   const handleTabClick = (categoryId: string) => {
     setActiveTabId(categoryId);
   };
 
-  // --- Render Logic ---
+  // ... (isLoading, error rendering remains the same) ...
 
   if (isLoading) {
     return (
@@ -103,16 +118,8 @@ const PackageTabs: React.FC = () => {
     return <div className="form-message error text-center p-10">{error}</div>;
   }
 
-  // Handle case where data is loaded but potentially empty
-  // Note: We might have categories but no packages, or vice-versa
-  // if (categories.length === 0 && packages.length === 0) {
-  //     console.log('[PackageTabs] Render: Showing No Data message (both empty).');
-  //     return <div className="text-center p-10 text-gray-500">No categories or packages available.</div>;
-  // }
-
   return (
     <div className="tabs-section1" id="suggest-food-items">
-      {/* Tab Navigation */}
       <nav>
         <button
           type="button"
@@ -121,44 +128,36 @@ const PackageTabs: React.FC = () => {
         >
           💥 All
         </button>
-
-        {categories.map((category) => {
-          return (
-            <button
-              key={category._id}
-              type="button"
-              onClick={() => handleTabClick(category._id)}
-              className={activeTabId === category._id ? "active" : ""}
-            >
-              {category.name}
-            </button>
-          );
-        })}
+        {categories.map((category) => (
+          <button
+            key={category.id}
+            type="button"
+            onClick={() => handleTabClick(category.id)}
+            className={activeTabId === category.id ? "active" : ""}
+          >
+            {category.name}
+          </button>
+        ))}
       </nav>
 
-      {/* Tab Content Area */}
       <div className="tabContainer">
         <div className="Tabcondent active">
           {filteredPackages.length > 0 ? (
             <div className="packages-grid">
-              {filteredPackages.map((pkg) => {
-                return (
-                  <PackageCard
-                    key={pkg._id}
-                    pkg={pkg}
-                    hasAddressInfo={
-                      !!(userProfile?.address && userProfile?.city)
-                    }
-                  />
-                );
-              })}
+              {filteredPackages.map((pkg) => (
+                <PackageCard
+                  key={pkg.id}
+                  pkg={pkg}
+                  hasAddressInfo={!!(userProfile?.address && userProfile?.city)}
+                />
+              ))}
             </div>
           ) : (
-            <p className="no-packages-message">
-              {/* Check if original packages array had items */}
+            <p className="no-packages-message text-center p-5 text-gray-500">
               {packages.length > 0
                 ? `No packages found in the "${
-                    categories.find((c) => c._id === activeTabId)?.name ||
+                    // MODIFIED: Access category name from the first element of the array
+                    categories.find((c) => c.id === activeTabId)?.name ||
                     "selected"
                   }" category.`
                 : "No packages available at the moment."}
@@ -166,7 +165,6 @@ const PackageTabs: React.FC = () => {
           )}
         </div>
       </div>
-      {/* Styles should be in global CSS */}
     </div>
   );
 };
