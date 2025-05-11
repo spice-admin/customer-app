@@ -1,6 +1,6 @@
 // src/components/auth/ForgotPasswordForm.tsx
 import React, { useState, useCallback } from "react";
-import { requestPasswordResetOtpApi } from "../../services/auth.service"; // Adjust path
+import { supabase } from "../../lib/supabaseClient"; // Import your Supabase client
 
 const ForgotPasswordForm: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -22,45 +22,62 @@ const ForgotPasswordForm: React.FC = () => {
 
       setLoading(true);
       try {
-        const result = await requestPasswordResetOtpApi(phoneNumber.trim());
+        // Invoke the Supabase Edge Function
+        const { data, error: functionError } = await supabase.functions.invoke(
+          "request-password-reset-otp", // Name of your Edge Function
+          {
+            body: { phoneNumber: phoneNumber.trim() },
+          }
+        );
 
-        if (result.success) {
+        if (functionError) {
+          // Handle errors specifically from the function invocation (network, etc.)
+          // or errors returned in data.error by the function itself
+          const errMsg =
+            data?.error ||
+            functionError.message ||
+            "Failed to send OTP request.";
+          throw new Error(errMsg);
+        }
+
+        // Assuming the function returns { success: true, message: "..." } or { error: "..." } in data
+        if (data?.success) {
           setSuccessMessage(
-            result.message || "OTP request successful. Redirecting..."
-          ); // Use backend message
-          // Redirect to OTP verification page after short delay
+            data.message || "OTP request successful. Redirecting..."
+          );
           setTimeout(() => {
-            // Pass phone number for the next step
-            window.location.href = `/verify-reset-otp?phone=${encodeURIComponent(
+            window.location.href = `/verify-password-reset-otp?phone=${encodeURIComponent(
               phoneNumber.trim()
             )}`;
-          }, 1500); // Delay allows user to see success message briefly
+          }, 1500);
         } else {
-          throw new Error(result.message || "Failed to send OTP request.");
+          // This case handles structured errors returned in the function's response body
+          throw new Error(
+            data?.error || "Failed to send OTP. Please try again."
+          );
         }
       } catch (err: any) {
         console.error("Forgot Password Error:", err);
         setError(err.message || "An error occurred. Please try again.");
-        setLoading(false); // Stop loading only on error if redirecting on success
+        setLoading(false);
       }
-      // Don't setLoading(false) on success because we redirect
+      // Do not setLoading(false) on success if redirecting.
     },
     [phoneNumber]
   );
 
+  // JSX remains the same as your provided code
   return (
-    // Use CSS classes for styling - similar structure to login/signup
     <form className="forgot-password-form" onSubmit={handleSubmit} noValidate>
-      {/* Phone Number Input */}
       <div className="form-item">
         <label htmlFor="phoneNumber" className="form-label">
           Registered Phone Number
         </label>
         <input
-          type="tel" // Use 'tel' type for phone numbers
+          type="tel"
           id="phoneNumber"
           placeholder="Enter your phone number"
-          className="form-input" // Example class name
+          className="form-input"
           value={phoneNumber}
           onChange={(e) => setPhoneNumber(e.target.value)}
           required
@@ -68,26 +85,22 @@ const ForgotPasswordForm: React.FC = () => {
         />
       </div>
 
-      {/* Error Display */}
       {error && (
         <div className="form-message error" role="alert">
           {error}
         </div>
       )}
-
-      {/* Success Message Display */}
       {successMessage && !error && (
         <div className="form-message success" role="status">
           {successMessage}
         </div>
       )}
 
-      {/* Submit Button */}
       <div className="form-actions">
         <button
           type="submit"
-          className="submit-button" // Example class name
-          disabled={loading || !!successMessage} // Disable after success until redirect
+          className="submit-button"
+          disabled={loading || !!successMessage}
           aria-live="polite"
           aria-busy={loading}
         >
@@ -95,9 +108,8 @@ const ForgotPasswordForm: React.FC = () => {
         </button>
       </div>
 
-      {/* Link back to Login */}
       <div className="form-footer-link">
-        <a href="/login">Back to Login</a>
+        <a href="/">Back to Login</a>
       </div>
     </form>
   );

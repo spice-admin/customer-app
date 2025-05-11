@@ -1,35 +1,39 @@
 // src/components/auth/ResetPasswordForm.tsx
 import React, { useState, useEffect, useCallback } from "react";
-import { resetPasswordApi } from "../../services/auth.service"; // Adjust path
+import { supabase } from "../../lib/supabaseClient"; // Import your Supabase client
 
 const ResetPasswordForm: React.FC = () => {
-  const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
-  const [resetToken, setResetToken] = useState<string | null>(null);
+  const [phoneNumberFromUrl, setPhoneNumberFromUrl] = useState<string | null>(
+    null
+  ); // Keep for display if needed
+  const [resetTokenFromUrl, setResetTokenFromUrl] = useState<string | null>(
+    null
+  );
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // Read parameters from URL (no change needed here)
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    // ... logic to get phone and token ...
-    const phoneFromUrl = params.get("phone");
-    const tokenFromUrl = params.get("token");
-    if (phoneFromUrl && tokenFromUrl) {
-      const cleanedPhone = decodeURIComponent(phoneFromUrl).replace(
-        /[^0-9+]/g,
-        ""
-      );
-      if (cleanedPhone.length >= 10) {
-        setPhoneNumber(cleanedPhone);
-        setResetToken(tokenFromUrl);
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const phone = params.get("phone");
+      const token = params.get("token");
+
+      if (phone) setPhoneNumberFromUrl(decodeURIComponent(phone)); // Store for potential display
+
+      if (token) {
+        setResetTokenFromUrl(token);
       } else {
-        setError("Invalid phone number link parameter.");
+        setError(
+          "Invalid or missing reset token in link. Please request a new link."
+        );
       }
-    } else {
-      setError("Missing required information from password reset link.");
+      if (!phone && !token) {
+        // If both are missing or token specifically
+        setError("Invalid password reset link. Please request a new link.");
+      }
     }
   }, []);
 
@@ -39,46 +43,64 @@ const ResetPasswordForm: React.FC = () => {
       setError(null);
       setSuccessMessage(null);
 
-      // Client-side validation
       if (!newPassword || !confirmPassword) {
         setError("Please enter and confirm your new password.");
         return;
       }
-      if (newPassword.length < 8) {
-        setError("Password must be at least 8 characters long.");
+      if (newPassword.length < 6) {
+        // Basic client-side check, Supabase default is 6
+        setError("Password must be at least 6 characters long.");
         return;
       }
       if (newPassword !== confirmPassword) {
         setError("Passwords do not match.");
         return;
       }
-      if (!phoneNumber || !resetToken) {
-        setError("Cannot process request: Missing required information.");
+      if (!resetTokenFromUrl) {
+        setError(
+          "Cannot process request: Reset token is missing. Please use a valid link."
+        );
         return;
       }
 
       setLoading(true);
       try {
-        const result = await resetPasswordApi(
-          phoneNumber,
-          resetToken,
-          newPassword,
-          confirmPassword
-        ); // Pass confirmPassword
-        if (result.success) {
+        // Call the new Supabase Edge Function
+        const { data, error: functionError } = await supabase.functions.invoke(
+          "reset-password-with-custom-token",
+          {
+            body: {
+              resetToken: resetTokenFromUrl,
+              newPassword: newPassword,
+            },
+          }
+        );
+
+        if (functionError) {
+          const errMsg =
+            data?.error || functionError.message || "Failed to reset password.";
+          throw new Error(errMsg);
+        }
+
+        if (data?.success) {
           setSuccessMessage(
-            result.message || "Password reset successfully! Redirecting..."
+            data.message ||
+              "Password reset successfully! Redirecting to login..."
           );
           setError(null);
           setNewPassword("");
-          setConfirmPassword(""); // Clear fields
+          setConfirmPassword("");
           setTimeout(() => {
-            window.location.href = "/";
+            window.location.href = "/"; // Redirect to login/home page
           }, 2500);
         } else {
-          throw new Error(result.message || "Failed to reset password.");
+          throw new Error(
+            data?.error ||
+              "Failed to reset password. The link might be invalid or expired."
+          );
         }
       } catch (err: any) {
+        console.error("Reset Password Error:", err);
         setError(
           err.message ||
             "An error occurred. The link might be invalid or expired."
@@ -88,32 +110,29 @@ const ResetPasswordForm: React.FC = () => {
         setLoading(false);
       }
     },
-    [phoneNumber, resetToken, newPassword, confirmPassword]
+    [resetTokenFromUrl, newPassword, confirmPassword]
   );
 
-  if (!phoneNumber || !resetToken) {
-    // Show error if params were missing/invalid
+  if (!resetTokenFromUrl && !loading && typeof window !== "undefined") {
+    // Show error more reliably if token is missing
     return (
       <div className="form-message error" role="alert">
-        {error || "Invalid password reset link."}
+        {error || "Invalid or missing password reset token in the link."}
         <p style={{ marginTop: "0.5rem" }}>
-          {" "}
-          {/* Quick style */}
           <a
-            href="/forgot-password"
+            href="/forgot-password" // Link to your forgot password page
             style={{ color: "#ea580c", textDecoration: "underline" }}
           >
-            Request a new link
+            Request a new password reset link
           </a>
         </p>
       </div>
     );
   }
 
-  // Apply consistent CSS class names
+  // JSX for the form (can reuse most of your existing structure)
   return (
     <form className="reset-password-form" onSubmit={handleSubmit} noValidate>
-      {/* New Password Input */}
       <div className="form-item">
         <label htmlFor="newPassword" className="form-label">
           New Password
@@ -122,18 +141,19 @@ const ResetPasswordForm: React.FC = () => {
           type="password"
           id="newPassword"
           placeholder="Enter new password"
-          className="form-input" // Use consistent class
+          className="form-input"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           required
-          minLength={8}
+          minLength={6}
           disabled={loading || !!successMessage}
         />
-        {/* Password Hint */}
-        <p className="password-hint">Minimum 8 characters required.</p>
+        <p style={{ fontSize: "0.75rem", color: "#555", marginTop: "0.25rem" }}>
+          Minimum 6 characters.
+        </p>{" "}
+        {/* Adjusted hint */}
       </div>
 
-      {/* Confirm New Password Input */}
       <div className="form-item">
         <label htmlFor="confirmPassword" className="form-label">
           Confirm New Password
@@ -142,40 +162,34 @@ const ResetPasswordForm: React.FC = () => {
           type="password"
           id="confirmPassword"
           placeholder="Confirm new password"
-          className="form-input" // Use consistent class
+          className="form-input"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
-          minLength={8}
+          minLength={6}
           disabled={loading || !!successMessage}
         />
       </div>
 
-      {/* Error Display */}
       {error && (
         <div className="form-message error" role="alert">
           {error}
         </div>
       )}
-
-      {/* Success Message Display */}
       {successMessage && !error && (
         <div className="form-message success" role="status">
           {successMessage}
         </div>
       )}
 
-      {/* Submit Button */}
       <div className="form-actions">
         <button
           type="submit"
-          className="submit-button" // Use consistent class
-          disabled={loading || !!successMessage}
+          className="submit-button"
+          disabled={loading || !!successMessage || !resetTokenFromUrl}
           aria-live="polite"
           aria-busy={loading}
         >
-          {/* Show spinner when loading */}
-          {loading && <span className="spinner" aria-hidden="true"></span>}
           {loading ? "Resetting..." : "Reset Password"}
         </button>
       </div>
