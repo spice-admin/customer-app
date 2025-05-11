@@ -1,0 +1,51 @@
+---
+// src/pages/payment-success.astro
+import CustomerLayout from "../layouts/Layout.astro"; // Adjust to your layout
+import PaymentSuccessClient from "../components/payment/PaymentSuccessClient.tsx"; // React component
+---
+
+<CustomerLayout title="Payment Successful">
+  <section class="auth-page-container">
+    <div class="auth-form-card text-center">
+      {/* Added text-center utility */}
+      <img
+        class="auth-logo"
+        src="/assets/images/logo/logo-new.png"
+        alt="Logo"
+      />
+      <h1 class="auth-title">Payment Processing</h1>
+      <PaymentSuccessClient client:load />
+    </div>
+  </section>
+</CustomerLayout>
+
+<style is:global>
+  /* Ensure your auth page styles are available */
+  /* From forgot-password.astro */
+  .auth-page-container {
+    max-width: 500px;
+    margin: 3rem auto;
+    padding: 0 1rem;
+  }
+  .auth-form-card {
+    background-color: #fff;
+    padding: 2.5rem 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  .auth-logo {
+    display: block;
+    max-width: 150px;
+    margin: 0 auto 1.5rem auto;
+  }
+  .auth-title {
+    text-align: center;
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #1f2937;
+  }
+  .text-center {
+    text-align: center;
+  } /* Simple utility */
+</style>
