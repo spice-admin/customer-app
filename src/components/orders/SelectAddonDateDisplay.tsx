@@ -7,7 +7,7 @@ import { loadStripe, type StripeElementsOptions } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 
 import type { IOrderFE, CartItem } from "../../types";
-import { getOrderByIdApi } from "../../services/order.service";
+import { getMyOrdersApi } from "../../services/order.service";
 
 import {
   getCartItems,
@@ -54,7 +54,7 @@ const SelectAddonDateDisplay: React.FC = () => {
       setClientSecret(null);
       try {
         // Fetch Order
-        const orderResponse = await getOrderByIdApi(orderId);
+        const orderResponse = await getMyOrdersApi();
         if (!orderResponse.success || !orderResponse.data) {
           throw new Error(
             orderResponse.message || "Failed to load order details."
@@ -87,13 +87,6 @@ const SelectAddonDateDisplay: React.FC = () => {
 
   const handlePaymentClick = () => {
     if (!selectedDate || !order || cartItems.length === 0) return;
-
-    console.log(
-      `Payment button clicked for Order ${
-        order.orderNumber || order._id
-      }, Selected Date: ${selectedDate.toISOString()}, Addons:`,
-      cartItems
-    );
 
     // Show the final "Thank you" popup
     Swal.fire({
@@ -152,7 +145,7 @@ const SelectAddonDateDisplay: React.FC = () => {
     let maxDate: Date | undefined = undefined; // Initialize maxDate
 
     if (order) {
-      const start = new Date(order.startDate);
+      const start = new Date(order.delivery_start_date);
       if (start > today) {
         minDate = start;
       }
