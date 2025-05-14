@@ -934,3 +934,206 @@
   background-color: #dcfce7; /* Light green bg */
   border-color: #bbf7d0; /* Green border */
 }
+
+
+/* src/styles/OrderList.css or your global stylesheet */
+
+.order-item-card {
+  background-color: #ffffff;
+  border-radius: 0.75rem; /* 12px */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb; /* gray-200 */
+  overflow: hidden;
+  margin-bottom: 1.5rem; /* 24px */
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.order-item-card:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.order-item-header {
+  padding: 1rem; /* 16px */
+  border-bottom: 1px solid #e5e7eb; /* gray-200 */
+  /* Background opacity will be handled by specific status header bg classes */
+}
+
+/* Specific header background colors for status (light, slightly transparent) */
+.status-delivered-header-bg { background-color: rgba(209, 250, 229, 0.3); /* green-100 with opacity */ }
+.status-pending-header-bg { background-color: rgba(254, 249, 195, 0.3); /* yellow-100 with opacity */ }
+.status-in-transit-header-bg { background-color: rgba(219, 234, 254, 0.3); /* blue-100 with opacity */ }
+.status-cancelled-header-bg { background-color: rgba(254, 226, 226, 0.3); /* red-100 with opacity */ }
+.status-unknown-header-bg { background-color: rgba(243, 244, 246, 0.3); /* gray-100 with opacity */ }
+
+
+.order-item-header-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.order-item-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* 12px */
+  margin-bottom: 0.5rem; /* For mobile, before status badge wraps */
+}
+
+.order-item-main-icon {
+  width: 1.75rem; /* 28px */
+  height: 1.75rem;
+  color: #F59E0B; /* orange-600 */
+  flex-shrink: 0;
+}
+
+.order-item-title {
+  font-size: 1.125rem; /* 18px */
+  /* md:text-xl -> You'd use media query for this */
+  font-weight: 600;
+  color: #1f2937; /* gray-800 */
+  line-height: 1.375; /* tight */
+}
+
+.order-item-id {
+  font-size: 0.75rem; /* 12px */
+  color: #6b7280; /* gray-500 */
+}
+
+.order-item-status-badge {
+  padding: 0.25rem 0.75rem; /* py-1 px-3 */
+  font-size: 0.75rem; /* 12px */
+  font-weight: 600;
+  border-radius: 9999px; /* full */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem; /* 6px */
+}
+
+
+
+/* Status specific styles */
+.status-delivered { background-color: #D1FAE5; color: #065f46; /* green-100, green-700 */ }
+.status-delivered .order-item-status-icon { color: #047857; /* green-600 */ }
+
+.status-pending { background-color: #FEF9C3; color: #854d0e; /* yellow-100, yellow-700 */ }
+.status-pending .order-item-status-icon { color: #a16207; /* yellow-600 */ }
+
+.status-in-transit { background-color: #DBEAFE; color: #1d4ed8; /* blue-100, blue-700 */ }
+.status-in-transit .order-item-status-icon { color: #2563eb; /* blue-600 */ }
+
+.status-cancelled { background-color: #FEE2E2; color: #991b1b; /* red-100, red-700 */ }
+.status-cancelled .order-item-status-icon { color: #b91c1c; /* red-600 */ }
+
+.status-unknown { background-color: #F3F4F6; color: #374151; /* gray-100, gray-700 */ }
+.status-unknown .order-item-status-icon { color: #4b5563; /* gray-600 */ }
+
+
+.order-item-body {
+  padding: 1rem; /* 16px */
+}
+
+.order-item-details-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* Mobile: single column */
+  gap: 0.75rem 1rem; /* row-gap column-gap (12px 16px) */
+  font-size: 0.875rem; /* 14px */
+}
+
+.order-item-detail-item {
+  display: flex;
+  align-items: center;
+  color: #374151; /* gray-700 */
+}
+
+.order-item-detail-icon {
+  width: 1.25rem; /* 20px */
+  height: 1.25rem;
+  margin-right: 0.5rem; /* 8px */
+  flex-shrink: 0;
+}
+.icon-price { color: #16a34a; /* green-600 */ }
+.icon-date { color: #2563eb; /* blue-600 */ }
+.icon-type { color: #7c3aed; /* purple-600 */ }
+.icon-duration { color: #4f46e5; /* indigo-600 */ }
+.icon-service-period { color: #0891b2; /* cyan-600 */ }
+.icon-address { color: #dc2626; /* red-600 */ margin-top: 0.125rem; align-self: flex-start; }
+
+
+.order-item-detail-value {
+  color: #1f2937; /* gray-800 */
+  font-weight: 500; /* For values like price, dates etc. */
+}
+.order-item-detail-item strong { /* For labels like "Total:" */
+    color: #4b5563; /* gray-600 */
+    font-weight: 600;
+}
+
+
+.order-item-footer {
+  padding: 0.75rem 1rem; /* py-3 px-4 */
+  border-top: 1px solid #e5e7eb; /* gray-200 */
+  background-color: #f9fafb; /* gray-50 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem; /* 12px */
+}
+
+.order-item-button {
+  width: 100%;
+  font-size: 0.875rem; /* 14px */
+  font-weight: 500;
+  padding: 0.5rem 1rem; /* py-2 px-4 */
+  border-radius: 0.5rem; /* lg */
+  transition: background-color 0.15s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem; /* 8px */
+  border: none;
+  cursor: pointer;
+}
+
+.button-track { background-color: #2563eb; color: white; } /* blue-600 */
+.button-track:hover { background-color: #1d4ed8; } /* blue-700 */
+
+.button-details { background-color: #F59E0B; color: white; } /* orange-500 */
+.button-details:hover { background-color: #D97706; } /* orange-600 */
+
+.button-help { background-color: #e5e7eb; color: #374151; } /* gray-200, gray-700 */
+.button-help:hover { background-color: #d1d5db; } /* gray-300 */
+
+
+/* --- Responsive Adjustments --- */
+@media (min-width: 640px) { /* sm breakpoint */
+  .order-item-header-content {
+    flex-direction: row;
+    align-items: center;
+  }
+  .order-item-title-group {
+    margin-bottom: 0;
+  }
+  .order-item-details-grid {
+    grid-template-columns: repeat(2, 1fr); /* Two columns on sm and up */
+  }
+  .order-item-detail-fullwidth {
+    grid-column: span 2 / span 2;
+  }
+  .order-item-detail-address {
+    align-items: flex-start; /* Keep icon aligned with start of text block */
+  }
+  .order-item-footer {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+  .order-item-button {
+    width: auto;
+  }
+}
+
+@media (min-width: 768px) { /* md breakpoint */
+  .order-item-title {
+    font-size: 1.25rem; /* 20px */
+  }
+}

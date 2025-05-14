@@ -58,12 +58,21 @@ export interface IPackageFE {
  * Excludes sensitive fields like password, OTP details.
  */
 export interface Addon {
-  _id: string;
+  id: string; // Changed from _id
   name: string;
   price: number;
-  image: string; // URL to the image
-  createdAt: string;
-  updatedAt: string;
+  image_url?: string | null; // Changed from image
+  created_at: string;
+  updated_at: string;
+}
+
+// Define CartItem if you haven't already, based on its usage
+export interface CartItem {
+  addonId: string; // Corresponds to Addon.id
+  name: string;
+  price: number;
+  image_url?: string | null; // To store the image URL from the Addon
+  quantity: number;
 }
 
 export interface ICustomerProfile {
@@ -138,20 +147,23 @@ export interface IPaymentDetailsFE {
  * Includes populated package details.
  */
 export interface IOrderFE {
-  _id: string;
-  orderNumber: string;
-  customer: string; // Customer ID as string (usually not needed if fetching 'my' orders)
-  package: IOrderPackageInfo; // Populated package info
-  packageName: string; // Denormalized name
-  packagePrice: number; // Denormalized price (e.g., 19.99 CAD)
-  deliveryDays: number; // Denormalized duration
-  startDate: string; // ISO Date string
-  endDate: string; // ISO Date string
-  status: OrderStatus;
-  deliveryAddress: IDeliveryAddressFE; // Address snapshot
-  paymentDetails: IPaymentDetailsFE; // Payment details
-  createdAt: string; // ISO Date string
-  updatedAt: string; // ISO Date string
+  id: string;                         // Primary key
+  order_date: string;                 // When the order was placed (timestamp)
+  package_name?: string | null;
+  package_type?: string | null;
+  package_price: number;
+  delivery_start_date?: string | null; // Date string
+  delivery_end_date?: string | null;   // Date string
+  order_status?: string | null;        // e.g., 'pending_confirmation', 'confirmed', 'out_for_delivery', 'delivered', 'cancelled'
+  delivery_address?: string | null;
+  delivery_city?: string | null;
+  delivery_postal_code?: string | null;
+  user_full_name?: string | null;      // Could be useful for confirmation, though often the user knows their name
+  // Potentially package_days if relevant to display
+  package_days?: number | null;
+  // You might also want to include a simplified list of items or a way to fetch them if not directly embedded
+  // For now, we'll assume the main details are enough as per the schema.
+  // Fields like stripe_payment_id, user_id, created_at, updated_at are usually not directly displayed in a list.
 }
 
 export interface CartItem {

@@ -1,235 +1,235 @@
 // src/components/orders/OrderItem.tsx
-import React, { useState } from "react";
-import type { IOrderFE, OrderStatus } from "../../types";
-// Import react-icons for status, date etc.
+import React from "react";
+import type { IOrderFE } from "../../types"; // Adjust path as needed
+import { format } from "date-fns"; // npm install date-fns
+
+// --- React Icons Imports ---
 import {
-  HiOutlineCalendarDays,
-  HiOutlineCheckCircle,
-  HiOutlineXCircle,
-  HiOutlineClock,
-  HiOutlineCurrencyRupee,
-  HiOutlineHashtag,
-  HiOutlineBriefcase,
-} from "react-icons/hi2"; // Example icons
+  FaBoxOpen,
+  FaCalendarAlt,
+  FaMapMarkerAlt,
+  FaTag,
+  FaDollarSign,
+  FaShippingFast,
+  FaCheckCircle,
+  FaRegClock,
+  FaTimesCircle,
+  FaInfoCircle,
+  FaQuestionCircle,
+  FaRegListAlt,
+} from "react-icons/fa";
+import {
+  BsCalendarRange,
+  BsBoxSeam,
+  BsCashCoin,
+  BsGeoAlt,
+  BsTagFill,
+  BsClockHistory,
+  BsTruck,
+  BsXCircleFill,
+  BsCheckCircleFill,
+  BsQuestionCircleFill,
+  BsInfoCircleFill,
+} from "react-icons/bs";
+// --- End React Icons Imports ---
 
 interface OrderItemProps {
   order: IOrderFE;
+  onViewDetails?: (orderId: string) => void;
+  onTrackOrder?: (orderId: string) => void;
 }
 
-// Helper: Format Date (Only Date part)
-const formatDateOnly = (dateString: string): string => {
-  try {
-    return new Date(dateString).toLocaleDateString("en-CA", {
-      // Use Canadian locale
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  } catch (e) {
-    return "Invalid Date";
-  }
-};
-
-// Helper: Format Currency (CAD)
-const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat("en-CA", {
-    style: "currency",
-    currency: "CAD",
-  }).format(amount);
-};
-
-// Status Badge Component (Adapt from previous examples or use new logic)
-const OrderStatusDisplay = ({ status }: { status: OrderStatus }) => {
-  let icon = <HiOutlineClock className="icon" />; // Default: Active/Pending?
-  let textClass = "status-active"; // Default class
-
-  switch (status) {
-    case "Active":
-      icon = <HiOutlineCheckCircle className="icon icon-active" />;
-      textClass = "status-active";
-      break;
-    case "Expired":
-      icon = <HiOutlineClock className="icon icon-expired" />; // Or a specific expired icon
-      textClass = "status-expired";
-      break;
-    case "Cancelled":
-      icon = <HiOutlineXCircle className="icon icon-cancelled" />;
-      textClass = "status-cancelled";
-      break;
-  }
-
-  return (
-    <span className={`order-status ${textClass}`}>
-      {icon} {status}
-    </span>
-  );
-};
-
-// Simple image fallback placeholder
-const ImageFallback = ({ className }: { className?: string }) => (
-  <div className={`fallback-image order-item-image ${className || ""}`}>
-    <span>N/A</span>
-  </div>
-);
-
-const OrderItem: React.FC<OrderItemProps> = ({ order }) => {
-  const [imageError, setImageError] = useState(false);
-  const handleImageError = () => setImageError(true);
-
-  // Placeholder click handler
-  const handleOrderClick = () => {
-    alert(`View details for Order #${order.orderNumber}`);
-    // Navigate to order detail page later: window.location.href = `/orders/${order._id}`;
+const OrderItem: React.FC<OrderItemProps> = ({
+  order,
+  onViewDetails,
+  onTrackOrder,
+}) => {
+  const formatDate = (
+    dateString?: string | null,
+    dateFormat = "MMM dd, yyyy"
+  ) => {
+    if (!dateString) return "N/A";
+    try {
+      return format(new Date(dateString), dateFormat);
+    } catch (e) {
+      return dateString;
+    }
   };
 
-  const packageImageUrl = order.package?.image; // Get image URL from populated package
+  const getStatusInfo = (status?: string | null) => {
+    const s = status?.toLowerCase() || "unknown";
+    let statusClassName = "status-unknown";
+    let IconComponent: React.ElementType = BsInfoCircleFill;
+    let label = status ? status.replace(/_/g, " ").toUpperCase() : "UNKNOWN";
+
+    if (s.includes("delivered") || s.includes("completed")) {
+      statusClassName = "status-delivered";
+      IconComponent = BsCheckCircleFill;
+      label = "Delivered";
+    } else if (
+      s.includes("pending") ||
+      s.includes("awaiting") ||
+      s.includes("confirmation")
+    ) {
+      statusClassName = "status-pending";
+      IconComponent = BsClockHistory;
+      label = "Pending";
+    } else if (
+      s.includes("shipped") ||
+      s.includes("out_for_delivery") ||
+      s.includes("processing")
+    ) {
+      statusClassName = "status-in-transit";
+      IconComponent = BsTruck;
+      label = "In Transit";
+    } else if (s.includes("cancelled") || s.includes("failed")) {
+      statusClassName = "status-cancelled";
+      IconComponent = BsXCircleFill;
+      label = "Cancelled";
+    }
+    return { statusClassName, IconComponent, label };
+  };
+
+  const statusInfo = getStatusInfo(order.order_status);
 
   return (
-    // Use a list item or div structure based on your template's styling
-    // Applying card-like styles as an example
-    <div className="order-item-card" onClick={handleOrderClick}>
-      {/* Optional Image */}
-      <div className="order-item-image-container">
-        {!imageError && packageImageUrl ? (
-          <img
-            src={packageImageUrl}
-            alt={order.packageName}
-            className="order-item-image"
-            onError={handleImageError}
-            loading="lazy"
-          />
-        ) : (
-          <ImageFallback className="order-item-image" />
-        )}
+    <div className="order-item-card">
+      {/* Header Section */}
+      <div
+        className={`order-item-header ${statusInfo.statusClassName}-header-bg`}
+      >
+        <div className="order-item-header-content">
+          <div className="order-item-title-group">
+            <BsBoxSeam className="order-item-main-icon" />
+            <div>
+              <h3 className="order-item-title">
+                {order.package_name || "Order Details"}
+              </h3>
+              <p className="order-item-id">ID: {order.id.substring(0, 8)}...</p>
+            </div>
+          </div>
+          <div
+            className={`order-item-status-badge ${statusInfo.statusClassName}`}
+          >
+            <statusInfo.IconComponent className="order-item-status-icon" />
+            <span>{statusInfo.label}</span>
+          </div>
+        </div>
       </div>
 
-      {/* Order Details */}
-      <div className="order-item-details">
-        <div className="order-item-header">
-          <span className="order-number">
-            <HiOutlineHashtag className="icon" /> #{order.orderNumber}
-          </span>
-          <OrderStatusDisplay status={order.status} />
+      {/* Body Section */}
+      <div className="order-item-body">
+        <div className="order-item-details-grid">
+          <div className="order-item-detail-item">
+            <BsCashCoin className="order-item-detail-icon icon-price" />
+            <span>
+              Total:{" "}
+              <strong className="order-item-detail-value">
+                ${order.package_price?.toFixed(2) || "0.00"}
+              </strong>
+            </span>
+          </div>
+          <div className="order-item-detail-item">
+            <BsCalendarRange className="order-item-detail-icon icon-date" />
+            <span>
+              Ordered:{" "}
+              <span className="order-item-detail-value">
+                {formatDate(order.order_date)}
+              </span>
+            </span>
+          </div>
+
+          {order.package_type && (
+            <div className="order-item-detail-item">
+              <BsTagFill className="order-item-detail-icon icon-type" />
+              <span>
+                Type:{" "}
+                <span className="order-item-detail-value">
+                  {order.package_type}
+                </span>
+              </span>
+            </div>
+          )}
+          {order.package_days && (
+            <div className="order-item-detail-item">
+              <FaRegClock className="order-item-detail-icon icon-duration" />
+              <span>
+                Duration:{" "}
+                <span className="order-item-detail-value">
+                  {order.package_days} days
+                </span>
+              </span>
+            </div>
+          )}
+
+          {order.delivery_start_date && (
+            <div className="order-item-detail-item order-item-detail-fullwidth">
+              <BsCalendarRange className="order-item-detail-icon icon-service-period" />
+              <span>
+                Service:{" "}
+                <span className="order-item-detail-value">
+                  {formatDate(order.delivery_start_date)} -{" "}
+                  {formatDate(order.delivery_end_date)}
+                </span>
+              </span>
+            </div>
+          )}
+
+          {order.delivery_address && (
+            <div className="order-item-detail-item order-item-detail-address order-item-detail-fullwidth">
+              <BsGeoAlt className="order-item-detail-icon icon-address" />
+              <span>
+                To:{" "}
+                <span className="order-item-detail-value">
+                  {order.delivery_address}, {order.delivery_city}{" "}
+                  {order.delivery_postal_code}
+                </span>
+              </span>
+            </div>
+          )}
         </div>
-        <h3 className="package-name">
-          <HiOutlineBriefcase className="icon" /> {order.packageName}
-        </h3>
-        <div className="order-dates">
-          <span className="date-item">
-            <HiOutlineCalendarDays className="icon" />
-            Starts: {formatDateOnly(order.startDate)}
-          </span>
-          <span className="date-item">
-            <HiOutlineCalendarDays className="icon" />
-            Ends: {formatDateOnly(order.endDate)}
-          </span>
-        </div>
-        <p className="order-price">
-          <HiOutlineCurrencyRupee className="icon" />{" "}
-          {/* Use CAD icon if available */}
-          {formatCurrency(order.packagePrice)}
-        </p>
-        {/* Optionally display delivery address snippet */}
-        {/* <p className="order-address-snippet">{order.deliveryAddress?.address?.substring(0, 30)}...</p> */}
       </div>
 
-      {/* Add necessary styles globally or scoped */}
-      <style>{`
-                /* --- Order Item Card Styles (Example) --- */
-                .order-item-card {
-                    display: flex;
-                    gap: 1rem;
-                    background-color: white;
-                    border: 1px solid #e5e7eb; /* Example border */
-                    border-radius: 8px;
-                    padding: 1rem;
-                    margin-bottom: 1rem; /* Space between orders */
-                    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-                    cursor: pointer;
-                    transition: box-shadow 0.2s ease;
-                }
-                .order-item-card:hover {
-                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-                }
-
-                /* --- Image --- */
-                .order-item-image-container {
-                    flex-shrink: 0;
-                    width: 80px; /* Adjust size */
-                    height: 80px;
-                    border-radius: 6px;
-                    overflow: hidden;
-                    background-color: #f3f4f6; /* Fallback bg */
-                }
-                .order-item-image {
-                    display: block;
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                }
-                .fallback-image.order-item-image {
-                    display: flex; align-items: center; justify-content: center;
-                    color: #9ca3af; font-size: 0.7em;
-                }
-
-                /* --- Details --- */
-                .order-item-details {
-                    flex-grow: 1;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.3rem; /* Space between details */
-                }
-                .order-item-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    font-size: 0.8em;
-                    color: #6b7280; /* Gray text */
-                }
-                .order-number { display: flex; align-items: center; gap: 0.2rem; font-weight: 500; }
-                .order-status { display: flex; align-items: center; gap: 0.3rem; font-weight: 500; font-size: 0.85em; padding: 2px 6px; border-radius: 4px; }
-                .order-status .icon { width: 14px; height: 14px; }
-                .status-active { color: #166534; background-color: #dcfce7; } /* Example Green */
-                .status-expired { color: #78716c; background-color: #f5f5f4; } /* Example Gray */
-                .status-cancelled { color: #991b1b; background-color: #fee2e2; } /* Example Red */
-                .icon-active { color: #16a34a; }
-                .icon-expired { color: #a8a29e; }
-                .icon-cancelled { color: #dc2626; }
-
-                .package-name {
-                    font-size: 1rem;
-                    font-weight: 600;
-                    color: #1f2937; /* Darker text */
-                    margin: 0.1rem 0;
-                    display: flex;
-                    align-items: center;
-                    gap: 0.3rem;
-                }
-                 .package-name .icon { width: 16px; height: 16px; color: #9ca3af; }
-
-                .order-dates {
-                    display: flex;
-                    flex-direction: column; /* Stack dates */
-                    /* Or: flex-direction: row; gap: 1rem; */
-                    font-size: 0.8em;
-                    color: #6b7280;
-                    margin-bottom: 0.25rem;
-                }
-                 .date-item { display: flex; align-items: center; gap: 0.3rem; }
-                 .date-item .icon { width: 14px; height: 14px; }
-
-                 .order-price {
-                    font-size: 0.95rem;
-                    font-weight: 500;
-                    color: #111827;
-                    margin: 0;
-                    display: flex;
-                    align-items: center;
-                    gap: 0.3rem;
-                 }
-                  .order-price .icon { width: 16px; height: 16px; }
-
-            `}</style>
+      {/* Footer Section / Actions */}
+      {(onViewDetails || onTrackOrder) && (
+        <div className="order-item-footer">
+          {onTrackOrder && statusInfo.label === "In Transit" && (
+            <button
+              onClick={() => onTrackOrder(order.id)}
+              className="order-item-button button-track"
+              aria-label="Track your order"
+            >
+              <FaShippingFast />
+              Track Order
+            </button>
+          )}
+          {onViewDetails && (
+            <button
+              onClick={() => onViewDetails(order.id)}
+              className="order-item-button button-details"
+              aria-label="View order details"
+            >
+              <FaRegListAlt />
+              Details
+            </button>
+          )}
+          <button
+            onClick={() =>
+              alert(
+                `Help for order ${order.id.substring(
+                  0,
+                  8
+                )}... (Not implemented)`
+              )
+            }
+            className="order-item-button button-help"
+            aria-label="Get help with this order"
+          >
+            <FaQuestionCircle />
+            Get Help
+          </button>
+        </div>
+      )}
     </div>
   );
 };

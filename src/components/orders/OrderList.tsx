@@ -77,7 +77,7 @@ const OrderList: React.FC = () => {
       {/* Optional: Add title within the component */}
       {/* <h2 className="order-list-title">My Order History</h2> */}
       {orders.map((order) => (
-        <OrderItem key={order._id} order={order} />
+        <OrderItem key={order.id} order={order} />
       ))}
       {/* Add styles globally or scoped */}
       <style>{`
