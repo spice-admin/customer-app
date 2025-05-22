@@ -1,0 +1,107 @@
+/* src/styles/AddonList.css */
+
+.addon-list-section {
+  margin-bottom: 30px; /* Space below the addon section */
+  padding: 0 10px; /* Padding for mobile view */
+}
+
+.addon-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.addon-list-title {
+  font-size: 1.4rem; /* Larger title */
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.addon-list-view-more {
+  font-size: 0.9rem;
+  color: #F59E0B; /* Your theme orange */
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+.addon-list-view-more:hover {
+  color: #d97706; /* Darker orange */
+  text-decoration: underline;
+}
+
+/* Horizontal Scroll Layout (for home screen preview) */
+.addon-list-container.scroll-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 16px; /* Space between cards */
+  padding-bottom: 16px; /* Space for scrollbar and prevent clipping shadow */
+  /* Hide scrollbar for a cleaner look (optional) */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+.addon-list-container.scroll-container::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+.addon-item-wrapper.scroll-item {
+  flex: 0 0 auto; /* Prevent items from shrinking, allow them to take their defined width */
+  width: 200px; /* Adjust width of cards in scroll view for mobile */
+  /* If AddonCard has max-width, this width here controls the "slot" */
+}
+
+/* Grid Layout (for all-addons page) */
+.addon-list-container.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Responsive grid */
+  gap: 20px; /* Space between cards */
+}
+@media (min-width: 400px) {
+  .addon-list-container.grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+}
+@media (min-width: 768px) { /* For larger screens */
+  .addon-list-container.grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+  .addon-list-section {
+    padding: 0; /* No horizontal padding if container handles it */
+  }
+}
+
+
+.addon-item-wrapper.grid-item {
+ display: flex;
+}
+
+.addon-list-loading,
+.addon-list-error,
+.addon-list-empty {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+}
+.addon-list-error p {
+  color: red;
+}
+
+.addon-list-footer-view-more {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.addon-list-view-more-button {
+    display: inline-block;
+    padding: 10px 25px;
+    background-color: #f0f0f0; /* Light gray button */
+    color: #333;
+    text-decoration: none;
+    border-radius: 20px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+.addon-list-view-more-button:hover {
+    background-color: #e0e0e0;
+}

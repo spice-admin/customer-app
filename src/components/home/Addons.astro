@@ -4,4 +4,11 @@ import AddonList from "./AddonList.tsx"; // Adjust path relative to this file
 ---
 
 {/* This component will handle fetching and rendering the addons */}
-<AddonList client:load />
+<AddonList
+  client:load
+  displayLimit={3}
+  showViewMoreLink={true}
+  viewMoreLinkHref="/all-addons"
+  listTitle="Tasty Addons"
+  layout="scroll"
+/>

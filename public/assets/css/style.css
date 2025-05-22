@@ -2561,7 +2561,7 @@ nav::-webkit-scrollbar {
   padding: 12px;
 }
 
-.grid-item img {
+/* .grid-item img {
   width: 128px;
   height: 110px;
   max-width: 100%;
@@ -2569,7 +2569,7 @@ nav::-webkit-scrollbar {
   border: 2px solid var(--border-dark-light);
   z-index: 1;
   cursor: pointer;
-}
+} */
 
 .name-bar {
   width: 100%;

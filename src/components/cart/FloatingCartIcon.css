@@ -1,0 +1,54 @@
+/* src/styles/FloatingCartIcon.css */
+.floating-cart-button {
+  bottom: 20px; /* Adjust distance from bottom */
+
+  background-color: #f59e0b; /* Your theme orange */
+  color: white;
+  border: none;
+  border-radius: 50%; /* Make it circular */
+  width: 60px; /* Size of the button */
+  height: 60px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease;
+}
+
+.floating-cart-button:hover {
+  background-color: #d97706; /* Darker orange */
+  transform: scale(1.1);
+}
+
+.floating-cart-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.5); /* Focus ring */
+}
+
+.floating-cart-button .cart-icon {
+  font-size: 24px; /* Size of the FiShoppingCart icon */
+}
+
+.floating-cart-badge {
+  position: absolute;
+  top: -5px; /* Position the badge relative to the button */
+  right: -5px; /* Position the badge relative to the button */
+
+  background-color: #ef4444; /* Red for the badge */
+  color: white;
+  border-radius: 50%;
+  width: 22px; /* Size of the badge */
+  height: 22px;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1; /* For vertical centering of text, adjust if needed */
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 2px solid white; /* Optional: creates a nice separation */
+}

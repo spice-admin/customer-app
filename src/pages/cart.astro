@@ -1,0 +1,26 @@
+---
+// src/pages/cart.astro
+import MainLayout from "../layouts/Layout.astro"; // Adjust path to your main customer app layout
+import CustomerAppShell from "../components/CustomerAppShell"; // We'll use this to provide CartContext
+// import CartView from '../../components/cart/CartView.tsx'; // CartView will be rendered by CustomerAppShell
+
+// CSS imports for cart page elements
+import "../components/cart/cart.css"; // We will create this CSS file next
+// You might also need styles for buttons or other general elements if not globally imported
+---
+
+<MainLayout title="Your Shopping Cart">
+  <div class="page-container cart-page-container">
+    <CustomerAppShell pageName="cart" client:visible />
+  </div>
+</MainLayout>
+
+<style is:global>
+  /* Or scoped if preferred */
+  /* Basic container styling for the cart page, can be in cart.css too */
+  .cart-page-container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 15px; /* Adjust padding as needed */
+  }
+</style>

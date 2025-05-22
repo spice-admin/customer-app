@@ -4,6 +4,7 @@ import CustomerLayout from "../layouts/Layout.astro"; // Use the main protected 
 import ProfileManager from "../components/profile/ProfileManager.tsx"; // Import the React component
 import BottomMenu from "../components/home/BottomMenu.astro"; // Assuming BottomMenu is used here
 import AddonList from "../components/home/AddonList";
+import CustomerAppShell from "../components/CustomerAppShell";
 ---
 
 <CustomerLayout title="Addons">
@@ -56,7 +57,7 @@ import AddonList from "../components/home/AddonList";
 
       <section class="container mx-auto px-4 py-6">
         {/* Render the same component but tell it to show all items */}
-        <AddonList showAll={true} client:load />
+        <CustomerAppShell pageName="all-addons" client:visible />
       </section>
 
       {/* Render Bottom Menu */}

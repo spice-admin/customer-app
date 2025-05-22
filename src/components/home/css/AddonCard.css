@@ -1,0 +1,179 @@
+/* src/styles/AddonCard.css */
+
+
+.addon-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 100%; 
+  height: 100%; /* Make card take full height of grid cell */
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.addon-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.addon-card-image-container {
+  width: 100%;
+  height: 160px; /* <<--- ADJUST THIS FIXED HEIGHT AS DESIRED (e.g., 140px, 180px, 200px) */
+  position: relative; /* Keep for absolute positioning of image if needed, or remove if image is static */
+  background-color: #f0f2f5; /* Placeholder background */
+  overflow: hidden; /* Crucial for fixed height and object-fit */
+}
+
+.addon-card-image {
+  position: absolute; 
+  top: 0;             
+  left: 0;            
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+  object-position: center center; 
+}
+
+.addon-card-image.image-error {
+  object-fit: contain; 
+  padding: 10%; 
+  background-color: #e9ecef;
+}
+
+.addon-card-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Allows button to be pushed to bottom */
+  text-align: center; 
+}
+
+.addon-card-name {
+  font-size: 1rem; 
+  font-weight: 600;
+  color: #2d3748; 
+  margin-bottom: 8px;
+  line-height: 1.3;
+  min-height: 2.6em; /* Approx 2 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden; /* Combined with -webkit-line-clamp */
+  text-overflow: ellipsis;
+  white-space: normal; /* Override if previously nowrap */
+}
+
+.addon-card-price {
+  font-size: 1.125rem; 
+  font-weight: 700;
+  color: #16a34a; 
+  margin-bottom: 16px;
+}
+
+.addon-card-button {
+  background-color: #F59E0B; 
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: auto; /* Pushes button to the bottom */
+  width: 100%; 
+  box-sizing: border-box;
+}
+
+.addon-card-button:hover {
+  background-color: #d97706; /* Darker orange */
+}
+
+.addon-card-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.4); /* Focus ring */
+}
+
+.addon-card-actions {
+  margin-top: auto; /* Pushes actions to the bottom */
+  width: 100%;
+}
+
+.addon-card-button.add-button { /* Style for the initial "Add to Cart" button */
+  background-color: #F59E0B; 
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: 100%; 
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.addon-card-button.add-button:hover {
+  background-color: #d97706; 
+}
+.addon-card-button.add-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.4); 
+}
+.addon-card-button .button-icon {
+  font-size: 1.1em; /* Adjust icon size as needed */
+}
+
+
+.addon-quantity-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-around; /* Or center, or space-between */
+  width: 100%;
+  padding: 6px 0; /* Adjust padding for this control set */
+  border: 1px solid #ddd; /* Optional border for the control group */
+  border-radius: 8px;
+}
+
+.quantity-button {
+  background-color: transparent;
+  border: none;
+  /* border: 1px solid #F59E0B; */ /* Example border */
+  color: #F59E0B; /* Theme color */
+  padding: 8px; /* Make tap target larger */
+  font-size: 1rem; /* Icon size */
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 50%; /* Make buttons round */
+  width: 36px; /* Fixed size for round buttons */
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.quantity-button:hover {
+  background-color: #fff8e1; /* Light orange hover */
+}
+.quantity-button:disabled {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.quantity-display {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  padding: 0 10px; /* Space around the number */
+  min-width: 30px; /* Ensure some space for the number */
+  text-align: center;
+  cursor: pointer; /* To indicate it's clickable to go to cart */
+}
+.quantity-display:hover {
+  color: #F59E0B; /* Highlight on hover */
+}

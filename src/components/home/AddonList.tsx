@@ -1,168 +1,142 @@
-// src/components/home/AddonList.tsx
-import React, { useState, useEffect } from "react";
-import Swal from "sweetalert2";
-import type { Addon } from "../../types"; // Ensure this path is correct
-import {
-  getAllAddons,
-  addOrIncrementAddon,
-} from "../../services/addon.service"; // Updated service
-import { formatCurrencyCAD } from "../../utils/currency"; // Assuming this is correct
+// src/components/addons/AddonList.tsx
+import React, { useState, useEffect, useCallback } from "react";
+import type { Addon } from "../../types/addon.types"; // Adjust path as needed
+import { fetchAddons } from "../../services/addon.service"; // Adjust path as needed
+import AddonCard from "./AddonCard";
+import "./css/AddonList.css"; // We will create this CSS file next
 
 interface AddonListProps {
-  showAll?: boolean; // To display all items or a limited number (e.g., for homepage)
+  displayLimit?: number; // Number of addons to show, if undefined or 0, shows all
+  showViewMoreLink?: boolean; // Whether to show a "View More" link if limit is applied
+  viewMoreLinkHref?: string; // The URL for the "View More" link (e.g., "/all-addons")
+  listTitle?: string; // Optional title for the addons section
+  layout?: "scroll" | "grid"; // For home screen horizontal scroll or all addons grid
 }
 
-const AddonList: React.FC<AddonListProps> = ({ showAll = false }) => {
-  const [allAddons, setAllAddons] = useState<Addon[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+const AddonList: React.FC<AddonListProps> = ({
+  displayLimit,
+  showViewMoreLink = false,
+  viewMoreLinkHref = "/all-addons", // Default link for "View More"
+  listTitle,
+  layout = "grid", // Default to grid layout
+}) => {
+  const [addons, setAddons] = useState<Addon[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [totalAddonsCount, setTotalAddonsCount] = useState<number>(0); // To know if "View More" is needed
 
   useEffect(() => {
-    const fetchAddonsData = async () => {
-      setLoading(true);
+    const loadAddons = async () => {
+      setIsLoading(true);
       setError(null);
       try {
-        const data = await getAllAddons(); // Uses Supabase now
-        setAllAddons(data);
-        if (data.length === 0 && !showAll) {
-          // Check if no addons and not on "all addons" page
-          // No error needed if it's just an empty list for the homepage snippet
+        const allAddonsData = await fetchAddons({
+          sortBy: "created_at",
+          ascending: false,
+        });
+        setTotalAddonsCount(allAddonsData.length);
+        if (
+          displayLimit &&
+          displayLimit > 0 &&
+          displayLimit < allAddonsData.length
+        ) {
+          setAddons(allAddonsData.slice(0, displayLimit));
+        } else {
+          setAddons(allAddonsData);
         }
       } catch (err: any) {
-        const errorMessage =
-          err.message || "Could not load addons. Please try again later.";
-        setError(errorMessage);
-        console.error("Error fetching addons in component:", err);
-        setAllAddons([]); // Ensure addons list is empty on error
+        console.error("Error fetching addons:", err);
+        setError(err.message || "Failed to load addons.");
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
-    fetchAddonsData();
-  }, [showAll]); // Re-fetch if showAll changes, though typically it won't for a mounted component
 
-  const handleOrderClick = (addon: Addon) => {
-    console.log("Order clicked for:", addon.name, addon.id); // Use addon.id
-    addOrIncrementAddon(addon); // Uses updated Addon type
+    loadAddons();
+  }, [displayLimit]); // Re-fetch if displayLimit changes (though usually it's fixed per instance)
 
-    Swal.fire({
-      title: "Added to Cart!",
-      text: `${addon.name} has been added to your cart.`,
-      icon: "success",
-      showCancelButton: true,
-      confirmButtonText: "Checkout",
-      cancelButtonText: "Add More",
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#6c757d",
-      reverseButtons: true,
-      timer: 3000, // Auto close after 3 seconds
-      timerProgressBar: true,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        window.location.href = "/checkout"; // Ensure this is your checkout page URL
-      }
-    });
-  };
+  // const handleAddToCart = useCallback((addon: Addon) => {
+  //   // Placeholder for Add to Cart logic
+  //   // In a real app, this would interact with a cart state/context or make an API call
+  //   console.log("Added to cart (placeholder):", addon.name, addon.id);
+  //   alert(`${addon.name} added to cart! (This is a placeholder action)`);
+  //   // Example: updateCart([...cartItems, { ...addon, quantity: 1 }]);
+  // }, []);
 
-  const handleImageError = (
-    event: React.SyntheticEvent<HTMLImageElement, Event>
-  ) => {
-    event.currentTarget.src = "/assets/images/placeholder-image.png"; // Ensure this placeholder exists
-    event.currentTarget.alt = "Image unavailable";
-  };
-
-  const addonsToDisplay = showAll ? allAddons : allAddons.slice(0, 4); // Display 4 on homepage, all on all-addons page
-
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className="text-center py-5 text-gray-500">Loading addons...</div>
+      <div className="addon-list-loading">
+        {listTitle && <h2 className="addon-list-title">{listTitle}</h2>}
+        <p>Loading addons...</p>
+        {/* Optional: Add skeleton loaders for cards */}
+      </div>
     );
   }
 
   if (error) {
     return (
-      <div className="text-center py-5 text-red-600">
-        Error loading addons: {error}
+      <div className="addon-list-error">
+        {listTitle && <h2 className="addon-list-title">{listTitle}</h2>}
+        <p>Error: {error}</p>
       </div>
     );
   }
 
-  // If on homepage (not showAll) and no addons after loading, render nothing for this section
-  if (!showAll && allAddons.length === 0) {
-    return null;
-  }
-
-  // If on the dedicated "all addons" page (showAll is true) and no addons.
-  if (showAll && addonsToDisplay.length === 0) {
+  if (addons.length === 0) {
     return (
-      <div className="text-center py-5 text-gray-500">
-        No addons currently available.
+      <div className="addon-list-empty">
+        {listTitle && <h2 className="addon-list-title">{listTitle}</h2>}
+        <p>No addons available at the moment.</p>
       </div>
     );
   }
+
+  const canShowViewMore =
+    showViewMoreLink &&
+    displayLimit &&
+    displayLimit > 0 &&
+    totalAddonsCount > displayLimit;
 
   return (
-    <div className={`trending-meals-main ${!showAll ? "mb-8" : ""}`}>
-      <div className="d-flex align-items-center justify-content-between offers-main">
-        <h2>{showAll ? "All Available Addons" : "Delicious Addons 🥤"}</h2>
-        {!showAll && allAddons.length > 4 && (
-          <a href="/all-addons" className="view-all-link">
-            View all
-            <svg className="view-all-arrow" /* ... svg path ... */>
-              <path
-                d="M9 18L15 12L9 6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </a>
-        )}
-      </div>
+    <section className={`addon-list-section layout-${layout}`}>
+      {listTitle && (
+        <div className="addon-list-header">
+          <h2 className="addon-list-title">{listTitle}</h2>
+          {canShowViewMore && (
+            <a href={viewMoreLinkHref} className="addon-list-view-more">
+              View More &rarr;
+            </a>
+          )}
+        </div>
+      )}
 
       <div
-        className={
-          showAll ? "addons-grid-container" : "addons-scroll-container" // Assuming these classes provide appropriate layout
-        }
+        className={`addon-list-container ${
+          layout === "scroll" ? "scroll-container" : "grid-container"
+        }`}
       >
-        {addonsToDisplay.map((addon) => (
-          <div key={addon.id} className="trending-meals-contain-main">
-            {" "}
-            {/* Use addon.id */}
-            <div className="trending-meals">
-              <img
-                className="addon-image" // Ensure this class styles appropriately
-                src={addon.image_url || "/assets/images/placeholder-image.png"} // Use image_url and a fallback
-                alt={addon.name}
-                onError={handleImageError}
-                loading="lazy"
-              />
-            </div>
-            <div className="addon-details">
-              <div>
-                <h3 className="Jakila" title={addon.name}>
-                  {" "}
-                  {/* Ensure Jakila class is intended */}
-                  {addon.name}
-                </h3>
-                <p className="addon-price">{formatCurrencyCAD(addon.price)}</p>
-              </div>
-              <button
-                onClick={() => handleOrderClick(addon)}
-                className="addon-order-button" // Ensure this class styles appropriately
-              >
-                Add to Order
-              </button>
-            </div>
+        {addons.map((addon) => (
+          <div
+            key={addon.id}
+            className={`addon-item-wrapper ${
+              layout === "scroll" ? "scroll-item" : "grid-item"
+            }`}
+          >
+            {/* onAddToCart prop is removed from AddonCard */}
+            <AddonCard addon={addon} />
           </div>
         ))}
-        {!showAll && addonsToDisplay.length > 0 && (
-          <div className="scroll-spacer"></div>
-        )}{" "}
-        {/* Add spacer only if items exist */}
       </div>
-    </div>
+
+      {!listTitle &&
+        canShowViewMore && ( // Show "View More" at bottom if no title/header area
+          <div className="addon-list-footer-view-more">
+            <a href={viewMoreLinkHref} className="addon-list-view-more-button">
+              View All Addons
+            </a>
+          </div>
+        )}
+    </section>
   );
 };
 

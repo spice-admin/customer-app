@@ -2,15 +2,14 @@
 import { FaRegUserCircle } from "react-icons/fa";
 import { FaHome } from "react-icons/fa";
 import { FaFileInvoiceDollar } from "react-icons/fa6";
+import FloatingCartIcon from "../cart/FloatingCartIcon";
 ---
 
 <div class="bottom-menu-svg-main">
   <div class="bottom-menu-svg">
     <div class="gol3">
       <div class="add-to-cart-icon">
-        <a href="/profile">
-          <FaRegUserCircle size={48} color="white" />
-        </a>
+        <FloatingCartIcon client:load />
       </div>
     </div>
     <svg
@@ -43,63 +42,7 @@ import { FaFileInvoiceDollar } from "react-icons/fa6";
         <span class="text"></span>
       </a>
     </li>
-    <!-- <li class="list">
-      <a href="wishlist.html">
-        <i class="icon">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="25"
-            height="25"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <g>
-              <path
-                d="M16.1111 3C19.6333 3 22 6.3525 22 9.48C22 15.8138 12.1778 21 12 21C11.8222 21 2 15.8138 2 9.48C2 6.3525 4.36667 3 7.88889 3C9.91111 3 11.2333 4.02375 12 4.92375C12.7667 4.02375 14.0889 3 16.1111 3Z"
-                stroke="white"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"></path>
-            </g>
-          </svg>
-        </i>
-        <span class="text"></span>
-      </a>
-    </li> -->
-    <!-- <li class="list">
-      <a href="notification.html">
-        <i class="icon">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="25"
-            height="25"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <g>
-              <path
-                d="M12 6.43994V9.76994"
-                stroke="white"
-                stroke-width="2"
-                stroke-miterlimit="10"
-                stroke-linecap="round"></path>
-              <path
-                d="M12.0199 2C8.3399 2 5.3599 4.98 5.3599 8.66V10.76C5.3599 11.44 5.0799 12.46 4.7299 13.04L3.4599 15.16C2.6799 16.47 3.2199 17.93 4.6599 18.41C9.4399 20 14.6099 20 19.3899 18.41C20.7399 17.96 21.3199 16.38 20.5899 15.16L19.3199 13.04C18.9699 12.46 18.6899 11.43 18.6899 10.76V8.66C18.6799 5 15.6799 2 12.0199 2Z"
-                stroke="white"
-                stroke-width="2"
-                stroke-miterlimit="10"
-                stroke-linecap="round"></path>
-              <path
-                d="M15.3299 18.8201C15.3299 20.6501 13.8299 22.1501 11.9999 22.1501C11.0899 22.1501 10.2499 21.7701 9.64992 21.1701C9.04992 20.5701 8.66992 19.7301 8.66992 18.8201"
-                stroke="white"
-                stroke-width="2"
-                stroke-miterlimit="10"></path>
-            </g>
-          </svg>
-        </i>
-        <span class="text"></span>
-      </a>
-    </li> -->
+
     <li class="list">
       <a href="/orders">
         <i class="icon">

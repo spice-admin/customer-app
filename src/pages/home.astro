@@ -7,6 +7,8 @@ import PackageTabs from "../components/packages/PackageTabs.tsx"; // The tabbed 
 import Settings from "../components/home/Settings.astro";
 import BottomMenu from "../components/home/BottomMenu.astro";
 import Addons from "../components/home/Addons.astro";
+import CustomerAppShell from "../components/CustomerAppShell";
+import FloatingCartIcon from "../components/cart/FloatingCartIcon";
 ---
 
 <Layout title="Home">
@@ -98,7 +100,8 @@ import Addons from "../components/home/Addons.astro";
         {/* Render the Package Tabs component */}
         <PackageTabs client:load />
 
-        <Addons />
+        <!-- <Addons /> -->
+        <CustomerAppShell pageName="home" client:visible />
       </div>
       {/* End of section-main (with padding-bottom) */}
 

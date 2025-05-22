@@ -1,0 +1,296 @@
+/* src/styles/cart.css */
+.cart-view-container {
+  padding: 15px; /* Default padding for mobile */
+  max-width: 800px; /* Max width for larger screens */
+  margin: 0 auto;
+  background-color: #f9fafb; /* Light background for the whole page if not set by layout */
+}
+.cart-title {
+  font-size: 1.5rem; /* Slightly smaller for mobile, adjust with media queries if needed */
+  font-weight: 600;
+  color: #1f2937; /* Darker gray */
+  text-align: center;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb; /* Lighter border */
+}
+
+.cart-items-list {
+  margin-bottom: 24px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden; /* If any child has negative margin */
+}
+
+.cart-item {
+  display: flex;
+  /* On small screens, let's allow wrapping and adjust alignment for a better stacked look */
+  flex-wrap: nowrap; /* Initially no wrap, we'll handle mobile structure within */
+  align-items: flex-start; /* Align items to the top */
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid #f0f0f0;
+  position: relative; /* For absolute positioning of remove button on mobile */
+}
+.cart-item:last-child {
+  border-bottom: none;
+}
+
+.cart-item-image-container {
+  flex-shrink: 0;
+  width: 70px; /* Slightly smaller for mobile */
+  height: 70px;
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: #f3f4f6; /* gray-100 */
+}
+
+.cart-item-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cart-item-info-wrapper {
+  /* NEW: Wrapper for details and quantity for better mobile stacking */
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 8px;
+}
+
+.cart-item-name {
+  font-size: 1rem; /* Adjusted for mobile */
+  font-weight: 600;
+  color: #111827; /* gray-900 */
+  margin: 0 0 4px 0;
+  line-height: 1.3;
+}
+
+.cart-item-price {
+  font-size: 0.875rem; /* 14px */
+  color: #4b5568; /* gray-600 */
+  margin: 0;
+}
+
+.cart-item-quantity-and-subtotal {
+  /* NEW: Wrapper for quantity and subtotal side-by-side on larger, stack on mobile */
+  display: flex;
+  flex-direction: column; /* Stack on mobile by default */
+  align-items: flex-start; /* Align to left on mobile */
+  gap: 8px;
+  margin-top: 8px; /* Space above on mobile */
+}
+
+.cart-item-quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quantity-adjust-button {
+  background-color: #f3f4f6; /* gray-100 */
+  border: 1px solid #d1d5db; /* gray-300 */
+  color: #374151; /* gray-700 */
+  width: 22px; /* Slightly larger tap target */
+  height: 22px;
+  border-radius: 50%;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+.quantity-adjust-button:hover {
+  background-color: #e5e7eb; /* gray-200 */
+}
+
+.cart-item-quantity {
+  font-size: 1.05rem; /* Adjusted */
+  font-weight: 500;
+  min-width: 30px; /* Ensure space for 2 digits */
+  text-align: center;
+  color: #1f2937;
+}
+
+.cart-item-subtotal {
+  /* min-width: auto; /* Remove min-width for mobile */
+  text-align: left; /* Align left on mobile */
+  font-weight: 600;
+  font-size: 0.95rem; /* Adjusted */
+  color: #111827;
+}
+.cart-item-subtotal p {
+  margin: 0;
+}
+
+.cart-item-remove {
+  /* Positioned absolutely for mobile for better control without affecting flow */
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.remove-item-button {
+  background: none;
+  border: none;
+  color: #6b7280; /* gray-500, less aggressive default */
+  font-size: 1.2rem; /* Adjusted */
+  cursor: pointer;
+  padding: 5px; /* Increase tap area */
+  transition: color 0.2s;
+}
+.remove-item-button:hover {
+  color: #ef4444; /* red-500 on hover */
+}
+
+.cart-summary {
+  border-top: 2px solid #ddd;
+  padding-top: 20px;
+  margin-top: 20px;
+  text-align: right; /* Align summary content to the right */
+}
+
+.cart-summary {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.cart-total {
+  display: flex;
+  justify-content: space-between; /* Space out "Total:" and the amount */
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px dashed #d1d5db; /* Lighter separator */
+}
+
+.cart-total h2 {
+  margin: 0;
+  font-size: 1.2rem; /* Adjusted */
+  color: #1f2937;
+}
+.cart-total h2:last-child {
+  font-size: 1.4rem; /* Make total amount larger */
+  font-weight: 700;
+  color: #f59e0b; /* Theme color for total */
+}
+
+/* General Button Styles (can be global) */
+.button-primary,
+.button-secondary {
+  padding: 12px 20px; /* Adjusted padding */
+  border-radius: 8px; /* More rounded */
+  font-size: 1rem;
+  font-weight: 600; /* Bolder */
+  cursor: pointer;
+  text-decoration: none;
+  display: flex; /* Changed to flex for icon alignment */
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    transform 0.1s ease;
+  width: 100%; /* Full width buttons on mobile */
+  margin-top: 12px;
+  box-sizing: border-box;
+}
+.button-primary:hover,
+.button-secondary:hover {
+  transform: translateY(-1px);
+}
+.button-primary {
+  background-color: #f59e0b;
+  color: white;
+  border-color: #f59e0b;
+}
+.button-primary:hover {
+  background-color: #d97706;
+  border-color: #d97706;
+}
+
+.button-secondary {
+  background-color: #f3f4f6;
+  color: #374151;
+  border-color: #d1d5db;
+}
+.button-secondary:hover {
+  background-color: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.button-icon-right {
+  margin-left: 8px;
+}
+
+@media (min-width: 600px) {
+  .cart-view-container {
+    padding: 30px;
+  }
+
+  .cart-item {
+    flex-wrap: nowrap; /* Prevent wrapping on larger screens */
+    align-items: center; /* Center items vertically */
+    padding-left: 0; /* Remove side padding if container has it */
+    padding-right: 0;
+  }
+
+  .cart-item-image-container {
+    width: 100px; /* Slightly larger image */
+    height: 100px;
+  }
+
+  .cart-item-name {
+    font-size: 1.15rem;
+  }
+
+  .cart-item-quantity-and-subtotal {
+    flex-direction: row; /* Side-by-side on larger screens */
+    align-items: center;
+    margin-top: 0; /* Reset top margin */
+    margin-left: auto; /* Push quantity, subtotal, remove to the right */
+    gap: 20px; /* Space between quantity, subtotal, remove */
+  }
+
+  .cart-item-subtotal {
+    min-width: 90px; /* Restore min-width if desired */
+    text-align: right;
+  }
+
+  .cart-item-remove {
+    position: static; /* Revert absolute positioning */
+    margin-left: 10px; /* Adjust as needed */
+  }
+
+  .cart-summary {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Align content of summary to the right */
+  }
+
+  .button-checkout,
+  .button-continue-shopping {
+    width: auto; /* Auto width for buttons on larger screens */
+    min-width: 220px; /* Decent min width */
+  }
+}
+
+/* Empty Cart Styles */
+
+.button-outline {
+  /* Specific style for browse addons button on empty cart */
+  background-color: transparent;
+  color: #f59e0b;
+  border: 2px solid #f59e0b;
+}
+.button-outline:hover {
+  background-color: #fff8e1; /* Light orange background */
+  color: #d97706;
+}
