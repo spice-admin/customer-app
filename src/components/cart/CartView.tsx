@@ -1,26 +1,33 @@
 // src/components/cart/CartView.tsx
-import React from "react";
-import { useCart } from "../../context/CartContext"; // Adjust path if needed
-import type { AddonCartItem } from "../../types/addon.types"; // Adjust path
+import React, { useState } from "react";
+import { supabase } from "../../lib/supabaseClient"; // Adjust path
+import { useCart } from "../../context/CartContext";
+import type { AddonCartItem } from "../../types/addon.types";
 import {
   FiTrash2,
   FiPlus,
   FiMinus,
   FiShoppingCart,
   FiArrowRight,
-} from "react-icons/fi"; // Example icons
+} from "react-icons/fi";
+import {
+  format,
+  parseISO,
+  isValid,
+  isWithinInterval,
+  startOfDay,
+  endOfDay,
+} from "date-fns";
 
-// Placeholder navigation function (replace with your app's actual navigation)
 const navigateToHome = () => {
-  window.location.href = "/home"; // Navigate to home page or addons page
+  window.location.href = "/home";
 };
 
-const navigateToCheckout = () => {
-  alert(
-    "Proceed to Checkout - Placeholder: Navigation to checkout page to be implemented!"
-  );
-  // window.location.href = '/checkout'; // Example future path
-};
+interface UserOrderSubscription {
+  id: string;
+  delivery_start_date: string | null;
+  delivery_end_date: string | null;
+}
 
 const CartView: React.FC = () => {
   const {
@@ -31,6 +38,70 @@ const CartView: React.FC = () => {
     getCartTotalItems,
   } = useCart();
 
+  const [isCheckingSubscription, setIsCheckingSubscription] = useState(false);
+
+  const checkActiveSubscription = async (): Promise<boolean> => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      console.warn("User not authenticated for subscription check.");
+      return false;
+    }
+    const today = startOfDay(new Date());
+    try {
+      const { data: orders, error } = await supabase
+        .from("orders")
+        .select("id, delivery_start_date, delivery_end_date")
+        .eq("user_id", user.id)
+        .lte("delivery_start_date", format(today, "yyyy-MM-dd"))
+        .gte("delivery_end_date", format(today, "yyyy-MM-dd"));
+      if (error) {
+        console.error("Error fetching orders for subscription check:", error);
+        return false;
+      }
+      if (orders && orders.length > 0) {
+        for (const order of orders as UserOrderSubscription[]) {
+          if (order.delivery_start_date && order.delivery_end_date) {
+            const startDate = parseISO(order.delivery_start_date);
+            const endDate = endOfDay(parseISO(order.delivery_end_date));
+            if (
+              isValid(startDate) &&
+              isValid(endDate) &&
+              isWithinInterval(today, { start: startDate, end: endDate })
+            ) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    } catch (e) {
+      console.error("Exception during subscription check:", e);
+      return false;
+    }
+  };
+
+  const handleNavigateToCheckout = async () => {
+    setIsCheckingSubscription(true);
+    const hasActiveSubscription = await checkActiveSubscription();
+    setIsCheckingSubscription(false);
+
+    if (hasActiveSubscription) {
+      console.log(
+        "User has an active subscription. Navigating to select addon delivery date..."
+      );
+      // **** REPLACE THE ALERT WITH ACTUAL NAVIGATION ****
+      window.location.href = "/order-selection"; // This is the URL for your order-selection.astro page (or whatever you named it)
+      // **** END REPLACEMENT ****
+    } else {
+      alert(
+        "You don't have an active meal package subscription. Addons can only be ordered with an active subscription."
+      );
+    }
+  };
+
+  // **** CORRECTED FUNCTION DEFINITION ****
   const handleQuantityChange = (
     itemId: string,
     currentQuantity: number,
@@ -38,11 +109,12 @@ const CartView: React.FC = () => {
   ) => {
     const newQuantity = currentQuantity + change;
     if (newQuantity <= 0) {
-      removeFromCart(itemId); // Remove if quantity drops to 0 or less
+      removeFromCart(itemId);
     } else {
       updateQuantity(itemId, newQuantity);
     }
   };
+  // **** END CORRECTION ****
 
   if (cartItems.length === 0) {
     return (
@@ -80,48 +152,49 @@ const CartView: React.FC = () => {
                 className="cart-item-image"
               />
             </div>
-            <div className="cart-item-info-wrapper">
+            <div className="cart-item-main-info">
+              {" "}
+              {/* Groups name, price, and quantity controls */}
               <div className="cart-item-details">
                 <h3 className="cart-item-name">{item.name}</h3>
-                <p className="cart-item-price">${item.price.toFixed(2)}</p>
+                <p className="cart-item-price">
+                  ${item.price.toFixed(2)} CAD each
+                </p>
               </div>
-              <div className="cart-item-quantity-and-subtotal">
-                <div className="cart-item-quantity-controls">
-                  <button
-                    onClick={() =>
-                      handleQuantityChange(item.id, item.quantity, -1)
-                    }
-                    className="quantity-adjust-button"
-                    aria-label={`Decrease quantity of ${item.name}`}
-                  >
-                    <FiMinus />
-                  </button>
-                  <span className="cart-item-quantity">{item.quantity}</span>
-                  <button
-                    onClick={() =>
-                      handleQuantityChange(item.id, item.quantity, 1)
-                    }
-                    className="quantity-adjust-button"
-                    aria-label={`Increase quantity of ${item.name}`}
-                  >
-                    <FiPlus />
-                  </button>
-                </div>
+              <div className="cart-item-quantity-controls">
+                <button
+                  onClick={() =>
+                    handleQuantityChange(item.id, item.quantity, -1)
+                  }
+                  className="quantity-adjust-button"
+                >
+                  <FiMinus />
+                </button>
+                <span className="cart-item-quantity">{item.quantity}</span>
+                <button
+                  onClick={() =>
+                    handleQuantityChange(item.id, item.quantity, 1)
+                  }
+                  className="quantity-adjust-button"
+                >
+                  <FiPlus />
+                </button>
               </div>
-
+            </div>
+            <div className="cart-item-actions-price">
+              {" "}
+              {/* Groups subtotal and remove button */}
               <div className="cart-item-subtotal">
                 <p>${(item.price * item.quantity).toFixed(2)}</p>
               </div>
-            </div>
-            <div className="cart-item-remove">
-              <button
-                onClick={() => removeFromCart(item.id)}
-                className="remove-item-button"
-                title={`Remove ${item.name} from cart`}
-                aria-label={`Remove ${item.name} from cart`}
-              >
-                <FiTrash2 />
-              </button>
+              <div className="cart-item-remove">
+                <button
+                  onClick={() => removeFromCart(item.id)}
+                  className="remove-item-button"
+                >
+                  <FiTrash2 />
+                </button>
+              </div>
             </div>
           </div>
         ))}
@@ -133,14 +206,21 @@ const CartView: React.FC = () => {
           <h2>${getCartTotalPrice().toFixed(2)} CAD</h2>
         </div>
         <button
-          onClick={navigateToCheckout}
+          onClick={handleNavigateToCheckout}
           className="button-primary button-checkout"
+          disabled={isCheckingSubscription}
         >
-          Proceed to Checkout <FiArrowRight className="button-icon-right" />
+          {isCheckingSubscription
+            ? "Checking Subscription..."
+            : "Proceed to Checkout"}
+          {!isCheckingSubscription && (
+            <FiArrowRight className="button-icon-right" />
+          )}
         </button>
         <button
           onClick={navigateToHome}
           className="button-secondary button-continue-shopping"
+          disabled={isCheckingSubscription}
         >
           Continue Shopping
         </button>

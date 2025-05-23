@@ -1,0 +1,35 @@
+---
+// src/pages/addon-order-success.astro
+import MainLayout from "../layouts/Layout.astro"; // Adjust path to your main customer app layout
+import CustomerAppShell from "../components/CustomerAppShell.tsx";
+// CSS for this page's container (if any) or specific styles for text elements not in React
+import "../components/checkout/checkout-summary.css"; // Or a new 'addon-order-success.css' if preferred
+
+export const prerender = false;
+
+const sessionId = Astro.url.searchParams.get("session_id");
+---
+
+<MainLayout title="Addon Order Confirmation">
+  <div class="page-container addon-success-container">
+    <CustomerAppShell
+      pageName="addon-order-success"
+      sessionId={sessionId}
+      client:load
+    />
+  </div>
+</MainLayout>
+
+<style is:global>
+  /* Styles for this Astro page container and any static text */
+  .addon-success-container {
+    text-align: center; /* Center content like heading if needed */
+    padding: 20px 15px 40px 15px;
+    max-width: 600px;
+    margin: 40px auto;
+    /* background-color: #fff; */ /* Optional, if layout doesn't provide */
+    /* border-radius: 8px; */
+    /* box-shadow: 0 0 15px rgba(0,0,0,0.05); */
+  }
+  /* You might not need much CSS here if AddonOrderFinalizer.tsx handles its own layout well */
+</style>

@@ -1,106 +1,139 @@
 /* src/styles/cart.css */
+
+/* --- General Page & Cart Container --- */
 .cart-view-container {
-  padding: 15px; /* Default padding for mobile */
-  max-width: 800px; /* Max width for larger screens */
+  padding: 16px;
+  max-width: 800px;
   margin: 0 auto;
-  background-color: #f9fafb; /* Light background for the whole page if not set by layout */
-}
-.cart-title {
-  font-size: 1.5rem; /* Slightly smaller for mobile, adjust with media queries if needed */
-  font-weight: 600;
-  color: #1f2937; /* Darker gray */
-  text-align: center;
-  margin-bottom: 24px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #e5e7eb; /* Lighter border */
+  /* background-color: #f9fafb; /* Optional: if your page body isn't already this color */
 }
 
-.cart-items-list {
+.cart-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1f2937; /* Tailwind gray-800 */
+  text-align: center;
   margin-bottom: 24px;
-  background-color: #ffffff;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb; /* Tailwind gray-200 */
+}
+
+/* --- Empty Cart State --- */
+.cart-empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  overflow: hidden; /* If any child has negative margin */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+  min-height: 300px; /* Give it some body */
+}
+
+.empty-cart-icon {
+  color: #9ca3af; /* Tailwind gray-400 */
+  margin-bottom: 20px;
+}
+
+.cart-empty-container h2 {
+  font-size: 1.5rem;
+  color: #1f2937; /* gray-800 */
+  margin-bottom: 12px;
+}
+
+.cart-empty-container p {
+  color: #4b5568; /* gray-600 */
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+/* --- Cart Items List (When NOT Empty) --- */
+.cart-items-list {
+  margin-bottom: 32px;
 }
 
 .cart-item {
-  display: flex;
-  /* On small screens, let's allow wrapping and adjust alignment for a better stacked look */
-  flex-wrap: nowrap; /* Initially no wrap, we'll handle mobile structure within */
-  align-items: flex-start; /* Align items to the top */
-  gap: 12px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
   padding: 16px;
-  border-bottom: 1px solid #f0f0f0;
-  position: relative; /* For absolute positioning of remove button on mobile */
-}
-.cart-item:last-child {
-  border-bottom: none;
+  margin-bottom: 16px; /* Space between cart item cards */
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* Image | Details+Qty | Subtotal+Remove */
+  /* On smaller screens, we will override this with flex for better stacking */
+  gap: 12px;
+  align-items: flex-start; /* Align top for varying content heights */
 }
 
 .cart-item-image-container {
   flex-shrink: 0;
-  width: 70px; /* Slightly smaller for mobile */
-  height: 70px;
+  width: 64px;
+  height: 64px;
   border-radius: 6px;
-  overflow: hidden;
-  background-color: #f3f4f6; /* gray-100 */
+  overflow: hidden; /* This is crucial */
+  background-color: #f3f4f6; /* Fallback if image is transparent or doesn't load */
+  /* display: flex; align-items: center; justify-content: center; */ /* Not strictly needed if img has width/height 100% and object-fit */
+  position: relative; /* Can sometimes help ensure image dimensions are relative to this box */
 }
 
 .cart-item-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  display: block; /* Good practice for images */
+  width: 100%; /* Make image take full width of its container */
+  height: 100%; /* Make image take full height of its container */
+  object-fit: cover; /* Scale the image to maintain aspect ratio while filling the container. Cropping will occur if aspect ratios differ. */
+  object-position: center; /* Ensures cropping is from the center */
 }
 
-.cart-item-info-wrapper {
-  /* NEW: Wrapper for details and quantity for better mobile stacking */
+/* Wrapper for Name, Price, and Quantity Controls */
+.cart-item-main-details {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
-  gap: 8px;
+  gap: 8px; /* Space between name/price block and quantity controls */
+  flex-grow: 1; /* Allow it to take available space */
+  min-width: 0; /* Prevent overflow issues in flex children */
+}
+
+.cart-item-details {
+  /* Contains name and price */
 }
 
 .cart-item-name {
-  font-size: 1rem; /* Adjusted for mobile */
+  font-size: 1rem;
   font-weight: 600;
   color: #111827; /* gray-900 */
   margin: 0 0 4px 0;
   line-height: 1.3;
+  word-break: break-word; /* Prevent long names from breaking layout */
 }
 
 .cart-item-price {
-  font-size: 0.875rem; /* 14px */
+  font-size: 0.875rem;
   color: #4b5568; /* gray-600 */
   margin: 0;
-}
-
-.cart-item-quantity-and-subtotal {
-  /* NEW: Wrapper for quantity and subtotal side-by-side on larger, stack on mobile */
-  display: flex;
-  flex-direction: column; /* Stack on mobile by default */
-  align-items: flex-start; /* Align to left on mobile */
-  gap: 8px;
-  margin-top: 8px; /* Space above on mobile */
 }
 
 .cart-item-quantity-controls {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-top: 8px; /* Space above quantity controls if they are below name/price */
 }
 
 .quantity-adjust-button {
   background-color: #f3f4f6; /* gray-100 */
   border: 1px solid #d1d5db; /* gray-300 */
   color: #374151; /* gray-700 */
-  width: 22px; /* Slightly larger tap target */
-  height: 22px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  font-size: 1rem;
+  font-size: 0.9rem; /* For icon size */
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
   transition: background-color 0.2s;
 }
 .quantity-adjust-button:hover {
@@ -108,104 +141,107 @@
 }
 
 .cart-item-quantity {
-  font-size: 1.05rem; /* Adjusted */
+  font-size: 1rem;
   font-weight: 500;
-  min-width: 30px; /* Ensure space for 2 digits */
+  min-width: 28px; /* For up to 2 digits */
   text-align: center;
-  color: #1f2937;
+  color: #111827;
+}
+
+/* Wrapper for Subtotal and Remove button */
+.cart-item-actions-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Align to the right */
+  justify-content: flex-start; /* Align to top within its area */
+  gap: 8px; /* Space between subtotal and remove button if stacked */
+  flex-shrink: 0; /* Prevent this column from shrinking too much */
+  margin-left: 10px; /* Space from the middle column */
 }
 
 .cart-item-subtotal {
-  /* min-width: auto; /* Remove min-width for mobile */
-  text-align: left; /* Align left on mobile */
   font-weight: 600;
-  font-size: 0.95rem; /* Adjusted */
-  color: #111827;
+  font-size: 1rem;
+  color: #111827; /* gray-900 */
+  white-space: nowrap; /* Keep price on one line */
+  text-align: right;
 }
 .cart-item-subtotal p {
   margin: 0;
 }
 
-.cart-item-remove {
-  /* Positioned absolutely for mobile for better control without affecting flow */
-  position: absolute;
-  top: 12px;
-  right: 12px;
-}
-
 .remove-item-button {
   background: none;
   border: none;
-  color: #6b7280; /* gray-500, less aggressive default */
-  font-size: 1.2rem; /* Adjusted */
+  color: #9ca3af; /* gray-400, less prominent */
+  font-size: 1.2rem;
   cursor: pointer;
-  padding: 5px; /* Increase tap area */
+  padding: 4px; /* Hit area */
+  line-height: 1;
   transition: color 0.2s;
 }
 .remove-item-button:hover {
-  color: #ef4444; /* red-500 on hover */
+  color: #ef4444; /* red-500 */
 }
 
-.cart-summary {
-  border-top: 2px solid #ddd;
-  padding-top: 20px;
-  margin-top: 20px;
-  text-align: right; /* Align summary content to the right */
-}
-
+/* --- Cart Summary --- */
 .cart-summary {
   background-color: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #e5e7eb; /* gray-200 */
   border-radius: 8px;
   padding: 20px;
-  margin-top: 30px;
+  margin-top: 32px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .cart-total {
   display: flex;
-  justify-content: space-between; /* Space out "Total:" and the amount */
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 1px dashed #d1d5db; /* Lighter separator */
+  padding-bottom: 16px;
+  border-bottom: 1px dashed #d1d5db; /* gray-300 */
 }
-
 .cart-total h2 {
   margin: 0;
-  font-size: 1.2rem; /* Adjusted */
-  color: #1f2937;
+  font-size: 1.2rem;
+  color: #1f2937; /* gray-800 */
+  font-weight: 500;
 }
 .cart-total h2:last-child {
-  font-size: 1.4rem; /* Make total amount larger */
+  font-size: 1.5rem;
   font-weight: 700;
-  color: #f59e0b; /* Theme color for total */
+  color: #f59e0b; /* Your theme orange */
 }
 
-/* General Button Styles (can be global) */
+/* General Button Styles - these are crucial */
 .button-primary,
 .button-secondary {
-  padding: 12px 20px; /* Adjusted padding */
-  border-radius: 8px; /* More rounded */
+  padding: 12px 20px;
+  border-radius: 8px;
   font-size: 1rem;
-  font-weight: 600; /* Bolder */
+  font-weight: 600;
   cursor: pointer;
   text-decoration: none;
-  display: flex; /* Changed to flex for icon alignment */
+  display: flex; /* For icon inside button */
   align-items: center;
   justify-content: center;
   gap: 8px;
   border: 1px solid transparent;
   transition: background-color 0.2s ease, border-color 0.2s ease,
     transform 0.1s ease;
-  width: 100%; /* Full width buttons on mobile */
+  width: 100%; /* Full width by default for mobile */
   margin-top: 12px;
   box-sizing: border-box;
+}
+.button-primary:first-of-type {
+  margin-top: 0; /* First button in summary might not need top margin */
 }
 .button-primary:hover,
 .button-secondary:hover {
   transform: translateY(-1px);
 }
+
 .button-primary {
   background-color: #f59e0b;
   color: white;
@@ -216,81 +252,129 @@
   border-color: #d97706;
 }
 
+.button-checkout {
+  /* Uses .button-primary styles */
+}
+
 .button-secondary {
-  background-color: #f3f4f6;
-  color: #374151;
+  background-color: #e5e7eb;
+  color: #1f2937;
   border-color: #d1d5db;
 }
 .button-secondary:hover {
-  background-color: #e5e7eb;
+  background-color: #d1d5db;
   border-color: #9ca3af;
+}
+
+.button-outline {
+  /* For "Browse Addons" on empty cart */
+  background-color: transparent;
+  color: #f59e0b;
+  border: 2px solid #f59e0b;
+  font-weight: 600;
+}
+.button-outline:hover {
+  background-color: #fffbeb;
+  color: #d97706;
 }
 
 .button-icon-right {
   margin-left: 8px;
 }
 
-@media (min-width: 600px) {
-  .cart-view-container {
-    padding: 30px;
-  }
-
+/* --- Responsive adjustments for cart items on smaller screens --- */
+@media (max-width: 599px) {
   .cart-item {
-    flex-wrap: nowrap; /* Prevent wrapping on larger screens */
-    align-items: center; /* Center items vertically */
-    padding-left: 0; /* Remove side padding if container has it */
-    padding-right: 0;
+    grid-template-columns: 64px 1fr; /* Image | Details + Qty + Subtotal + Remove (stacked) */
+    grid-template-areas: /* Define grid areas for clarity */
+      "image maininfo"
+      "image actions"; /* Actions will contain qty, subtotal, remove */
+    align-items: flex-start; /* Align items to the top of their grid area */
+    position: relative; /* For absolute positioning of remove button */
   }
 
   .cart-item-image-container {
-    width: 100px; /* Slightly larger image */
-    height: 100px;
+    grid-area: image;
+    align-self: top; /* Center image vertically within its allocated space */
   }
 
-  .cart-item-name {
-    font-size: 1.15rem;
+  .cart-item-main-info {
+    grid-area: maininfo;
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* Tighter gap */
   }
 
-  .cart-item-quantity-and-subtotal {
-    flex-direction: row; /* Side-by-side on larger screens */
+  .cart-item-quantity-controls {
+    margin-top: 8px; /* Space below name/price */
+    justify-content: flex-start; /* Align controls to the left */
+  }
+
+  .cart-item-actions-price {
+    /* This used to be the third column, now part of the second row */
+    grid-area: actions;
+    display: flex;
+    flex-direction: row; /* Subtotal and remove side-by-side if space allows, or stack them */
+    justify-content: space-between;
     align-items: center;
-    margin-top: 0; /* Reset top margin */
-    margin-left: auto; /* Push quantity, subtotal, remove to the right */
-    gap: 20px; /* Space between quantity, subtotal, remove */
+    width: 100%; /* Take full width of this new row area */
+    margin-top: 8px; /* Space above this action row */
+    padding-top: 8px;
+    border-top: 1px solid #f0f0f0;
   }
 
   .cart-item-subtotal {
-    min-width: 90px; /* Restore min-width if desired */
-    text-align: right;
+    text-align: left; /* Align subtotal to left */
+    font-size: 1rem; /* Make it prominent */
   }
 
   .cart-item-remove {
-    position: static; /* Revert absolute positioning */
-    margin-left: 10px; /* Adjust as needed */
+    position: static; /* Let it flow within cart-item-actions-price */
+    /* Or keep it absolute if preferred, relative to .cart-item */
+    /* position: absolute; */
+    /* top: 10px; */
+    /* right: 10px; */
   }
+}
 
-  .cart-summary {
-    display: flex;
+/* Adjustments for slightly larger screens (tablets and up) */
+@media (min-width: 600px) {
+  .cart-item {
+    /* Revert to a more spacious inline layout or adjust grid */
+    grid-template-columns: 80px 1fr auto auto; /* Image, Details, QtyControls, Actions+Price */
+    align-items: center; /* Vertically center items nicely */
+  }
+  .cart-item-image-container {
+    width: 80px;
+    height: 80px;
+  }
+  .cart-item-main-info {
+    grid-column: 2 / 3;
+  } /* Details and Qty in second column */
+  .cart-item-quantity-controls {
+    margin-top: 4px;
+  } /* Small space if stacked below name/price */
+  .cart-item-actions-price {
+    /* Subtotal and Remove go into third column */
+    grid-column: 3 / 4;
     flex-direction: column;
-    align-items: flex-end; /* Align content of summary to the right */
+    align-items: flex-end;
+    gap: 6px;
   }
-
-  .button-checkout,
-  .button-continue-shopping {
-    width: auto; /* Auto width for buttons on larger screens */
-    min-width: 220px; /* Decent min width */
+  .cart-item-subtotal {
+    text-align: right;
   }
-}
+  .cart-item-remove {
+    position: static;
+    margin-left: 0;
+    margin-top: 4px;
+  } /* Remove button below subtotal */
 
-/* Empty Cart Styles */
-
-.button-outline {
-  /* Specific style for browse addons button on empty cart */
-  background-color: transparent;
-  color: #f59e0b;
-  border: 2px solid #f59e0b;
-}
-.button-outline:hover {
-  background-color: #fff8e1; /* Light orange background */
-  color: #d97706;
+  .button-primary,
+  .button-secondary {
+    width: auto; /* Buttons in summary can be auto-width */
+  }
+  .cart-summary {
+    align-items: flex-end; /* Align all summary content to the right */
+  }
 }

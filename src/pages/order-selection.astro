@@ -1,39 +1,36 @@
 ---
 // src/pages/order-selection.astro
 import CustomerLayout from "../layouts/Layout.astro"; // Adjust path
-import OrderSelector from "../components/orders/OrderSelector";
+import ScheduleAddonDelivery from "../components/checkout/ScheduleAddonDelivery";
+
 import BottomMenu from "../components/home/BottomMenu.astro";
 import HeaderwithoutLogo from "../components/home/HeaderwithoutLogo.astro"; // Adjust path
+
+import "../components/checkout/schedule-addon-delivery.css";
+
+import CustomerAppShell from "../components/CustomerAppShell";
 ---
 
-<CustomerLayout title="My Orders">
+<CustomerLayout title="Schedule Addon Delivery">
   <div class="site_content">
     <section class="container">
-      {/* Page Header */}
       <HeaderwithoutLogo />
-
-      {/* Main content area with padding for bottom nav */}
-      <div class="section-main orders-page-content pb-24 md:pb-28">
-        {/* Added padding class */}
-
-        {/* Render the React Order List Component */}
-        {/* client:load needed to fetch data */}
-        <OrderSelector client:load />
+      <div class="page-container schedule-delivery-container">
+        <CustomerAppShell pageName="order-selection" client:visible />
       </div>
-      {/* End section-main */}
-
-      {/* Render Bottom Menu */}
       <BottomMenu />
+      {
+        /* Uses globalCartStore, so it's fine outside this specific provider tree */
+      }
     </section>
   </div>
 </CustomerLayout>
 
 <style is:global>
-  /* Add padding for bottom nav */
-  .orders-page-content {
-    padding-top: 1rem; /* Space below header */
-    /* Ensure padding-bottom is applied for bottom nav */
-    padding-bottom: 100px; /* Adjust as needed */
+  .schedule-delivery-container {
+    max-width: 700px;
+    margin: 20px auto;
+    padding: 15px;
+    padding-bottom: 150px;
   }
-  /* Ensure all necessary template styles and component styles (OrderItem, OrderList) are loaded */
 </style>

@@ -13,6 +13,7 @@
 }
 
 .addon-list-title {
+  padding-top: 18px;
   font-size: 1.4rem; /* Larger title */
   font-weight: 600;
   color: #333;
@@ -20,8 +21,9 @@
 }
 
 .addon-list-view-more {
+  padding-top: 18px;
   font-size: 0.9rem;
-  color: #F59E0B; /* Your theme orange */
+  color: #f59e0b; /* Your theme orange */
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s ease;
@@ -38,8 +40,8 @@
   gap: 16px; /* Space between cards */
   padding-bottom: 16px; /* Space for scrollbar and prevent clipping shadow */
   /* Hide scrollbar for a cleaner look (optional) */
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 .addon-list-container.scroll-container::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
@@ -54,7 +56,10 @@
 /* Grid Layout (for all-addons page) */
 .addon-list-container.grid-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Responsive grid */
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(160px, 1fr)
+  ); /* Responsive grid */
   gap: 20px; /* Space between cards */
 }
 @media (min-width: 400px) {
@@ -62,7 +67,8 @@
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   }
 }
-@media (min-width: 768px) { /* For larger screens */
+@media (min-width: 768px) {
+  /* For larger screens */
   .addon-list-container.grid-container {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   }
@@ -71,9 +77,8 @@
   }
 }
 
-
 .addon-item-wrapper.grid-item {
- display: flex;
+  display: flex;
 }
 
 .addon-list-loading,
@@ -88,20 +93,20 @@
 }
 
 .addon-list-footer-view-more {
-    text-align: center;
-    margin-top: 20px;
+  text-align: center;
+  margin-top: 20px;
 }
 
 .addon-list-view-more-button {
-    display: inline-block;
-    padding: 10px 25px;
-    background-color: #f0f0f0; /* Light gray button */
-    color: #333;
-    text-decoration: none;
-    border-radius: 20px;
-    font-weight: 500;
-    transition: background-color 0.2s ease;
+  display: inline-block;
+  padding: 10px 25px;
+  background-color: #f0f0f0; /* Light gray button */
+  color: #333;
+  text-decoration: none;
+  border-radius: 20px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
 }
 .addon-list-view-more-button:hover {
-    background-color: #e0e0e0;
+  background-color: #e0e0e0;
 }

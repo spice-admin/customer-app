@@ -1,0 +1,148 @@
+/* src/styles/schedule-addon-delivery.css */
+.schedule-addon-delivery {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.schedule-addon-delivery h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+.schedule-addon-delivery h3 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  color: #444;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
+
+.loading-container,
+.error-container,
+.info-message {
+  text-align: center;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 6px;
+}
+.loading-container {
+  background-color: #e9f5ff;
+  color: #0056b3;
+}
+.error-container,
+.info-message {
+  background-color: #fff3cd;
+  color: #856404;
+}
+.error-container p a {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+.cart-summary-preview {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  border: 1px solid #eee;
+}
+.cart-summary-preview h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #333;
+}
+.cart-summary-preview ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px 0;
+  font-size: 0.9em;
+  color: #555;
+}
+.cart-summary-preview li {
+  padding: 3px 0;
+}
+.cart-summary-preview .total-price {
+  font-weight: bold;
+  color: #333;
+  margin-top: 10px;
+  font-size: 1.1em;
+  text-align: right;
+}
+
+.subscription-selection .subscription-option {
+  margin-bottom: 8px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #fff;
+  transition: background-color 0.2s;
+}
+.subscription-selection .subscription-option:hover {
+  background-color: #f7f7f7;
+}
+.subscription-selection .subscription-option input[type="radio"] {
+  margin-right: 10px;
+  vertical-align: middle;
+}
+.subscription-selection .subscription-option label {
+  font-size: 0.95em;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.date-selection {
+  margin-top: 20px;
+}
+
+.calendar-container {
+  display: flex;
+  justify-content: center; /* Center the calendar */
+  margin-bottom: 15px;
+}
+
+/* react-calendar default styles are good, but you can override */
+.react-calendar {
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.date-disabled {
+  background-color: #f0f0f0 !important; /* Ensure !important if needed to override library styles */
+  color: #aaa !important;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+.date-selected {
+  background-color: #f59e0b !important; /* Your theme orange */
+  color: white !important;
+}
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background-color: #ffeccf; /* Light orange for hover */
+}
+
+.selected-date-info {
+  text-align: center;
+  font-weight: 500;
+  color: #007bff;
+  margin-top: 10px;
+  padding: 8px;
+  background-color: #e7f3ff;
+  border-radius: 4px;
+}
+
+.confirm-addon-button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  font-size: 1.1rem;
+  margin-top: 25px;
+  /* Uses .button-primary styles from your global/cart.css */
+}

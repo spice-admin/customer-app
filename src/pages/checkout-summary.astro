@@ -1,0 +1,27 @@
+---
+// src/pages/checkout-summary.astro
+import MainLayout from "../layouts/Layout.astro"; // Adjust path to your main customer app layout
+import CustomerAppShell from "../components/CustomerAppShell.tsx"; // To provide CartContext
+// We will create CheckoutSummaryView.tsx next. It will be rendered by CustomerAppShell.
+// We'll also need CSS for this page.
+import "../components/checkout/checkout-summary.css"; // We will create this CSS file
+
+export const prerender = false; // This page is dynamic based on localStorage/context
+---
+
+<MainLayout title="Addon Order Summary">
+  <div class="page-container checkout-summary-container-astro">
+    {/* Added a unique class for Astro page styling if needed */}
+    <CustomerAppShell pageName="checkout-summary" client:visible />
+  </div>
+</MainLayout>
+
+<style is:global>
+  .checkout-summary-container-astro {
+    /* Styles for this Astro page container */
+    max-width: 700px;
+    margin: 20px auto;
+    padding: 15px;
+    padding-bottom: 90px; /* For bottom navbar if it's part of MainLayout */
+  }
+</style>

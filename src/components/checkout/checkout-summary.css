@@ -1,0 +1,118 @@
+/* src/styles/checkout-summary.css */
+.checkout-summary-view {
+  background-color: #fff;
+  padding: 20px 25px; /* More horizontal padding */
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  color: #374151; /* gray-700 */
+}
+
+.checkout-summary-view h2 {
+  text-align: center;
+  font-size: 1.75rem;
+  color: #111827; /* gray-900 */
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e5e7eb; /* gray-200 */
+}
+
+.summary-section {
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 1px dashed #d1d5db; /* gray-300 */
+}
+.summary-section:last-of-type {
+  /* The actions section */
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0; /* No margin if it's the last */
+}
+
+.summary-section h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1f2937; /* gray-800 */
+  margin-bottom: 12px;
+}
+.summary-section p {
+  font-size: 1rem;
+  color: #4b5568; /* gray-600 */
+  margin: 5px 0;
+  line-height: 1.6;
+}
+
+.summary-cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #f3f4f6; /* gray-100 */
+}
+.summary-cart-item:last-child {
+  border-bottom: none;
+}
+.summary-cart-item .item-name {
+  color: #374151; /* gray-700 */
+}
+.summary-cart-item .item-price {
+  font-weight: 500;
+  color: #111827; /* gray-900 */
+}
+
+.summary-cart-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: 12px;
+  margin-top: 12px;
+  border-top: 2px solid #e5e7eb; /* gray-200 */
+  font-size: 1.1rem;
+}
+.summary-cart-total strong {
+  color: #111827; /* gray-900 */
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+.summary-cart-total strong:last-child {
+  /* The total price */
+  color: #f59e0b; /* Theme orange */
+  font-size: 1.4rem;
+}
+
+.summary-actions {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summary-actions .button-primary,
+.summary-actions .button-secondary {
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+/* Re-use or ensure these utility classes are available */
+.loading-container,
+.error-container,
+.info-message-container {
+  text-align: center;
+  padding: 30px;
+  border-radius: 6px;
+  margin: 20px 0;
+  background-color: #f9f9f9;
+  color: #555;
+}
+.error-container,
+.info-message-container.error {
+  background-color: #fff3f3;
+  color: #c53030;
+}
+
+/* Ensure button styles from cart.css or global.css are applied */
+/* .button-primary, .button-secondary, .button-outline */
