@@ -5,7 +5,7 @@ import Stripe from 'https://esm.sh/stripe@14.x'; // Use your consistent Stripe S
 import { corsHeaders } from '../_shared/cors.ts'; // Your shared CORS headers
 
 const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY");
-const APP_URL = Deno.env.get("YOUR_APP_URL") || 'http://localhost:4321'||'https://customer-app-jet.vercel.app';
+const APP_URL = Deno.env.get("YOUR_APP_URL") ||'https://customer-app-jet.vercel.app';
 
 const SUCCESS_URL = `${APP_URL}/addon-order-success?session_id={CHECKOUT_SESSION_ID}`; // For addons
 const CANCEL_URL = `${APP_URL}/cart`; // Back to cart page on cancel

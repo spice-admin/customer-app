@@ -240,7 +240,7 @@ const SignupForm: React.FC = () => {
         </span>
         <input
           type="tel"
-          placeholder="Your Mobile Number" // Changed placeholder
+          placeholder="+12265569944" // Changed placeholder
           className={`no-spinners ${errors.mobile ? "input-error" : ""}`}
           name="mobile"
           value={formData.mobile}
