@@ -6,9 +6,7 @@ import OfferSlider from "../components/home/OfferSlider.astro"; // Offer slider 
 import PackageTabs from "../components/packages/PackageTabs.tsx"; // The tabbed package component
 import Settings from "../components/home/Settings.astro";
 import BottomMenu from "../components/home/BottomMenu.astro";
-import Addons from "../components/home/Addons.astro";
 import CustomerAppShell from "../components/CustomerAppShell";
-import FloatingCartIcon from "../components/cart/FloatingCartIcon";
 ---
 
 <Layout title="Home">
@@ -66,11 +64,7 @@ import FloatingCartIcon from "../components/cart/FloatingCartIcon";
               placeholder="Search Food Packages..."
               name="search"
               autocomplete="off"
-              onClick="console.log('Search clicked - implement search UI')"
-              *
-              Placeholder
-              action
-              *
+              onclick="console.log('Search clicked - implement search UI')"
             />
           </div>
         </div>
@@ -272,19 +266,4 @@ import FloatingCartIcon from "../components/cart/FloatingCartIcon";
     height: 100%; /* To fill the image container */
     border-bottom: 1px solid #e5e7eb;
   }
-
-  /* Ensure your .packages-grid (from PackageTabs.tsx) handles responsiveness */
-  /* Example for .packages-grid: */
-  /*
-.packages-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); // Responsive columns
-  gap: 1rem; // Space between cards
-}
-@media (max-width: 600px) {
-  .packages-grid {
-    grid-template-columns: 1fr; // Single column on small screens
-  }
-}
-*/
 </style>

@@ -1,12 +1,7 @@
 // src/components/packages/PackageTabs.tsx
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { supabase } from "../../lib/supabaseClient";
-import type {
-  Category,
-  Package,
-  ICustomerProfile,
-  PackageType,
-} from "../../types"; // Ensure these are exported correctly
+import type { Category, Package, ICustomerProfile } from "../../types"; // Ensure these are exported correctly
 import PackageCard from "./PackageCard";
 
 const ALL_CATEGORY_ID = "all";
@@ -48,11 +43,6 @@ const PackageTabs: React.FC = () => {
       setCategories((categoriesResult.data as Category[]) || []);
 
       if (packagesResult.error) throw packagesResult.error;
-
-      console.log(
-        "[PackageTabs] Raw Packages Data from Supabase:",
-        packagesResult.data
-      );
 
       setPackages((packagesResult.data as Package[]) || []);
 

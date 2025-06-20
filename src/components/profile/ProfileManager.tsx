@@ -15,6 +15,7 @@ import {
   HiOutlineBuildingOffice2,
 } from "react-icons/hi2";
 import { useLoadScript, Autocomplete } from "@react-google-maps/api";
+import DeleteAccountSettings from "./DeleteAccountSettings";
 
 const libraries: "places"[] = ["places"];
 
@@ -571,15 +572,18 @@ const ProfileManager: React.FC = () => {
             </button>
           </>
         ) : (
-          <button
-            type="button"
-            onClick={toggleEditMode}
-            className="profile-button edit"
-            disabled={isLoading}
-            style={{ /* styles */ padding: "10px 15px" }}
-          >
-            <HiOutlinePencil className="icon" /> Edit Profile
-          </button>
+          <>
+            <button
+              type="button"
+              onClick={toggleEditMode}
+              className="profile-button edit"
+              disabled={isLoading}
+              style={{ /* styles */ padding: "10px 15px" }}
+            >
+              <HiOutlinePencil className="icon" /> Edit Profile
+            </button>
+            <DeleteAccountSettings />
+          </>
         )}
       </div>
     </div>
